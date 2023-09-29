@@ -1,0 +1,23 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: kube-prometheus-stack
+spec:
+  destination:
+    name: ''
+    namespace: monitoring
+    server: 'https://kubernetes.default.svc'
+  source:
+    path: ''
+    repoURL: 'https://github.com/prometheus-community/helm-charts/tree/main/charts'
+    targetRevision: 51.x
+    chart: kube-prometheus-stack
+  sources: []
+  project: Homelab
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
+      - ServerSideApply=true
