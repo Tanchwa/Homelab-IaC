@@ -1,0 +1,17 @@
+
+at the end of this play, the router should
+
+have opnsense installed with 
+  items for PXE
+    PXE server installed
+    DHCP server installed
+    http server installed
+  items for tailscale
+    tailscale
+    advertise local routes over tailscale with correct CIDRS
+    act as an exit node
+    set default routes for local and remote LANs
+  items for firewall
+    port forwarding to the correct k8s load balancer ingresses
+
+IDS to be determined
