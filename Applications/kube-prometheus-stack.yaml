@@ -2,6 +2,7 @@ apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
   name: kube-prometheus-stack
+  namespace: argocd
 spec:
   destination:
     name: ''
@@ -9,11 +10,11 @@ spec:
     server: 'https://kubernetes.default.svc'
   source:
     path: ''
-    repoURL: 'https://github.com/prometheus-community/helm-charts/tree/main/charts'
+    repoURL: 'https://prometheus-community.github.io/helm-charts'
     targetRevision: 51.x
     chart: kube-prometheus-stack
   sources: []
-  project: Homelab
+  project: default
   syncPolicy:
     automated:
       prune: true

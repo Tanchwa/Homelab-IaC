@@ -1,0 +1,6 @@
+
+
+
+have some logic here for "if kubernetes node, then cordon fisrt"
+
+run updates for the node at a specified time.

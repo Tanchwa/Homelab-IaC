@@ -1,0 +1,3 @@
+#this playbook assumes that you already have a DHCP server running configured with an TFTP and PXE
+
+
