@@ -1,0 +1,31 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: public-ingress
+  namespace: argocd
+spec:
+  destination:
+    name: ''
+    namespace: public-ingress
+    server: 'https://kubernetes.default.svc'
+  source:
+    path: ''
+    repoURL: 'https://helm.nginx.com/stable'
+    targetRevision: 1.x
+    chart: nginx-ingress
+    helm:
+      valueFiles: []
+      parameters:
+        - name: controller.ingressClass.name
+          value: public-nginx
+        - name: controller.name
+          value: public-controller
+  sources: []
+  project: default
+  syncPolicy:
+    automated:
+      prune: false
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
+      - ServerSideApply=true
