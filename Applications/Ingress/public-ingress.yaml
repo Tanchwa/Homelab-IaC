@@ -18,8 +18,6 @@ spec:
       parameters:
         - name: controller.ingressClass.name
           value: public-nginx
-        - name: controller.name
-          value: public-controller
   sources: []
   project: default
   syncPolicy:

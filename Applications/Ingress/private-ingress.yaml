@@ -20,6 +20,8 @@ spec:
           value: private-nginx
         - name: controller.name
           value: private-controller
+        - name: controller.service.type
+          value: LoadBalancer
   sources: []
   project: default
   syncPolicy:

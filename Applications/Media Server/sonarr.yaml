@@ -1,0 +1,79 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: sonarr
+  namespace: argocd
+spec:
+  destination:
+    name: ''
+    namespace: mediaserver
+    server: 'https://kubernetes.default.svc'
+  source:
+    path: ''
+    repoURL: 'https://bjw-s.github.io/helm-charts'
+    targetRevision: 1.5.1
+    chart: app-template
+    helm:
+      values: |
+        image:
+          repository: lscr.io/linuxserver/sonarr
+          tag: "3.0.10"
+        env:
+          TZ: "America/New_York"
+          PUID: 0
+          PGID: 0
+        ingress:
+          main:
+            enabled: true
+            ingressClassName: private-nginx
+            annotations:
+              nginx.ingress.kubernetes.io/rewrite-target: /
+              ingress.kubernetes.io/ssl-redirect: "false"
+            hosts:
+              - host: sonar.local.andrewsutliff.com
+                paths: /
+        service
+          main:
+            ports:
+              http:
+                port: 8989
+          metrics:
+            ports:
+              metrics:
+                port: 9707
+        podSecurityContext:
+          runAsUser: 0
+          runAsGroup: 0
+          fsGroup: 0
+          
+  sources: []
+  project: default
+  syncPolicy:
+    automated:
+      prune: false
+      selfHeal: true
+    syncOptions:
+      - ServerSideApply=true
+      - CreateNamespace=true
+
+
+# put in values later
+        # persistence:
+        #   config:
+        #     enabled: true
+        #     storageClass: longhorn
+        #     existingClaim: pvc-sonarr
+        #     mountPath: /config
+        #     retain: true
+        #   tv:
+        #     enabled: true
+        #     type: nfs
+        #     server: "${NAS0_IP}"
+        #     path: /volume1/TV-Series
+        #     mountPath: /tv
+        #   downloads:
+        #     enabled: true
+        #     type: nfs
+        #     server: "${NAS0_IP}"
+        #     path: /volume1/downloads
+        #     mountPath: /downloads
