@@ -1,27 +1,21 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: radarr
-  namespace: mediaserver
+  name: media-server
+  namespace: argocd
 spec:
   destination:
     name: ''
     namespace: mediaserver
     server: 'https://kubernetes.default.svc'
   source:
-    path: ''
-    repoURL: 'https://bjw-s.github.io/helm-charts'
-    targetRevision: 1.5.1
-    chart: app-template
-    helm:
-      values: |
-        test 
+    path: "Kubernetes Media Server"
+    repoURL: >-
+      https://github.com/Tanchwa/DevOps-Projects
+    targetRevision: HEAD
   sources: []
   project: default
   syncPolicy:
-    automated:
-      prune: false
-      selfHeal: true
     syncOptions:
       - ServerSideApply=true
       - CreateNamespace=true
