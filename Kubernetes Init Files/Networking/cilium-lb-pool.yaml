@@ -7,4 +7,4 @@ spec:
   - cidr: "192.168.1.96/28"
   serviceSelector:
     matchLabels:
-      app.kubernetes.io/name: nginx-ingress
+      app.kubernetes.io/name: ingress-nginx

@@ -10,16 +10,20 @@ spec:
     server: 'https://kubernetes.default.svc'
   source:
     path: ''
-    repoURL: 'https://helm.nginx.com/stable'
-    targetRevision: 1.x
-    chart: nginx-ingress
+    repoURL: 'https://kubernetes.github.io/ingress-nginx'
+    targetRevision: 4.8.x
+    chart: ingress-nginx
     helm:
       valueFiles: []
       parameters:
-        - name: controller.ingressClass.name
-          value: private-nginx
         - name: controller.name
           value: private-controller
+        - name: controller.ingressClassResource.name
+          value: private-nginx
+        # - name: controller.ingressClassByName
+        #   value: "true"
+        - name: controller.ingressClassResource.controllerValue
+          value: nginx.org/public-controller
         - name: controller.service.type
           value: LoadBalancer
   sources: []

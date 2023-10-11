@@ -16,6 +16,9 @@ spec:
   sources: []
   project: default
   syncPolicy:
+    automated:
+      prune: false
+      selfHeal: true
     syncOptions:
       - ServerSideApply=true
       - CreateNamespace=true
