@@ -1,0 +1,135 @@
+---
+kind: Role
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  namespace: kube-system
+  name: kube-system-admin
+rules:
+  - apiGroups: ["*"]
+    resources: ["*"]
+    verbs: ["*"]
+kind: ClusterRole
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: argocd-admin
+rules:
+- apiGroups: ["argoproj.io"]
+  resources: ["applications", "applicationsets", "appprojects"]
+  verbs: ["get", "watch", "list", "delete", "update", "create", "patch", "deletecollection"]
+---
+kind: ClusterRole
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: pod-admin
+rules:
+- apiGroups: [""]
+  resources: ["pods", "pods/log", "pods/exec", "pods/portforward", "pods/status"]
+  verbs: ["get", "watch", "list", "delete", "update", "create", "patch", "deletecollection"]
+---
+kind: ClusterRole
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: node-admin
+rules:
+- apiGroups: [""]
+  resources: ["nodes", "namespaces", "serviceaccounts"]
+  verbs: ["get", "watch", "list", "delete", "update", "create", "patch", "deletecollection"]
+---
+kind: ClusterRole
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: network-admin
+rules:
+- apiGroups: ["networking.k8s.io"]
+  resources: ["ingressClasses", "ingresses", "networkpolicies"]
+  verbs: ["get", "watch", "list", "delete", "update", "create", "patch", "deletecollection"]
+- apiGroups: [""]
+  resources: ["services"]
+  verbs: ["get", "watch", "list", "delete", "update", "create", "patch", "deletecollection"]
+---
+kind: ClusterRole
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: secrets-admin
+rules:
+- apiGroups: [""]
+  resources: ["secrets"]
+  verbs: ["get", "watch", "list", "delete", "update", "create", "patch", "deletecollection"]
+---
+kind: RoleBinding
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: kube-system-admin
+subjects:
+- kind: User
+  name: asutliff
+  apiGroup: rbac.authorization.k8s.io
+roleRef:
+  kind: Role
+  name: kube-system-admin
+  apiGroup: rbac.authorization.k8s.io
+---
+kind: ClusterRoleBinding
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: argocd-admin
+subjects:
+- kind: User
+  name: asutliff
+  apiGroup: rbac.authorization.k8s.io
+roleRef:
+  kind: ClusterRole
+  name: argocd-admin
+  apiGroup: rbac.authorization.k8s.io
+---
+kind: ClusterRoleBinding
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: pod-admin
+subjects:
+- kind: User
+  name: asutliff
+  apiGroup: rbac.authorization.k8s.io
+roleRef:
+  kind: ClusterRole
+  name: pod-admin
+  apiGroup: rbac.authorization.k8s.io
+---
+kind: ClusterRoleBinding
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: node-admin
+subjects:
+- kind: User
+  name: asutliff
+  apiGroup: rbac.authorization.k8s.io
+roleRef:
+  kind: ClusterRole
+  name: node-admin
+  apiGroup: rbac.authorization.k8s.io
+---
+kind: ClusterRoleBinding
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: network-admin
+subjects:
+- kind: User
+  name: asutliff
+  apiGroup: rbac.authorization.k8s.io
+roleRef:
+  kind: ClusterRole
+  name: network-admin
+  apiGroup: rbac.authorization.k8s.io
+---
+kind: ClusterRoleBinding
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: secrets-admin
+subjects:
+- kind: User
+  name: asutliff
+  apiGroup: rbac.authorization.k8s.io
+roleRef:
+  kind: ClusterRole
+  name: secrets-admin
+  apiGroup: rbac.authorization.k8s.io
