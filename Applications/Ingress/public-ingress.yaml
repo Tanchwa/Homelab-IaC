@@ -11,19 +11,25 @@ spec:
   source:
     path: ''
     repoURL: 'https://kubernetes.github.io/ingress-nginx'
-    targetRevision: 4.8.x
+    targetRevision: 4.8.2
     chart: ingress-nginx
     helm:
       valueFiles: []
       parameters:
         - name: controller.name
           value: public-controller
+        - name: controller.ingressClass
+          value: public-nginx
+        - name: controller.ingressClassByName
+          value: "true"
+        - name: controller.reportIngressStatus.enableLeaderElection
+          value: "true"
         - name: controller.ingressClassResource.name
           value: public-nginx
-        # - name: controller.ingressClassByName
-        #   value: "true"
+        - name: controller.ingressClassResource.enabled
+          value: "true"
         - name: controller.ingressClassResource.controllerValue
-          value: nginx.org/public-controller
+          value: k8s.io/public-controller
         - name: controller.service.type
           value: LoadBalancer
   sources: []
