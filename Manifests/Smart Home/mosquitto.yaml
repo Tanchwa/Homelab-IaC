@@ -1,0 +1,86 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mosquitto
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: mosquitto
+  template:
+    metadata:
+      labels:
+        app: mosquitto
+    spec:
+      containers:
+      - name: mosquitto
+        image: eclipse-mosquitto
+        ports:
+        - containerPort: 8883
+        - containerPort: 9001
+        volumeMounts:
+        - mountPath: /mosquitto/config/mosquitto.conf
+          subPath: mosquitto.conf
+          name: config
+        - mountPath: /mosquitto/certs/
+          name: certs
+      volumes:
+      - name: config
+        configMap:
+          name: mosquitto-config
+      - name: certs
+        secret:
+          secretName: mosquitto-certs
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: mosquitto-config
+data:
+  mosquitto.conf: |
+    # DO NOT USE IN PRODUCTION
+    allow_anonymous true
+
+    # MQTT with TLS (MQTTS)
+    listener 8883
+    protocol mqtt
+
+    # Fetch the generated certificates
+    cafile /etc/ssl/certs/ca-certificates.crt
+    keyfile /mosquitto/certs/tls.key
+    certfile /mosquitto/certs/tls.crt
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: mosquitto-mqtts
+spec:
+  type: ClusterIP
+  selector:
+    app: mosquitto  
+  ports:
+  - port: 8883
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: mosquitto
+  annotations:
+      # cert-manager.io/cluster-issuer: "letsencrypt"
+spec:
+  tls:
+  - hosts:
+    - local.andrewsutliff.com
+    secretName: mosquitto-certs
+  ingressClassName: private-nginx
+  rules:
+  - host: local.andrewsutliff.com
+    http:
+      paths:
+      - path: /mqqt
+        pathType: Prefix
+        backend:
+          service:
+            name: mosquitto-mqtts
+            port: 
+              number: 8883
