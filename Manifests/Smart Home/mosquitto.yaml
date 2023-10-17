@@ -81,13 +81,17 @@ spec:
   tls:
   - hosts:
     - local.andrewsutliff.com
-    secretName: mosquitto-certs
+    secretName: mosquitto-http
   ingressClassName: private-nginx
   rules:
   - host: mqqt.andrewsutliff.com
     http:
       paths:
       - path: /
+  - host: local.andrewsutliff.com
+    http:
+      paths:
+      - path: /mqqt
         pathType: Prefix
         backend:
           service:
