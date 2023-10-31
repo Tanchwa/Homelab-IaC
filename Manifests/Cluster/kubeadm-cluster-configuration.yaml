@@ -1,0 +1,15 @@
+apiVersion: kubeadm.k8s.io/v1beta3
+kind: ClusterConfiguration
+kubernetesVersion: v1.16.0
+apiServer:
+  extraArgs:
+    oidc-issuer-url: https://dex.andrewsutliff.com:32000
+    oidc-client-id: 
+    oidc-ca-file:
+    oidc-username-claim:
+    oidc-groups-claim:
+
+# figure out a way to mount the secret created by the oidc cert issuer, currently named oidc-ca-key-pair, probably need to mount it on the path that I specify in the the extra args 
+#
+#
+#
