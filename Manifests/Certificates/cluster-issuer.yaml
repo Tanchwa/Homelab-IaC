@@ -15,3 +15,6 @@ spec:
           apiTokenSecretRef:
             name: cloudflare-token
             key: api-token
+      selector:
+        dnsZones:
+        - 'andrewsutliff.com'
