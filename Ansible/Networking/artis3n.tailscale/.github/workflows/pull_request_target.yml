@@ -1,0 +1,191 @@
+---
+name: Molecule Tests
+
+on:
+  # Manual approval of environment is required
+  pull_request_target:
+    branches:
+      - main
+    paths-ignore:
+      - ".devcontainer/**"
+      - "README.md"
+
+env:
+  # https://www.jeffgeerling.com/blog/2020/getting-colorized-output-molecule-and-ansible-on-github-actions-ci
+  PY_COLORS: '1'
+  ANSIBLE_FORCE_COLOR: '1'
+
+jobs:
+  molecule:
+    name: "Test Distro"
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - image: ghcr.io/artis3n/docker-amazonlinux2023-ansible:latest
+          - image: geerlingguy/docker-rockylinux8-ansible:latest
+          - image: geerlingguy/docker-rockylinux9-ansible:latest
+          - image: ghcr.io/artis3n/docker-almalinux8-ansible:latest
+          - image: ghcr.io/artis3n/docker-rhel8-ansible:latest
+          - image: ghcr.io/artis3n/docker-oraclelinux8-ansible:latest
+          - image: geerlingguy/docker-ubuntu2204-ansible:latest
+          - image: geerlingguy/docker-ubuntu2004-ansible:latest
+          - image: geerlingguy/docker-ubuntu1804-ansible:latest
+            command: /lib/systemd/systemd
+          - image: cisagov/docker-debian12-ansible:latest
+          - image: geerlingguy/docker-debian11-ansible:latest
+            command: /lib/systemd/systemd
+          - image: geerlingguy/docker-debian10-ansible:latest
+            command: /lib/systemd/systemd
+          - image: geerlingguy/docker-fedora31-ansible:latest
+          - image: ghcr.io/artis3n/docker-arch-ansible:latest
+          - image: ghcr.io/artis3n/docker-opensuse-tumbleweed-ansible:latest
+          - image: ghcr.io/artis3n/docker-opensuse-leap-ansible:latest
+            command: /lib/systemd/systemd
+
+    uses: ./.github/workflows/molecule.yml
+    with:
+      image: ${{ matrix.image }}
+      command: ${{ matrix.command }}
+    secrets:
+      tailscale_key: ${{ secrets.TAILSCALE_CI_KEY }}
+
+  # Systems that aren't working with cgroups v2 on ubuntu 22.04, but works on ubuntu 20.04
+  molecule-legacy:
+    name: "Test Legacy Distro"
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - image: geerlingguy/docker-centos7-ansible:latest
+            command: /usr/lib/systemd/systemd
+          - image: ghcr.io/artis3n/docker-amazonlinux2-ansible:latest
+            command: /usr/lib/systemd/systemd
+          - image: geerlingguy/docker-ubuntu1604-ansible:latest
+            command: /lib/systemd/systemd
+
+    uses: ./.github/workflows/molecule.yml
+    with:
+      image: ${{ matrix.image }}
+      command: ${{ matrix.command }}
+      runner: ubuntu-20.04
+    secrets:
+      tailscale_key: ${{ secrets.TAILSCALE_CI_KEY }}
+
+  molecule-skip-auth:
+    name: "Test Skip Authentication"
+    runs-on: ubuntu-22.04
+    environment: E2E
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+
+      - name: Install dependency manager
+        run: pipx install poetry
+
+      - name: Set up Python 3.x
+        id: setup-python
+        uses: actions/setup-python@v4.7.1
+        with:
+          python-version-file: pyproject.toml
+          cache: 'poetry'
+
+      - name: Install packages
+        run: poetry install --no-interaction
+
+      - name: Molecule - Skip Authentication
+        run: poetry run molecule test --scenario-name skip-authentication
+
+  molecule-args:
+    name: "Test Up Args"
+    runs-on: ubuntu-22.04
+    environment: E2E
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+
+      - name: Install dependency manager
+        run: pipx install poetry
+
+      - name: Set up Python 3.x
+        id: setup-python
+        uses: actions/setup-python@v4.7.1
+        with:
+          python-version-file: pyproject.toml
+          cache: 'poetry'
+
+      - name: Install packages
+        run: poetry install --no-interaction
+
+      - name: Molecule - Custom Arguments Validation
+        run: poetry run molecule test --scenario-name args
+        env:
+          TAILSCALE_CI_KEY: "${{ secrets.TAILSCALE_CI_KEY }}"
+
+  molecule-state-present:
+    name: "Test State Idempotency"
+    runs-on: ubuntu-22.04
+    environment: E2E
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+
+      - name: Install dependency manager
+        run: pipx install poetry
+
+      - name: Set up Python 3.x
+        id: setup-python
+        uses: actions/setup-python@v4.7.1
+        with:
+          python-version-file: pyproject.toml
+          cache: 'poetry'
+
+      - name: Install packages
+        run: poetry install --no-interaction
+
+      - name: Molecule - State Present
+        run: poetry run molecule test --scenario-name state-present
+        env:
+          TAILSCALE_CI_KEY: "${{ secrets.TAILSCALE_CI_KEY }}"
+
+  molecule-headscale:
+    name: "Test Headscale Compatibility"
+    runs-on: ubuntu-22.04
+    environment: E2E
+    strategy:
+      fail-fast: false
+      matrix:
+        scenario:
+          - default
+          - state-absent
+          - idempotent-up
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+
+      - name: Install dependency manager
+        run: pipx install poetry
+
+      - name: Set up Python 3.x
+        id: setup-python
+        uses: actions/setup-python@v4.7.1
+        with:
+          python-version-file: pyproject.toml
+          cache: 'poetry'
+
+      - name: Install packages
+        run: poetry install --no-interaction
+
+      - name: Run scenario with Headscale
+        run: poetry run molecule test --scenario-name ${{ matrix.scenario }}
+        env:
+          TAILSCALE_CI_KEY: "unused"
+          USE_HEADSCALE: "true"
