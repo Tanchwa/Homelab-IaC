@@ -15,3 +15,67 @@ have opnsense installed with
     port forwarding to the correct k8s load balancer ingresses
 
 IDS to be determined
+
+- name: Install Tailscale
+  hosts: routers
+    vars: 
+# CONSIDER CHANGING THE NEXT FEW PLAYS 
+# TO BE MORE IN LINE WITH HOW OPENWRT CREATES FIREWALL RULES
+#
+- name: Tailscale Setup
+  hosts: main_router
+  become: yes
+  become_user: asutliff
+  roles:
+    - role: artis3n.tailescale
+      vars:
+        tailscale_args: "--advertise-routes=192.168.0.0/17 --snat-subnet-routes=true --accept-routes --advertise-exit-node"
+        tailscale_authkey: "{{ lookup('env', 'TAILSCALE_KEY') }}"
+    - role: routing
+      vars:
+        table: filter
+        chain: FORWARD
+        in_interface: 'tailscale0'
+        jump: ACCEPT
+    - role: routing
+      vars:
+        table: nat
+        chain: POSTROUTING
+        out_interface: '{{ ansible_default_ipv4.interface }}'
+        jump: MASQUARADE
+    ### PORT FORWARDING FOR PUBLIC K8S IGRESSES ###
+    - role: routing
+      vars:
+        table: nat
+        chain: PREROUTING
+        in_interface: wan0
+        destination_port: 80
+        jump: DNAT
+        to_destination: '{{ find k8s LB in inventory}}'
+        
+
+  # iptables bug fix needs to be done
+  # run an ACCEPT chain on the tailscale0 interface, POSTROUT nat to local lan interface
+  #
+
+# sudo iptables -A FORWARD -i lan0 -o wan0 DROP
+# # sudo iptables -A PREROUTING -i lan0 -j DNAT 
+# then add output 
+# iptables -t nat -A POSTROUTING -i lan0 -o tailscale0 -j MASQUARADE
+- name: Remote Router Tailscale Setup
+  hosts: remote_router
+  become: yes
+  become_user: asutliff
+  roles:
+    - role: artis3n.tailscale
+      vars:
+        tailscale_args: "advertise-routes=192.168.128.0/17 --snat-subnet-routes=true --accept-routes"
+        tailscale_authkey: "{{ lookop('env', 'TAILSCALE_KEY') }}"
+    - role: routing
+      vars:
+        masquarade_out_interface: 'tailscale0'
+        masquarade_source: '192.168.128.0/17'
+        masquarade_dest: '192.168.0.0/17'
+
+
+
