@@ -14,8 +14,9 @@ spec:
     targetRevision: v1.13.1
     chart: cert-manager
     helm:
-      valueFiles:
-        - ./values.yaml
+      parameters:
+        - name: installCRDs
+          value: "true"
   sources: []
   project: default
   syncPolicy:
