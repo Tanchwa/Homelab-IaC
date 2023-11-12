@@ -13,6 +13,15 @@ spec:
     repoURL: 'https://charts.longhorn.io'
     targetRevision: v1.5.1
     chart: longhorn
+    helm:
+      valueFiles: []
+      parameters:
+        - name: ingress.enabled
+          value: "true"
+        - name: ingress.ingressClassName
+          value: "private-nginx"
+        - name: ingress.host
+          value: "longhorn.andrewsutliff.com"
   sources: []
   project: default
   syncPolicy:
