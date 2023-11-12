@@ -74,10 +74,10 @@ spec:
     secretName: mosquitto-certs
   ingressClassName: private-nginx
   rules:
-  - host: local.andrewsutliff.com
+  - host: mqqt.andrewsutliff.com
     http:
       paths:
-      - path: /mqqt
+      - path: /
         pathType: Prefix
         backend:
           service:
