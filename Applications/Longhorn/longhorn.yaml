@@ -11,7 +11,7 @@ spec:
   source:
     path: ''
     repoURL: 'https://charts.longhorn.io'
-    targetRevision: v1.5.0
+    targetRevision: v1.5.1
     chart: longhorn
   sources: []
   project: default
