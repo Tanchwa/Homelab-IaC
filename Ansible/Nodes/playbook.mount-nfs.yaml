@@ -1,0 +1,17 @@
+---
+- hosts: controlplane_nodes, worker_nodes
+  become: yes
+  become_user: root
+  tasks:
+  - name: Ensure NFS-Utils is first installed
+    apt:
+      name: nfs-common
+      state: present
+      update_cache: yes
+  - name: Mount NAS
+    mount:
+      src: 192.168.1.19:/mnt/Main/kubernetes
+      path: /mnt/nfs
+      opts: rw,sync,hard
+      state: mounted
+      fstype: nfs
