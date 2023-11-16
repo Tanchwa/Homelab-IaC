@@ -1,0 +1,24 @@
+---
+- name: Initialize the Kubernetes cluster using kubeadm
+  command: |
+    kubeadm init --apiserver-advertise-address="{{ host_ip }}" \
+    --node-name="{{ host_name }}" \
+    --pod-network-cidr="{{ pod_network_cidr }}"
+#need to change variables
+  tags: adm-init
+
+- name: Generate join command
+  command: kubeadm token create --print-join-command
+  register: join_command
+  tags: cluster-init
+
+- name: Copy join command to local file
+  copy:
+    content: "{{ join_command.stdout_lines[0] }}" 
+    dest: "/tmp/join-command.sh"
+  tags: cluster-init
+
+- name: Fetch join command back to local host
+  fetch:
+    src: /tmp/join-command.sh
+    dest: /tmp
