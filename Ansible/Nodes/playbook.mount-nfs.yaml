@@ -16,10 +16,9 @@
       state: mounted
       fstype: nfs
   - name: Create NFS Mount Conf
-    command:
-      cmd: |
-        cat <<EOF > /etc/nfsmount.conf
-        [ NFSMount_Global_Options ]
-          Proto=tcp
-        EOF
-      creates: /etc/nfsmount.conf
+    shell: |
+      cat <<EOF > /etc/nfsmount.conf
+      [ NFSMount_Global_Options ]
+        Proto=tcp
+        Defaultvers=4
+      EOF
