@@ -1,0 +1,116 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: home-assistant
+  name: home-assistant
+spec:
+  revisionHistoryLimit: 3
+  replicas: 1
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app: home-assistant
+  template:
+    metadata:
+      labels:
+        app: home-assistant
+    spec:
+#      securityContext:
+#        fsGroup: 33
+#        fsGroupChangePolicy: "OnRootMismatch"
+      containers:
+      - name: home-assistant-app
+        image: "ghcr.io/home-assistant/home-assistant:2022.12.1"
+        imagePullPolicy: IfNotPresent
+        securityContext:
+          privileged: null
+        envFrom:
+          - configMapRef:
+              name: home-assistant-config
+        ports:
+          - name: http
+            containerPort: 8123
+            protocol: TCP
+        resources: {}
+        livenessProbe:
+          tcpSocket:
+            port: 8123
+          initialDelaySeconds: 0
+          failureThreshold: 3
+          timeoutSeconds: 1
+          periodSeconds: 10
+        readinessProbe:
+          tcpSocket:
+            port: 8123
+          initialDelaySeconds: 0
+          failureThreshold: 3
+          timeoutSeconds: 1
+          periodSeconds: 10
+        startupProbe:
+          tcpSocket:
+            port: 8123
+          initialDelaySeconds: 0
+          failureThreshold: 30
+          timeoutSeconds: 1
+          periodSeconds: 5
+        volumeMounts:
+          - name: ha-config-root
+            mountPath: /config
+      restartPolicy: Always
+      volumes:
+        - name: ha-config-root
+          persistentVolumeClaim:
+            claimName: home-assistant-config-root
+---
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: home-assistant-config-root
+spec:
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: 500Mi
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: home-assistant
+  name: home-assistant
+spec:
+  type: ClusterIP
+  ports:
+  - port: 8123
+    targetPort: http
+    protocol: TCP
+    name: home-assistant-app
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: home-assistant
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /
+    cert-manager.io/cluster-issuer: "cloudflare-issuer"
+spec:
+  ingressClassName: private-nginx
+  tls:
+    - hosts:
+        - ha.andrewsutliff.com
+      secretName: ha-http-tls
+  rules:
+    - host: REPLACEME
+      http:
+        paths:
+        - path: /
+          pathType: Prefix
+          backend:
+            service:
+              name: home-assistant
+              port:
+                name: "http"
