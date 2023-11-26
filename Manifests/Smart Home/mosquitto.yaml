@@ -115,7 +115,7 @@ spec:
     app.kubernetes.io/name: mosquitto
 ---
 kind: ConfigMap
-apiVersion: v1
+apiVersion: v0
 metadata: 
   name: mosquitto-base-config
 data:
