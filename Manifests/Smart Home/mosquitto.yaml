@@ -1,100 +1,126 @@
+---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: mosquitto
-  namespace: smarthome
+  labels:
+    app.kubernetes.io/name: mosquitto
 spec:
+  revisionHistoryLimit: 3
   replicas: 1
+  strategy:
+    type: Recreate
   selector:
     matchLabels:
-      app: mosquitto
+      app.kubernetes.io/name: mosquitto
   template:
     metadata:
       labels:
-        app: mosquitto
+        app.kubernetes.io/name: mosquitto
     spec:
+      initContainers:
+        - name: create-config
+          image: "eclipse-mosquitto:2.0.18"
+          command: ['sh', '-c', "cd /mosquitto/config/ && cp -v /tmp/mosquitto.conf mosquitto.conf && cp -v /tmp/password_file password_file"]
+          volumeMounts:
+            - name: mosquitto-conf
+              mountPath: /mosquitto/config
+            - name: mosquitto-base-config
+              mountPath: /tmp/mosquitto.conf
+              subPath: mosquitto.conf
+            - name: mosquitto-base-config
+              mountPath: /tmp/password_file
+              subPath: password_file
       containers:
-      - name: mosquitto
-        image: eclipse-mosquitto
-        ports:
-        - containerPort: 8883
-        - containerPort: 9001
-        volumeMounts:
-        - mountPath: /mosquitto/config/mosquitto.conf
-          subPath: mosquitto.conf
-          name: config
-        - mountPath: /mosquitto/certs/
-          name: certs
+        - name: mosquitto
+          image: "eclipse-mosquitto:2.0.18"
+          imagePullPolicy: IfNotPresent
+          ports:
+            - name: mqtt
+              containerPort: 1883
+              protocol: TCP
+          volumeMounts:
+            - name: mosquitto-data
+              mountPath: /mosquitto/data
+            - name: mosquitto-conf
+              mountPath: /mosquitto/config
+          livenessProbe:
+            tcpSocket:
+              port: 1883
+            initialDelaySeconds: 0
+            failureThreshold: 3
+            timeoutSeconds: 1
+            periodSeconds: 60
+          readinessProbe:
+            tcpSocket:
+              port: 1883
+            initialDelaySeconds: 0
+            failureThreshold: 3
+            timeoutSeconds: 1
+            periodSeconds: 60
+          startupProbe:
+            tcpSocket:
+              port: 1883
+            initialDelaySeconds: 0
+            failureThreshold: 30
+            timeoutSeconds: 1
+            periodSeconds: 5
       volumes:
-      - name: config
-        configMap:
-          name: mosquitto-config
-      - name: certs
-        secret:
-          secretName: mosquitto-certs
+        - name: mosquitto-data
+          persistentVolumeClaim:
+            claimName: mosquitto-data
+        - name: mosquitto-conf
+          persistentVolumeClaim:
+            claimName: mosquitto-conf
+        - name: mosquitto-base-config
+          configMap:
+            name: mosquitto-base-config
 ---
+kind: PersistentVolumeClaim
 apiVersion: v1
-kind: ConfigMap
 metadata:
-  name: mosquitto-config
-  namespace: smarthome
-data:
-  mosquitto.conf: |
-    # DO NOT USE IN PRODUCTION
-    allow_anonymous true
-
-    # MQTT with TLS (MQTTS)
-    listener 8883
-    protocol mqtt
-
-    # Fetch the generated certificates
-    cafile /etc/ssl/certs/ca-certificates.crt
-    keyfile /mosquitto/certs/tls.key
-    certfile /mosquitto/certs/tls.crt
----
-apiVersion: cert-manager.io/v1
-kind: Certificate
-metadata:
-  name: mqqt-broker-tls
-  namespace: smarthome
+  name: mosquitto-data
 spec:
-  secretName: mosquitto-certs
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 5Gi
+---
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: mosquitto-conf
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 100Mi
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  name: mosquitto-mqtts
+  name: mosquitto
+  labels:
+    app.kubernetes.io/name: mosquitto
 spec:
   type: ClusterIP
-  selector:
-    app: mosquitto  
   ports:
-  - port: 8883
+  - port: 1883
+    targetPort: mqtt
+    protocol: TCP
+    name: mqtt
+  selector:
+    app.kubernetes.io/name: mosquitto
 ---
-apiVersion: networking.k8s.io/v1
-kind: Ingress
-metadata:
-  name: mosquitto
-  annotations:
-    cert-manager.io/cluster-issuer: "cloudflare-issuer"
-spec:
-  tls:
-  - hosts:
-    - local.andrewsutliff.com
-    secretName: mosquitto-http
-  ingressClassName: private-nginx
-  rules:
-  - host: mqqt.andrewsutliff.com
-    http:
-      paths:
-      - path: /
-  - host: local.andrewsutliff.com
-    http:
-      paths:
-      - path: /mqqt
-        pathType: Prefix
-        backend:
-          service:
-            name: mosquitto-mqtts
-            port: 
-              number: 8883
+kind: ConfigMap
+apiVersion: v1
+metadata: 
+  name: mosquitto-base-config
+data:
+  listener: 1883
+  persistence: true
+  persistence_location: /mosquitto/data
+  autosave_interval: 1800
+  password_file: /mosquitto/config/password_file
