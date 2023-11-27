@@ -6,7 +6,7 @@ metadata:
 spec:
   destination:
     name: ''
-    namespace: aitesting
+    namespace: ai-tests
     server: 'https://kubernetes.default.svc'
   source:
     path: "Manifests"
