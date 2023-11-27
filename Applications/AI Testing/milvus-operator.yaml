@@ -11,7 +11,7 @@ spec:
   source:
     path: ''
     repoURL: 'https://zilliztech.github.io/milvus-operator/'
-    targetRevision: v1.13.1
+    targetRevision: v0.8.5
     chart: milvus-operator
     helm:
       # parameters:
