@@ -1,0 +1,24 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: ai-testing
+  namespace: argocd
+spec:
+  destination:
+    name: ''
+    namespace: aitesting
+    server: 'https://kubernetes.default.svc'
+  source:
+    path: "Manifests"
+    repoURL: >-
+      https://github.com/Tanchwa/Langchain-Chat
+    targetRevision: HEAD
+  sources: []
+  project: default
+  syncPolicy:
+    automated:
+      prune: false
+      selfHeal: true
+    syncOptions:
+      - ServerSideApply=true
+      - CreateNamespace=true
