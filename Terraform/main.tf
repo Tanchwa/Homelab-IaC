@@ -14,6 +14,11 @@ module "azure_openai" {
   cog_account_name = "Tanchwa_Test_OpenAI"
   cog_deployment = {
     name = "Tanchwa_Test_Deployment"
+    model = {
+      format     = "OpenAI"
+      model_name = "text-embedding-ada-002"
+      version    = "2"
+    }
   }
 
   tokens_per_minute = 100
