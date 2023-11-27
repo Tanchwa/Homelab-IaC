@@ -1,0 +1,34 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: milvus-operator
+  namespace: argocd
+spec:
+  destination:
+    name: ''
+    namespace: ai-tests
+    server: 'https://kubernetes.default.svc'
+  source:
+    path: ''
+    repoURL: 'https://zilliztech.github.io/milvus-operator/'
+    targetRevision: v1.13.1
+    chart: milvus-operator
+    helm:
+      # parameters:
+      #  - name: cluster.enabled
+      #    value: false
+      #  - name: etcd.replicaCount
+      #  - value: 1
+      #  - name: pulsar.enabled
+      #    value: false
+      #  - name: minio.mode
+      #    value: standalone
+  sources: []
+  project: default
+  syncPolicy:
+    automated:
+      prune: false
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
+      - ServerSideApply=true
