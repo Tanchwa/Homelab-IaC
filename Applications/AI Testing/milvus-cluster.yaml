@@ -9,7 +9,7 @@ spec:
     namespace: ai-tests
     server: 'https://kubernetes.default.svc'
   source:
-    path: "Manifests/Mulvis"
+    path: "Manifests/AI/milvus-cluster.yaml"
     repoURL: >-
       https://github.com/Tanchwa/Homelab-IaC
     targetRevision: HEAD
