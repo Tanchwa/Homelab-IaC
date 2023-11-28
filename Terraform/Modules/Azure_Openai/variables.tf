@@ -49,8 +49,8 @@ variable "tags" {
   description = "Resource Tags for all resources in the module"
   type        = map(string)
   default = {
-    "Last Name"  = "Greatest"
-    "First Name" = "Ever"
+    "Last Name"  = "Ever"
+    "First Name" = "Greatest"
   }
 }
 
