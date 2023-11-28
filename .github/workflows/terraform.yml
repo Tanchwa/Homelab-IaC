@@ -35,9 +35,9 @@ jobs:
     - name: Terraform Init
       run: |
         terraform init \
-        -backend-config="storage_account_name=${{ secrets.TF_AZ_STATE_STORE }}"
-        -backend-config="container_name=${{ secrets.TF_AZ_STATE_CONTAINER }}"
-        -backend-config="key=terraform.tfstate"
+        -backend-config="storage_account_name=${{ secrets.TF_AZ_STATE_STORE }}" \
+        -backend-config="container_name=${{ secrets.TF_AZ_STATE_CONTAINER }}" \
+        -backend-config="key=terraform.tfstate" \
         -backend-config="access_key=${{ secrets.TF_AZ_STORE_KEY }}"
 
     # Checks that all Terraform configuration files adhere to a canonical format
