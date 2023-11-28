@@ -14,7 +14,7 @@ resource "azurerm_private_endpoint" "cognative_services" {
   }
 
   private_dns_zone_group {
-    name                 = null
-    private_dns_zone_ids = null
+    name                 = var.private_networking.dns_zone_name
+    private_dns_zone_ids = var.private_networking.dns_zone_id
   }
 }

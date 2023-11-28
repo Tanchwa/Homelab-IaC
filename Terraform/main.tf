@@ -25,8 +25,10 @@ module "azure_openai" {
   deployment_size   = "Standard"
 
   private_networking = {
-    enabled   = false
-    subnet_id = null
+    enabled       = false
+    subnet_id     = null
+    dns_zone_id   = null
+    dns_zone_name = null
   }
 }
 

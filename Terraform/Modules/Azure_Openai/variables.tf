@@ -57,7 +57,9 @@ variable "tags" {
 variable "private_networking" {
   description = "Values for existing vNets and subnets"
   type = object({
-    enabled   = bool
-    subnet_id = string
+    enabled       = bool
+    subnet_id     = string
+    dns_zone_name = string
+    dns_zone_id   = string
   })
 }
