@@ -1,4 +1,6 @@
 resource "azurerm_private_endpoint" "cognative_services" {
+  count = var.private_networking.enabled ? 1 : 0
+
   name                = format("%s-%s", var.cog_account_name, "endpoint")
   location            = var.location
   resource_group_name = var.resource_group
