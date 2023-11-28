@@ -6,6 +6,17 @@ resource "azurerm_cognitive_account" "main" {
 
   sku_name = "S0"
 
+  public_network_access_enabled = var.private_networking.enabled ? false : true //reverses private network logic
+
+  // network_acls {
+  //  default_action = var.private_networking.enabled ? "Deny" : "Allow"
+  //  ip_rules       = null
+  //  virtual_network_rules {
+  //    subnet_id                            = var.private_networking.subnet_id
+  //    ignore_missing_vnet_service_endpoint = true // I'm so glad they implemented this, this really helps with the chicken and egg issue for PE's
+  //  }
+  //}
+
   tags = var.tags
 }
 
