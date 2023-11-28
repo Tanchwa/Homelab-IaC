@@ -60,8 +60,13 @@ jobs:
 
       # On push to "main", build or change infrastructure according to Terraform configuration files
       # Note: It is recommended to set up a required "strict" status check in your repository for "Terraform Cloud". See the documentation on "strict" required status checks for more information: https://help.github.com/en/github/administering-a-repository/types-of-required-status-checks
+  terraform-apply:
+    if: github.event.pull_request.merged == true && github.ref == 'refs/heads/"main"'
+    name: 'Terraform Apply'
+    runs-on: ubuntu-latest
+    environment: production
+    steps:
     - name: Terraform Apply
-      if: github.ref == 'refs/heads/"main"' && github.event.pull_request.merged == true
       run: terraform apply -auto-approve -input=false
       env:
         ARM_CLIENT_ID: ${{ secrets.ARM_CLIENT_ID }}
