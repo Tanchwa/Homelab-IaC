@@ -35,7 +35,7 @@ variable "deployment_size" {
   description = "Pre-set names for size maps"
   type        = string
   validation {
-    condition     = contains(var.deployment_size, "Standard") || contains(var.deployment_size, "Premium")
+    condition     = strcontains(var.deployment_size, "Standard") || strcontains(var.deployment_size, "Premium")
     error_message = "Deployment Size Must be either Standard or Premium"
   }
 }
