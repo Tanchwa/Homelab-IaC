@@ -23,11 +23,11 @@ variable "cog_deployment" {
   description = "Values for the cognative deployment"
   type = object({
     name = string
-    model = {
+    model = object({
       format     = string
       model_name = string
       version    = string
-    }
+    })
   })
 }
 
