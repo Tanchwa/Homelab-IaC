@@ -4,7 +4,6 @@ resource "azurerm_resource_group" "main" {
 }
 
 
-
 module "azure_openai" {
   source = "./Modules/Azure_Openai"
 
