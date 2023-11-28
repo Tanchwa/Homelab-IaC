@@ -23,11 +23,11 @@ variable "cog_deployment" {
   description = "Values for the cognative deployment"
   type = object({
     name = string
-    model = {
+    model = object({
       format     = string
       model_name = string
       version    = string
-    }
+    })
   })
 }
 
@@ -35,7 +35,7 @@ variable "deployment_size" {
   description = "Pre-set names for size maps"
   type        = string
   validation {
-    condition     = contains(var.deployment_size, "Standard") || contains(var.deployment_size, "Premium")
+    condition     = strcontains(var.deployment_size, "Standard") || strcontains(var.deployment_size, "Premium")
     error_message = "Deployment Size Must be either Standard or Premium"
   }
 }
@@ -57,7 +57,9 @@ variable "tags" {
 variable "private_networking" {
   description = "Values for existing vNets and subnets"
   type = object({
-    enabled   = bool
-    subnet_id = string
+    enabled       = bool
+    subnet_id     = string
+    dns_zone_name = string
+    dns_zone_id   = string
   })
 }
