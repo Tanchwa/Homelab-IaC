@@ -1,7 +1,7 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: ai-testing
+  name: ai-tests
   namespace: argocd
 spec:
   destination:
@@ -9,9 +9,9 @@ spec:
     namespace: ai-tests
     server: 'https://kubernetes.default.svc'
   source:
-    path: "Manifests"
+    path: "Manifests/AI"
     repoURL: >-
-      https://github.com/Tanchwa/Langchain-Chat
+      https://github.com/Tanchwa/Homelab-IaC
     targetRevision: HEAD
   sources: []
   project: default
