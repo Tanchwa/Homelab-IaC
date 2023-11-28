@@ -8,6 +8,8 @@ resource "azurerm_cognitive_account" "main" {
 
   public_network_access_enabled = var.private_networking.enabled ? false : true //reverses private network logic
 
+  custom_subdomain_name = var.cog_account_name
+
   dynamic "network_acls" {
     for_each = try(var.private_networking.enabled, true) ? [var.private_networking.enabled] : []
 
