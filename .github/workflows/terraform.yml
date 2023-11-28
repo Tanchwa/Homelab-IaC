@@ -6,6 +6,8 @@ on:
     paths:
       - Terraform/**
   pull_request:
+    paths:
+      - Terraform/**
 
 permissions:
   contents: read
