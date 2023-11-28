@@ -15,7 +15,7 @@ resource "azurerm_cognitive_deployment" "main" {
   cognitive_account_id = azurerm_cognitive_account.main.id
   model {
     format  = var.cog_deployment.model.format
-    name    = var.cog_deployment.model.name
+    name    = var.cog_deployment.model.model_name
     version = var.cog_deployment.model.version
   }
 
