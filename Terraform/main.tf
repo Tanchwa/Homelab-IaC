@@ -13,7 +13,7 @@ module "azure_openai" {
   cog_service_kind = "OpenAI"
   cog_account_name = "tanchwa-test-openai"
   cog_deployment = {
-    name = "Tanchwa_Test_Deployment"
+    name = "tanchwa-test-deployment"
     model = {
       format     = "OpenAI"
       model_name = "text-embedding-ada-002"
