@@ -21,7 +21,7 @@ module "azure_openai" {
     }
   }
 
-  tokens_per_minute = 100
+  tokens_per_minute = 750
   deployment_size   = "Standard"
 
   private_networking = {
