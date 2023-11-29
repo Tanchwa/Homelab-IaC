@@ -37,11 +37,11 @@ resource "azurerm_cognitive_deployment" "main" {
   }
 
   scale {
-    type     = local.scale.instance_type
-    tier     = local.scale.tier
-    size     = local.scale.sku_size
-    family   = local.scale.family
-    capacity = var.tokens_per_minute
+    type = local.scale.instance_type
+    //tier     = local.scale.tier
+    //size     = local.scale.sku_size
+    //family   = local.scale.family
+    //capacity = var.tokens_per_minute these values no longer supported by api
   }
 
 }
