@@ -11,7 +11,7 @@ module "azure_openai" {
   location       = azurerm_resource_group.main.location
 
   cog_service_kind = "OpenAI"
-  cog_account_name = "Tanchwa_Test_OpenAI"
+  cog_account_name = "tanchwa-test-openai"
   cog_deployment = {
     name = "Tanchwa_Test_Deployment"
     model = {
