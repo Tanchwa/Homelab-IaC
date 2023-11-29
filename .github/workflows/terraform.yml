@@ -74,6 +74,7 @@ jobs:
     environment: production
     steps:
     - name: Terraform Apply
+      working-directory: Terraform
       run: terraform apply -auto-approve -input=false
       env:
         ARM_CLIENT_ID: ${{ secrets.ARM_CLIENT_ID }}
