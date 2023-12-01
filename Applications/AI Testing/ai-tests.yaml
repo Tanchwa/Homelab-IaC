@@ -12,7 +12,7 @@ spec:
     path: "Manifests/AI"
     repoURL: >-
       https://github.com/Tanchwa/Homelab-IaC
-    targetRevision: HEAD
+    targetRevision: refs/heads/asutliff/milvus-cluster-edits
   sources: []
   project: default
   syncPolicy:
