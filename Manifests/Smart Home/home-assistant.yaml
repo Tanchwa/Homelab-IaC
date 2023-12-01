@@ -29,7 +29,7 @@ spec:
           privileged: null
         envFrom:
           - configMapRef:
-              name: home-assistant-config
+              name: home-assistant-conf
         ports:
           - name: http
             containerPort: 8123
@@ -118,6 +118,6 @@ spec:
 kind: ConfigMap
 apiVersion: v1
 metadata: 
-  name: home-assistant-config
+  name: home-assistant-conf
 data:
   TZ: "America/New_York"
