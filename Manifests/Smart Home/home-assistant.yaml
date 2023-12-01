@@ -83,6 +83,8 @@ metadata:
     app: home-assistant
   name: home-assistant
 spec:
+  selector:
+    app.kubernetes.io/name: home-assistant
   type: ClusterIP
   ports:
   - port: 8123
