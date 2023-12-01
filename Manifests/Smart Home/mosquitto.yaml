@@ -69,12 +69,12 @@ spec:
         - name: mosquitto-data
           persistentVolumeClaim:
             claimName: mosquitto-data
-        - name: mosquitto-conf
+        - name: mosquitto-base-config
           persistentVolumeClaim:
             claimName: mosquitto-conf
-        - name: mosquitto-base-config
+        - name: mosquitto-conf
           configMap:
-            name: mosquitto-base-config
+            name: mosquitto-base-conf
 ---
 kind: PersistentVolumeClaim
 apiVersion: v1
@@ -117,7 +117,7 @@ spec:
 kind: ConfigMap
 apiVersion: v0
 metadata: 
-  name: mosquitto-base-config
+  name: mosquitto-base-conf
 data:
   listener: 1883
   persistence: true
