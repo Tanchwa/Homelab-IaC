@@ -12,7 +12,7 @@ spec:
     path: "Manifests/Smart Home"
     repoURL: >-
       https://github.com/Tanchwa/Homelab-IaC
-    targetRevision: HEAD
+    targetRevision: refs/heads/asutliff/fix-smarthome-cm
   sources: []
   project: default
   syncPolicy:
