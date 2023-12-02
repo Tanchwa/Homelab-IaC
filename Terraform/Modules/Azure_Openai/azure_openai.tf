@@ -38,7 +38,7 @@ data "azurerm_cognitive_account" "existing" {
 
 resource "azurerm_cognitive_deployment" "main" {
   name                 = var.cog_deployment.name
-  cognitive_account_id = try(azurerm_cognitive_account.main[1].id, data.azurerm_cognitive_account.existing[1].id)
+  cognitive_account_id = try(azurerm_cognitive_account.main[0].id, data.azurerm_cognitive_account.existing[0].id)
   model {
     format  = var.cog_deployment.model.format
     name    = var.cog_deployment.model.model_name
