@@ -1,5 +1,5 @@
 resource "azurerm_cognitive_account" "main" {
-  count = var.existing_cog_account ? 1 : 0
+  count = var.existing_cog_account ? 0 : 1
 
   name                = var.cog_account_name
   location            = var.location
