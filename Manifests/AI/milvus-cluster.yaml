@@ -108,9 +108,6 @@ spec:
       inCluster:
         values:
           mode: standalone
-          resources:
-            requests:
-              memory: 10Gi
   config:
     milvus:
       log:
