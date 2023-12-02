@@ -34,4 +34,33 @@ module "azure_openai" {
 }
 
 
+module "azure_gpt4" {
+  source = "./Modules/Azure_Openai"
 
+  resource_group = azurerm_resource_group.main.name
+  location       = azurerm_resource_group.main.location
+
+  existing_cog_account = true
+  cog_service_kind     = "OpenAI"
+  cog_account_name     = "tanchwa-test-openai"
+  cog_deployment = {
+    name = "tanchwa-gpt4"
+    model = {
+      format     = "OpenAI"
+      model_name = "gpt-4"
+      version    = "1106-preview"
+    }
+  }
+
+  tokens_per_minute = 750
+  deployment_size   = "Standard"
+
+  private_networking = {
+    enabled       = false
+    subnet_id     = null
+    dns_zone_id   = null
+    dns_zone_name = null
+  }
+
+  depends_on = [module.azure_openai]
+}
