@@ -3,6 +3,11 @@ resource "azurerm_resource_group" "main" {
   location = "East US"
 }
 
+resource "azurerm_resource_group" "secondary" {
+  name     = "tanchwa-test-eus2"
+  location = "East US 2"
+}
+
 
 module "azure_openai" {
   source = "./Modules/Azure_Openai"
@@ -37,8 +42,8 @@ module "azure_openai" {
 module "azure_gpt4" {
   source = "./Modules/Azure_Openai"
 
-  resource_group = azurerm_resource_group.main.name
-  location       = azurerm_resource_group.main.location
+  resource_group = azurerm_resource_group.secondary.name
+  location       = azurerm_resource_group.secondary.location
 
   existing_cog_account = true
   cog_service_kind     = "OpenAI"
@@ -48,7 +53,7 @@ module "azure_gpt4" {
     model = {
       format     = "OpenAI"
       model_name = "gpt-4"
-      version    = "0314"
+      version    = "1106"
     }
   }
 
