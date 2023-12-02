@@ -3,6 +3,7 @@ resource "azurerm_resource_group" "main" {
   location = "East US"
 }
 
+
 module "azure_openai" {
   source = "./Modules/Azure_Openai"
 
