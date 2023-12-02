@@ -8,7 +8,7 @@ resource "azurerm_private_endpoint" "cognative_services" {
 
   private_service_connection {
     name                           = "example-privateserviceconnection"
-    private_connection_resource_id = try(azurerm_cognitive_account.main[1].id, data.azurerm_cognitive_account.existing)
+    private_connection_resource_id = try(azurerm_cognitive_account.main[1].id, data.azurerm_cognitive_account.existing[1].id)
     subresource_names              = ["account"]
     is_manual_connection           = false
   }

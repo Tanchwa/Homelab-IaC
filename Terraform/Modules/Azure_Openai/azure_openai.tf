@@ -29,6 +29,8 @@ resource "azurerm_cognitive_account" "main" {
 }
 
 data "azurerm_cognitive_account" "existing" {
+  count = var.existing_cog_account ? 1 : 0
+
   name                = var.cog_account_name
   resource_group_name = var.resource_group
 }
@@ -36,7 +38,7 @@ data "azurerm_cognitive_account" "existing" {
 
 resource "azurerm_cognitive_deployment" "main" {
   name                 = var.cog_deployment.name
-  cognitive_account_id = try(azurerm_cognitive_account.main[1].id, data.azurerm_cognitive_account.existing.id)
+  cognitive_account_id = try(azurerm_cognitive_account.main[1].id, data.azurerm_cognitive_account.existing[1].id)
   model {
     format  = var.cog_deployment.model.format
     name    = var.cog_deployment.model.model_name
