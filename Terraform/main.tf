@@ -45,7 +45,7 @@ module "azure_gpt4" {
   resource_group = azurerm_resource_group.secondary.name
   location       = azurerm_resource_group.secondary.location
 
-  existing_cog_account = true
+  existing_cog_account = false
   cog_service_kind     = "OpenAI"
   cog_account_name     = "tanchwa-test-openai"
   cog_deployment = {
