@@ -47,7 +47,7 @@ module "azure_gpt4" {
 
   existing_cog_account = false
   cog_service_kind     = "OpenAI"
-  cog_account_name     = "tanchwa-test-openai"
+  cog_account_name     = "tanchwa-gpt4"
   cog_deployment = {
     name = "tanchwa-gpt4"
     model = {
