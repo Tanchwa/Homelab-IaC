@@ -19,6 +19,12 @@ variable "cog_account_name" {
   type        = string
 }
 
+variable "existing_cog_account" {
+  description = "Weather or not the specified cognative services account is existing or new"
+  type        = bool
+  default     = false
+}
+
 variable "cog_deployment" {
   description = "Values for the cognative deployment"
   type = object({

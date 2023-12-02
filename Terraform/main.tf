@@ -10,8 +10,9 @@ module "azure_openai" {
   resource_group = azurerm_resource_group.main.name
   location       = azurerm_resource_group.main.location
 
-  cog_service_kind = "OpenAI"
-  cog_account_name = "tanchwa-test-openai"
+  existing_cog_account = false
+  cog_service_kind     = "OpenAI"
+  cog_account_name     = "tanchwa-test-openai"
   cog_deployment = {
     name = "tanchwa-test-deployment"
     model = {
@@ -31,5 +32,6 @@ module "azure_openai" {
     dns_zone_name = null
   }
 }
+
 
 
