@@ -20,7 +20,7 @@ IDS to be determined
   hosts: routers
     vars: 
 # CONSIDER CHANGING THE NEXT FEW PLAYS 
-# TO BE MORE IN LINE WITH HOW OPENWRT CREATES FIREWALL RULES
+# TO BE MORE IN LINE WITH HOW PFSENSE CREATES FIREWALL RULES
 #
 - name: Tailscale Setup
   hosts: main_router
@@ -78,4 +78,54 @@ IDS to be determined
         masquarade_dest: '192.168.0.0/17'
 
 
+
+- name: Local Router Pfsense Setup
+  hosts: main_router
+  become: yes
+  become_user: asutliff
+  tasks:
+    - name:  "Install Pfsense Sudo PKG for Become"
+      package:
+        name:
+          - pfSense-pkg-sudo
+        state: present
+    - name: "Add Tailscale In rule"
+      pfsense_nat_outbound:
+        source: "192.168.128.0/17"
+        interface: "tailscale0"
+        destination: any
+
+
+- name: Remote Router Setup
+  hosts: remote_router
+  become_user: asutliff
+  tasks:
+- name: Create NAT rule to masquerade LAN to Tailscale  
+      pfsensible.core.rule:  
+        state: present  
+        name: "Masquerade LAN to Tailscale"  
+        action: "pass"  
+        interface: "lan0"  
+        direction: "in"  
+        ipprotocol: "inet45"  
+        source: 192.168.128.0/17:lan0
+        destination: "any"
+      register: result  
+
+# NOTE, GPT IS INTERPRETING SOURCE AND DESTINATION IN TWO SEPARATE FIELDS
+#         source:  
+#          network: "lan"  # Ensure this matches the name of your LAN network in pfSense  
+#        destination:  
+#          network: "any"  # or specify a specific destination network if needed  
+#      register: result
+  
+    - name: Debug the result  
+      debug:  
+        var: result 
+
+    - name: Add Block Non-Tailscale Trafic
+      pfsense_rule:
+        name: 'Block Trafic from 192.168.128.0/17 to wan0'
+        action: block
+        
 
