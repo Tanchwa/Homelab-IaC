@@ -80,20 +80,60 @@ IDS to be determined
 
 
 - name: Local Router Pfsense Setup
-  hosts: main_router
-  become: yes
-  become_user: asutliff
-  tasks:
-    - name:  "Install Pfsense Sudo PKG for Become"
-      package:
-        name:
-          - pfSense-pkg-sudo
-        state: present
-    - name: "Add Tailscale In rule"
-      pfsense_nat_outbound:
-        source: "192.168.128.0/17"
-        interface: "tailscale0"
-        destination: any
+- name: Configure pfSense firewall and NAT rules for Tailscale interface  
+  hosts: main_router 
+  gather_facts: no  
+  collections:  
+    - pfsensible.core  
+  
+  tasks:  
+    - name: Allow traffic from tailscale0 to lan0 subnet  
+      pfsensible.core.rule:  
+        state: present  
+        name: "Allow tailscale0 to lan0 subnet"  
+        action: "pass"  
+        interface: "tailscale0"  
+        direction: "in"  
+        ipprotocol: "inet"  
+        protocol: "any"  
+        source:  
+          network: "any"  
+        destination:  
+          network: "192.168.0.0/17"  
+      
+    - name: Allow traffic from tailscale0 to any  
+      pfsensible.core.rule:  
+        state: present  
+        name: "Allow tailscale0 to any"  
+        action: "pass"  
+        interface: "tailscale0"  
+        direction: "in"  
+        ipprotocol: "inet"  
+        protocol: "any"  
+        source:  
+          network: "any"  
+        destination:  
+          network: "any"  
+      
+    - name: Create NAT rule to masquerade traffic from tailscale0 to lan0 subnet  
+      pfsensible.core.nat:  
+        state: present  
+        type: "outbound"  
+        interface: "lan0"  
+        source_network: "tailscale0 subnet"  # Replace with the actual tailscale0 subnet  
+        destination_network: "192.168.0.0/17"  
+        translation_address: "interface"  
+        descr: "NAT tailscale0 to lan0 subnet"  
+  
+    - name: Create NAT rule to masquerade all other traffic from tailscale0 to wan0  
+      pfsensible.core.nat:  
+        state: present  
+        type: "outbound"  
+        interface: "wan0"  
+        source_network: "tailscale0 subnet"  # Replace with the actual tailscale0 subnet  
+        destination_network: "!192.168.0.0/17"  
+        translation_address: "interface"  
+        descr: "NAT tailscale0 to wan0"  
 
 
 - name: Remote Router Setup
