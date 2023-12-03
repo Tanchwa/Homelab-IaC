@@ -108,6 +108,8 @@ spec:
       inCluster:
         values:
           mode: standalone
+          persistance:
+            size: 20Gi
   config:
     milvus:
       log:
