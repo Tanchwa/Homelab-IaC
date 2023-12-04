@@ -53,7 +53,7 @@ module "azure_gpt4" {
     model = {
       format     = "OpenAI"
       model_name = "gpt-4"
-      version    = "1106-preview"
+      version    = "1106-Preview"
     }
   }
 
