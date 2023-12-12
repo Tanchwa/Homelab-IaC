@@ -3,6 +3,7 @@ resource "azurerm_resource_group" "main" {
   location = "East US"
 }
 
+
 resource "azurerm_resource_group" "secondary" {
   name     = "tanchwa-test-eus2"
   location = "East US 2"
