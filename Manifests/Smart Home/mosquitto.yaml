@@ -104,6 +104,8 @@ spec:
   selector:
     app.kubernetes.io/name: mosquitto
 ---
+apiVersion: v1
+kind: ConfigMap
 data:
   mosquitto.conf: |
     # Ip/hostname to listen to.
