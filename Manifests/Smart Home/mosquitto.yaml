@@ -106,6 +106,8 @@ spec:
 ---
 apiVersion: v1
 kind: ConfigMap
+metadata:
+  name: mosquitto-base-config
 data:
   mosquitto.conf: |
     # Ip/hostname to listen to.
