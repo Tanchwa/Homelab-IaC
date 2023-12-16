@@ -1,0 +1,16 @@
+sensor:
+# One entry for each beacon you want to track
+  - platform: mqtt_room
+    device_id: 
+    name: 'Andrew'
+    state_topic: 'espresense/devices/iTrack:xxxxxxxxxxxx'
+    timeout: 10
+    away_timeout: 120
+  - platform: mqtt_room
+    device_id: "iBeacon:xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx-3-58241"
+    name: 'ESP Chipolo'
+    state_topic: 'espresense/devices/iBeacon:xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx-3-58241'
+    timeout: 10
+    away_timeout: 120
+
+
