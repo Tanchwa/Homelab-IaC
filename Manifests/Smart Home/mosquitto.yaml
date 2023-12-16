@@ -105,7 +105,7 @@ spec:
     app.kubernetes.io/name: mosquitto
 ---
 data:
-  mosquitto.conf: |-
+  mosquitto.conf: |
     # Ip/hostname to listen to.
     # If not given, will listen on all interfaces
     #bind_address
