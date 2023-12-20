@@ -1,0 +1,43 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: iot-ingress
+  namespace: argocd
+spec:
+  destination:
+    name: ''
+    namespace: iot-ingress
+    server: 'https://kubernetes.default.svc'
+  source:
+    path: ''
+    repoURL: 'https://kubernetes.github.io/ingress-nginx'
+    targetRevision: 4.8.2
+    chart: ingress-nginx
+    helm:
+      valueFiles: []
+      parameters:
+        - name: controller.name
+          value: iot-controller
+        - name: controller.ingressClass
+          value: iot-nginx
+        - name: controller.ingressClassByName
+          value: "true"
+        - name: controller.reportIngressStatus.enableLeaderElection
+          value: "true"
+        - name: controller.ingressClassResource.name
+          value: iot-nginx
+        - name: controller.ingressClassResource.enabled
+          value: "true"
+        - name: controller.ingressClassResource.controllerValue
+          value: k8s.io/iot-controller
+        - name: controller.service.type
+          value: LoadBalancer
+  sources: []
+  project: default
+  syncPolicy:
+    automated:
+      prune: false
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
+      - ServerSideApply=true

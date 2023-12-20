@@ -9,6 +9,10 @@ terraform {
       source  = "hashicorp/azurerm"
       version = "~> 3.8"
     }
+    proxmox = {
+      source  = "bpg/proxmox"
+      version = "~> 1.0"
+    }
   }
 }
 
@@ -17,5 +21,4 @@ provider "azurerm" {
   features {}
 }
 
-
-
+provider "proxmox" {}
