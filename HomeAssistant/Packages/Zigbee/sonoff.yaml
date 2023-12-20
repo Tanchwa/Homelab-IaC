@@ -1,0 +1,4 @@
+sensor:
+  - platform: serial
+    serial_port: /dev/ttyACM0
+    name: sonoff

@@ -104,33 +104,6 @@ spec:
   selector:
     app.kubernetes.io/name: mosquitto
 ---
-apiVersion: networking.k8s.io/v1
-kind: Ingress
-metadata:
-  name: mosquitto
-  annotations:
-    nginx.ingress.kubernetes.io/ssl-redirect: "false"
-    nginx.ingress.kubernetes.io/rewrite-target: /
-    # cert-manager.io/cluster-issuer: "cloudflare-issuer"
-spec:
-  ingressClassName: iot-nginx
-    #  Right now, the espresense cannot use tls
-    #  tls:
-    #- hosts:
-    #    - mqqt.andrewsutliff.com
-    #  secretName: mqqt-http-tls
-  rules:
-    - host: mqqt.andrewsutliff.com
-      http:
-        paths:
-        - path: /
-          pathType: Prefix
-          backend:
-            service:
-              name: mosquitto
-              port:
-                name: "http"
----
 apiVersion: v1
 kind: ConfigMap
 metadata:
