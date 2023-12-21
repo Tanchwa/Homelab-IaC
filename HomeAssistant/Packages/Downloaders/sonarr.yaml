@@ -40,6 +40,7 @@ rest_command:
       }
 
 # maybe this needs to be an automation. Need to figure out voice triggers
+# this actually isn't what I want... I want to do a lookup once, this it gives me a list of selected 
 script:
   announce_shows:
     sequence:
@@ -67,7 +68,7 @@ automation:
       - platform: state  
         entity_id: sensor.sonarr_series_search  
     action:  
-      - service: input_select.set_options  
+      - service: input_select.set_options  # does this need to change? ? ?
         target:  
           entity_id: input_select.selected_show  
         data:  
