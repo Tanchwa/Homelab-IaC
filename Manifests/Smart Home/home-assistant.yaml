@@ -73,6 +73,8 @@ spec:
   accessModes:
     - ReadWriteMany
   resources:
+    limits:
+      squat.ai/homelab: 1
     requests:
       storage: 500Mi
 ---
