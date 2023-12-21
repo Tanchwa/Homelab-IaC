@@ -34,7 +34,9 @@ spec:
           - name: http
             containerPort: 8123
             protocol: TCP
-        resources: {}
+        resources:
+          limits:
+            squat.ai/serial: 1
         livenessProbe:
           tcpSocket:
             port: 8123
