@@ -36,7 +36,7 @@ spec:
             protocol: TCP
         resources:
           limits:
-            squat.ai/homelab: 1
+            squat.ai/serial: 1
         livenessProbe:
           tcpSocket:
             port: 8123
