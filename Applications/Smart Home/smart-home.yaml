@@ -12,7 +12,7 @@ spec:
     path: "Manifests/Smart Home"
     repoURL: >-
       https://github.com/Tanchwa/Homelab-IaC
-    targetRevision: asutliff/k8s-device
+    targetRevision: HEAD
   sources: []
   project: default
   syncPolicy:
