@@ -9,6 +9,12 @@ frontend:
 tts:
   - platform: google_translate
 
+input_boolean:
+  stop_tts:
+    name: Stop TTS
+    initial: off
+    icon: mdi:stop-circle-outline
+
 light: !include_dir_merge_named Devices/light/
 mediaplayer: !include_dir_merge_named Devices/mediaplayer/
 automation: !include_dir_merge_list Automations/

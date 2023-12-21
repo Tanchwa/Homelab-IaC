@@ -1,0 +1,89 @@
+sensor:
+  - platform: rest
+    name: "Sonarr Series Search"
+    resource: "http://sonarr.andrewsutliff.com/api/v3/series/lookup?term={{ states('input_text.sonarr_search_term') }}" # this will need to be altered
+    method: GET
+    value_template: "{{ value_json | tojson }}"
+    json_attributes:
+      - shows #store entire json array in an attribute called "shows"
+    headers:
+      Content-Type: application/json
+      X-Api-Key: !secret sonarr_token
+
+rest_command:
+  sonarr_add_series:
+    url: http://sonarr.andrewsutliff.com/api/v3/series
+    method: POST
+    headers:
+      X-Api-Key: !secret sonarr_token
+      Content-Type: 'application/json; charset=utf-8'  
+    payload: > #addOptions might now be AddSeriesOptions
+      {  
+        "addOptions": {  
+          "ignoreEpisodesWithFiles": true,  
+          "ignoreEpisodesWithoutFiles": true,  
+          "searchForMissingEpisodes": "{{ states('input_boolean.start_search_for_missing_shows') }}"  
+        },  
+        "title": "{{ title }}",  
+        "seasons": [],  
+        "rootFolderPath": "/tv",  
+        "qualityProfileId": 1,  
+        "seasonFolder": true,  
+        "tvdbId": null,
+        "monitored": true,  
+        "tvRageId": 0,  
+        "cleanTitle": null,  
+        "imdbId": "{{ imdbId }}",  
+        "titleSlug": "{{ title | slug }}",  
+        "id": 0,  
+        "images": []  
+      }
+
+# maybe this needs to be an automation. Need to figure out voice triggers
+script:
+  announce_shows:
+    sequence:
+      - repeat:
+          sequence:
+            - service: tts.say
+              data:
+                entity_id: media_player.alexa
+                message: >
+                  "Sure, here are the results: Option {{ repeat.index }}: {{ state_attr('sensor.sonarr_series_search', 'shows')[repeat.index - 1].title }}, {{ state_attr('sensor.sonarr_series_search', 'shows')[repeat.index - 1].overview }}"
+            - delay:
+                seconds: 1
+            until:
+              - condition: template
+                value_template: "{{ repeat.index >= state_attr('sensor.sonarr_series_search', 'shows') | length }}"
+
+input_select:  
+  selected_show:  
+    name: Selected Show  
+    options: []  
+
+automation:  
+  - alias: "Populate Input Select with Show Titles"  
+    trigger:  
+      - platform: state  
+        entity_id: sensor.sonarr_series_search  
+    action:  
+      - service: input_select.set_options  
+        target:  
+          entity_id: input_select.selected_show  
+        data:  
+          options: "{{ state_attr('sensor.sonarr_series_search', 'shows') | map(attribute='title') | list }}"  
+
+automation:  
+  - alias: "Add Selected Show to Sonarr"  
+    trigger:  
+      - platform: state  
+        entity_id: input_select.selected_show  
+    action:  
+      - variables:  
+          selected_title: "{{ trigger.to_state.state }}"  
+          show_info: "{{ state_attr('sensor.sonarr_series_search', 'shows') | selectattr('title', 'eq', selected_title) | first }}"  
+      - service: rest_command.sonarr_add_series  
+        data:  
+          title: "{{ show_info.title }}"  
+          imdbId: "{{ show_info.imdbId }}"  
+          search_for_missing_episodes: "{{ states('input_boolean.start_search_for_missing_shows') }}"
