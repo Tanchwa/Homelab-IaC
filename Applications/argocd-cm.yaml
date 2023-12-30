@@ -13,7 +13,7 @@ metadata:
 data:
   resource.exclusions: |
     - apiGroups:
-      - celium.io
+      - cilium.io
       kinds:
       - CiliumIdentity
       - CiliumEndpoint
