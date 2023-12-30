@@ -1,8 +1,8 @@
-apiVersion: cert-manager.io/v1
-kind: Issuer
-metadata:
-  name: dex-issuer
-  namespace: oidc
-spec:
-  ca:
-    secretName: oidc-ca-key-pair
+#apiVersion: cert-manager.io/v1
+#kind: Issuer
+#metadata:
+#  name: dex-issuer
+#  namespace: oidc
+#spec:
+#  ca:
+#    secretName: oidc-ca-key-pair
