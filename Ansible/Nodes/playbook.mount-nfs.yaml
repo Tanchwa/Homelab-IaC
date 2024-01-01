@@ -22,13 +22,19 @@
         Proto=tcp
         Defaultvers=4
       EOF
+  - name: Change NFS permissions
+    file:
+      path: /mnt/nfs
+      owner: asutliff
+      group: asutliff
+      mode: '0777'
   - name: Create Directories
     file:
       path: /mnt/nfs/{{ item }}
       state: directory
-      owner: root
-      group: root
-      mode: '0755'
+      owner: asutliff
+      group: asutliff
+      mode: '0777'
     with_items:
       - "Torrents"
       - "Movies"
