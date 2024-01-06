@@ -16,6 +16,19 @@ have opnsense installed with
 
 IDS to be determined
 
+- name: Set Up Remote Router
+  hosts: remote_router
+  roles:
+    - gekmihesg.openwrt
+  tasks:
+    - name: configure ltw ??
+      ??:
+    - name: configure lte
+      uci:
+        command
+
+
+
 - name: Install Tailscale
   hosts: routers
     vars: 
