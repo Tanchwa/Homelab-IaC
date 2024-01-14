@@ -17,3 +17,26 @@ reboot to eMMC 0110, recreate the overlayfs
 boot to NAND, 1010
 overlayfs - mmcblk0p66, should not be at arround 7GiB
 run resize.f2fs /dev/mmcblk0p66
+
+installed usb serial exposure module
+opkg install kmod-usb-serial-option
+
+install qmi wwan driver amd uqmi control utility and luci-proto-qmi for GUI config of modem
+opkg install kmod-usb-net-qmi-wwan uqmi luci-proto-qmi
+
+the device gets exposed on /dev/cdc-wdm0, you can ls this and check
+
+opkg install minicom
+
+added the following config to /etc/config/network
+
+config interface 'wwan'
+        option proto 'qmi'
+        option device '/dev/cdc-wdm0'
+        option apn 'internet'
+        option pdptype 'ip'
+
+did some uqmi commands, check this website. https://openwrt.org/docs/guide-user/network/wan/wwan/ltedongle 
+
+uqmi -d /dev/cdc-wdm0 --start-network internet --autoconnect where "internet" is the APN name
+i believe I had to do --apn internet 
