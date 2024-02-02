@@ -2,7 +2,7 @@ notes of steps done by hand at first set up to configure with ansible later
 
 
 remote router setup:
-$ uci set network.lan.ipaddr="192.168.128.1/17"
+$ uci set network.lan.ipaddr="172.31.128.1/17"
 $ uci commit network
 $ service network restart
 
