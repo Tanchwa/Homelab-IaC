@@ -4,7 +4,7 @@ metadata:
   name: "ingress-pool"
 spec:
   cidrs:
-  - cidr: "172.16.1.96/28"
+  - cidr: "172.31.1.96/28"
   serviceSelector:
     matchLabels:
       app.kubernetes.io/name: ingress-nginx
