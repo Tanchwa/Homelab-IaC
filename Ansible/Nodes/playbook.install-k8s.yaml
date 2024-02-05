@@ -36,9 +36,9 @@
   vars:
     containerd_config_default_write: true
     containerd_config_cgroup_driver_systemd: true
-    kubeadm_version: 1.29.0-00
-    kubectl_version: 1.29.0-00
-    kubelet_version: 1.29.0-00
+    kubeadm_version: 1.27.0-00
+    kubectl_version: 1.27.0-00
+    kubelet_version: 1.27.0-00
     # ufw_rules: item
     # with_items: 
     #  ufw_rules: "{{ ufw_rules }}"
