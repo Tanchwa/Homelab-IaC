@@ -10,7 +10,7 @@
       update_cache: yes
   - name: Mount NAS
     mount:
-      src: 172.31.1.10:/mnt/Main/kubernetes
+      src: 172.31.0.15:/mnt/Main/kubernetes
       path: /mnt/nfs
       opts: rw,sync,hard
       state: mounted
