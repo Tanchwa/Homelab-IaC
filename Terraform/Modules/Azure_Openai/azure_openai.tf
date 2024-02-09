@@ -13,7 +13,7 @@ resource "azurerm_cognitive_account" "main" {
   custom_subdomain_name = var.cog_account_name
 
   dynamic "network_acls" {
-    for_each = try(var.private_networking.enabled, true) ? [var.private_networking.enabled] : []
+    for_each = try(var.private_networking.enabled, true) ? [var.private_networking] : []
 
     content {
       default_action = "Deny"
