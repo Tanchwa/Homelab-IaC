@@ -10,6 +10,7 @@ apiServer:
     oidc-groups-claim:
     kubelet-certificate-authority: /etc/kubernetes/pki/ca.cert
     profiling: false
+    audit-log-path: /var/log/kube-apiserver.log
   extraVolumes:
     name: oidc-ca
     mountPath: /etc/kubernetes/pki/oidc-ca.pem
