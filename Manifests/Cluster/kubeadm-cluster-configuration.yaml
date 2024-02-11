@@ -19,3 +19,5 @@ apiServer:
 #
 #
 #
+kubeControllerManager:
+  terminated-pod-gc-threshold: 10  
