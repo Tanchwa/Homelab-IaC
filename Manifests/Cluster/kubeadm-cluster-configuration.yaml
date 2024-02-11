@@ -11,6 +11,9 @@ apiServer:
     kubelet-certificate-authority: /etc/kubernetes/pki/ca.cert
     profiling: false
     audit-log-path: /var/log/kube-apiserver.log
+    audit-log-maxage: 30
+    audit-log-maxbackup: 10
+    audit-log-maxsize: 100
   extraVolumes:
     name: oidc-ca
     mountPath: /etc/kubernetes/pki/oidc-ca.pem
