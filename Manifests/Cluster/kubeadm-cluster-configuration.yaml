@@ -20,4 +20,8 @@ apiServer:
 #
 #
 kubeControllerManager:
-  terminated-pod-gc-threshold: 10  
+  extraArgs:
+    terminated-pod-gc-threshold: 10  
+kubeScheduler:
+  extraArgs:
+    profiling: false
