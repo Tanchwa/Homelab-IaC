@@ -7,8 +7,9 @@
       - 2379
       - 2380
       - 10250
-      - 10259his
+      - 10259
       - 10257
+      # - 10255 deny, allows unauthenticated read only to kubelet
       #networking?
       - 8472 #udp
       - 4240 #tcp

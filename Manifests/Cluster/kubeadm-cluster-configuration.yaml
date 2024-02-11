@@ -8,6 +8,7 @@ apiServer:
     oidc-ca-file: /etc/kubernetes/pki/oidc-ca.pem
     oidc-username-claim:
     oidc-groups-claim:
+    kubelet-certificate-authority: /etc/kubernetes/pki/ca.cert
   extraVolumes:
     name: oidc-ca
     mountPath: /etc/kubernetes/pki/oidc-ca.pem

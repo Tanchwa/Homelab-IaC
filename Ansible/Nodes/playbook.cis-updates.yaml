@@ -1,5 +1,6 @@
 ---
-- hosts: k8s-controlplane
+- name: 1.1.12 Change ETCd Directory Ownership to etcd
+  hosts: controlplane_nodes
   become: yes
   become_user: root
   tasks:
@@ -12,9 +13,8 @@
       name: etcd
       group: etcd
       shell: /bin/bash
-  - name: 1.1.12 Change ETCd Dir Ownership
+  - name: Change ETCd Directory
     file:
       path: /var/lib/etcd
       owner: etcd
       group: etcd
-
