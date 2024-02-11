@@ -1,0 +1,20 @@
+---
+- hosts: k8s-controlplane
+  become: yes
+  become_user: root
+  tasks:
+  - name: Create ETCd group
+    group:
+      name: etcd
+      state: present
+  - name: Create ETCd User
+    user:
+      name: etcd
+      group: etcd
+      shell: /bin/bash
+  - name: 1.1.12 Change ETCd Dir Ownership
+    file:
+      path: /var/lib/etcd
+      owner: etcd
+      group: etcd
+
