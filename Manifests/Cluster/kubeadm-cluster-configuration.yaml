@@ -9,7 +9,6 @@ apiServer:
     oidc-username-claim:
     oidc-groups-claim:
     kubelet-certificate-authority: /etc/kubernetes/pki/ca.cert
-    insecure-port: 0
     profiling: false
   extraVolumes:
     name: oidc-ca
