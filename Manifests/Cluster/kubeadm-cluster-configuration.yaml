@@ -28,6 +28,7 @@ apiServer:
 kubeControllerManager:
   extraArgs:
     terminated-pod-gc-threshold: 10  
+    profiling: false
 kubeScheduler:
   extraArgs:
     profiling: false

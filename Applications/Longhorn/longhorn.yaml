@@ -22,6 +22,8 @@ spec:
           value: "private-nginx"
         - name: ingress.host
           value: "longhorn.andrewsutliff.com"
+        - name: defaultSettings.backupTarget
+          value: "nfs://172.31.0.15://mnt/Main/kubernetes/backup"
   sources: []
   project: default
   syncPolicy:
