@@ -13,6 +13,16 @@ spec:
     repoURL: 'https://prometheus-community.github.io/helm-charts'
     targetRevision: 51.x
     chart: kube-prometheus-stack
+    helm:
+      values:
+        ingress:
+          enabled: "true"
+          ingressClassName: "private-nginx"
+          annotations: {cert-manager.io/cluster-issuer: "cloudflare-issuer"}
+          hosts:
+            - "grafana.andrewsutliff.com"
+          paths:
+            - "/"
   sources: []
   project: default
   syncPolicy:
