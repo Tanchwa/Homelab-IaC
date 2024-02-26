@@ -14,15 +14,19 @@ spec:
     targetRevision: 51.x
     chart: kube-prometheus-stack
     helm:
-      values:
-        ingress:
-          enabled: "true"
-          ingressClassName: "private-nginx"
-          annotations: {cert-manager.io/cluster-issuer: "cloudflare-issuer"}
-          hosts:
-            - "grafana.andrewsutliff.com"
-          paths:
-            - "/"
+      valueFiles: []
+      parameters:
+        - name: ingress.ingressClassName
+          value: "private-nginx"
+        - name: ingress.enabled
+          value: "true"
+        - name: ingress.annotations
+          value: |
+            cert-manager.io/cluster-issuer: "cloudflare-issuer"
+        - name: ingress.hosts
+          value: "grafana.andrewsutliff.com"
+        - name: ingress.paths
+          value: "/"
   sources: []
   project: default
   syncPolicy:
