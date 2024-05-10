@@ -6,7 +6,7 @@ metadata:
 spec:
   destination:
     name: ''
-    namespace: vault
+    namespace: hashicorp/vault
     server: 'https://kubernetes.default.svc'
   source:
     path: ''
