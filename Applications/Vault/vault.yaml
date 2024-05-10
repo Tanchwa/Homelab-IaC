@@ -6,12 +6,12 @@ metadata:
 spec:
   destination:
     name: ''
-    namespace: hashicorp/vault
+    namespace: vault
     server: 'https://kubernetes.default.svc'
   source:
     path: ''
     repoURL: 'https://helm.releases.hashicorp.com'
-    targetRevision: 4.8.2
+    targetRevision: 0.28.0
     chart: vault
     helm:
       values: |
