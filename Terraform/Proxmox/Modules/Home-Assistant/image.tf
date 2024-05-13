@@ -11,7 +11,9 @@
 resource "proxmox_virtual_environment_download_file" "home_assistant_img" {
   content_type = "iso"
   datastore_id = "local"
-  node_name    = "proxmox"
+  node_name    = var.proxmox_node_name
   url          = "https://github.com/home-assistant/operating-system/releases/download/12.2/haos_ova-12.2.qcow2.xz"
   file_name    = "haos_generic-x86-12.2.img"
+  overwrite    = true
+  # decompression_algorithm = "zst"
 }

@@ -24,4 +24,9 @@ provider "proxmox" {
   endpoint  = "https://172.31.0.200:8006/"
   api_token = var.proxmox_api_token
   insecure  = true
+
+  ssh {
+    agent    = true
+    username = "terraform"
+  }
 }

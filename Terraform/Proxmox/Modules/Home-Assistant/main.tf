@@ -3,7 +3,7 @@ resource "proxmox_virtual_environment_vm" "home_assistant_vm" {
   description = "Managed by Terraform"
   tags        = ["terraform", "home-assistant"]
 
-  node_name = "home-assistant"
+  node_name = var.proxmox_node_name
   vm_id     = 200
 
   agent {
@@ -15,6 +15,17 @@ resource "proxmox_virtual_environment_vm" "home_assistant_vm" {
     order      = "3"
     up_delay   = "60"
     down_delay = "60"
+  }
+
+  cpu {
+    cores   = 2
+    sockets = 1
+    type    = "host"
+    flags   = ["+aes"]
+  }
+
+  memory {
+    dedicated = 4295
   }
 
   disk {
@@ -33,7 +44,7 @@ resource "proxmox_virtual_environment_vm" "home_assistant_vm" {
     user_account {
       keys     = [trimspace(tls_private_key.ha_vm_key.public_key_openssh)]
       password = random_password.ha_vm_password.result
-      username = "ubuntu"
+      username = "home-assistant"
     }
 
     #user_data_file_id = proxmox_virtual_environment_file.cloud_config.id
