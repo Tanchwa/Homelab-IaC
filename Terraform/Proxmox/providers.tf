@@ -7,7 +7,7 @@ terraform {
   required_providers {
     proxmox = {
       source  = "bpg/proxmox"
-      version = "~> 0.54.0"
+      version = "~> 0.57.0"
     }
     random = {
       source  = "hashicorp/random"
@@ -22,11 +22,14 @@ terraform {
 
 provider "proxmox" {
   endpoint  = "https://172.31.0.200:8006/"
+  username  = "root@pam" #"terraform@proxmox"
+  password  = var.ssh_password
   api_token = var.proxmox_api_token
   insecure  = true
 
   ssh {
-    agent    = true
-    username = "terraform"
+    agent       = false
+    private_key = file(var.ssh_private_key_path)
+    username    = "root"
   }
 }
