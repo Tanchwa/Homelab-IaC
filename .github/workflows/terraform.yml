@@ -6,7 +6,7 @@ on:
       - '*'
       - '!main'
     paths:
-      - Terraform/**
+      - Terraform/Azure/**
   pull_request:
     types:
       - opened
@@ -14,7 +14,7 @@ on:
       - closed
       - synchronize
     paths:
-      - Terraform/**
+      - Terraform/Azure/**
 
 permissions:
   contents: read
@@ -29,7 +29,7 @@ jobs:
     defaults:
       run:
         shell: bash
-        working-directory: Terraform
+        working-directory: Terraform/Azure
 
     steps:
     # Checkout the repository to the GitHub Actions runner
