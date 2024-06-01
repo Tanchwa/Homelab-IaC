@@ -30,6 +30,10 @@ spec:
               type: pvc
               accessMode: ReadWriteMany
               storageClass: longhorn
+        postgresql:
+          enabled: true
+        redis:
+          enabled: true
   sources: []
   project: default
   syncPolicy:
