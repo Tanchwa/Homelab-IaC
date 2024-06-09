@@ -9,10 +9,9 @@ spec:
     namespace: productivity
     server: 'https://kubernetes.default.svc'
   source:
-    path: 'vikunja'
-    repoURL: 'https://artifacthub.io/packages/helm/vikunja/vikunja'
-    targetRevision: 0.4.1
-    chart: vikunja
+    path: .
+    repoURL: 'https://kolaente.dev/vikunja/helm-chart.git'
+    targetRevision: HEAD
     helm:
       valueFiles: []
       values: |
