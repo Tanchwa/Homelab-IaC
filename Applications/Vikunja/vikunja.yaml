@@ -1,0 +1,36 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: vikunja
+  namespace: argocd
+spec:
+  destination:
+    name: ''
+    namespace: productivity
+    server: 'https://kubernetes.default.svc'
+  source:
+    path: 'vikunja'
+    repoURL: 'https://artifacthub.io/packages/helm/vikunja/vikunja'
+    targetRevision: 0.4.1
+    chart: vikunja
+    helm:
+      valueFiles: []
+      values: |
+        api:
+          persistence:
+            data:
+              enabled: true
+              accessMode: ReadWriteOnce
+              size: 10Gi
+              mountPath: /app/vikunja/files
+              storageClass: longhorn
+  sources: []
+  project: default
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
+      - ServerSideApply=true
+

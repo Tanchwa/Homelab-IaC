@@ -1,0 +1,123 @@
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: vikunja
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /
+    cert-manager.io/cluster-issuer: "cloudflare-issuer"
+spec:
+  ingressClassName: private-nginx
+  tls:
+    - hosts:
+        - vikunja.andrewsutliff.com
+      secretName: vikunja-http-tls
+  rules:
+    - host: vikunja.andrewsutliff.com
+      http:
+        paths:
+        - path: /
+          pathType: Prefix
+          backend:
+            service:
+              name: vikunja
+              port:
+                name: "http"
+---
+kind: ConfigMap
+apiVersion: v1
+metadata: 
+  name: 
+data:
+  VIKUNJA_SERVICE_PUBLICURL: http://vikunja.andrewsutliff.com
+  VIKUNJA_DATABASE_HOST: vikunja-mariadb
+  #VIKUNJA_DATABASE_PASSWORD: in vikunja-mariadb-secret
+  VIKUNJA_DATABASE_TYPE: mysql
+  VIKUNJA_DATABASE_USER: vikunja
+  VIKUNJA_DATABASE_DATABASE: vikunja
+  #VIKUNJA_SERVICE_JWTSECRET: set in vikunja-secret
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: vikunja-deployment
+  labels:
+    app: vikunja
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: vikunja
+  template:
+    metadata:
+      labels:
+        app: vikunja
+    spec:
+      containers:
+      - name: vikunja
+        envFrom:
+          - configMapRef:
+              name: vikunja-conf
+          - secretRef:
+              name: vikunja-mariadb-secret
+        image: vikunja/vikunja
+        ports:
+        - containerPort: 3456
+        volumeMounts:
+          - name: vikunja-app-files
+            mountPath: /app/vikunja/files
+      restartPolicy: Always
+      volumes:
+        - name: vikunja-files
+          persistentVolumeClaim:
+            claimName: vikunja-app-files
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: vikunja-mariadb
+  labels:
+    app: vikunja-mariadb
+spec:
+  type: ClusterIP
+  ports:
+  - port: 3306
+    name: mariadb
+  selector:
+    app: vikunja-mariadb
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: vikunja-mariadb
+spec:
+  serviceName: "vikunja-mariadb"
+  replicas: 1
+  selector:
+    matchLabels:
+      app: vikunja-mariadb
+  template:
+    metadata:
+      labels:
+        app: vikunja-mariadb
+    spec:
+      containers:
+      - name: mariadb
+        image: mariadb
+        ports:
+        - containerPort: 3306
+          name: mariadb
+        volumeMounts:
+        - name: datadir
+          mountPath: /var/lib/mysql/
+  volumeClaimTemplates:
+  - metadata:
+      name: datadir
+    spec:
+      accessModes: [ "ReadWriteOnce" ]
+      storageClassName: "longhorn"
+      resources:
+        requests:
+          storage: 300M
+
