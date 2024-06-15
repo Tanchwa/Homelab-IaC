@@ -126,4 +126,23 @@ data:
     # If TLS is not compiled, plaintext "username:password" lines bay be used
     # password_file /mosquitto/config/passwd
 ---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: mosquitto
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /
+spec:
+  ingressClassName: iot-nginx
+  rules:
+    - host: mqqt.andrewsutliff.com
+      http:
+        paths:
+        - path: /
+          pathType: Prefix
+          backend:
+            service:
+              name: mosquitto
+              port:
+                name: "mqqt"
 
