@@ -39,12 +39,13 @@ resource "proxmox_virtual_environment_vm" "ubuntu_vm" {
   initialization {
     ip_config {
       ipv4 {
-        address = "dhcp"
+        address = "172.31.0.40/17"
+        gateway = "172.31.0.1"
       }
     }
 
     user_account {
-      keys     = [trimspace(tls_private_key.ubuntu_vm_key.public_key_openssh)]
+      keys     = [trimspace(file(var.ubuntu.ssh_public_key_path))]
       password = var.vm_password
       username = "asutliff"
     }
@@ -65,25 +66,4 @@ resource "proxmox_virtual_environment_vm" "ubuntu_vm" {
   }
 
   serial_device {}
-}
-
-
-/*resource "random_password" "ubuntu_vm_password" {
-  length           = 16
-  override_special = "_%@"
-  special          = true
-}*/
-
-resource "tls_private_key" "ubuntu_vm_key" {
-  algorithm = "RSA"
-  rsa_bits  = 2048
-}
-
-output "ubuntu_vm_private_key" {
-  value     = tls_private_key.ubuntu_vm_key.private_key_pem
-  sensitive = true
-}
-
-output "ubuntu_vm_public_key" {
-  value = tls_private_key.ubuntu_vm_key.public_key_openssh
 }

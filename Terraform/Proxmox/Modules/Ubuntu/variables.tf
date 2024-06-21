@@ -6,8 +6,9 @@ variable "proxmox_node_name" {
 variable "ubuntu" {
   type = object({
     #image_version = string
-    node_name = string
-    vm_id     = number
+    node_name           = string
+    vm_id               = number
+    ssh_public_key_path = string
   })
 }
 
