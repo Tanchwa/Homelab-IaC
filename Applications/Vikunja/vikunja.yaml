@@ -23,6 +23,41 @@ spec:
               size: 10Gi
               mountPath: /app/vikunja/files
               storageClass: longhorn
+          ingress:
+            main:
+              enabled: true
+              annotations:
+                cert-manager.io/cluster-issuer: "cloudflare-issuer"
+              hosts:
+                - host: vikunja.andrewsutliff.com
+                  paths:
+                    - path: "/api/v1"
+              tls:
+                - hosts:
+                    - vikunja.andrewsutliff.com
+                  secretName: vikunja-http-tls
+          configMaps:
+            config:
+              enabled: true
+              data:
+                config.yml: |
+                  service:
+                    frontendUrl: https://vikunja.andrewsutliff.com
+        frontend:
+          ingress:
+            main:
+              annotations:
+                cert-manager.io/cluster-issuer: "cloudflare-issuer"
+              hosts:
+                - host: vikunja.andrewsutliff.com
+                  paths:
+                    - path: "/"
+              tls: 
+                - hosts:
+                    - vikunja.andrewsutliff.com
+                  secretName: vikunja-http-tls
+          env:
+            VIKUNJA_API_URL: https://vikunja.andrewsutliff.com/api
   sources: []
   project: default
   syncPolicy:
