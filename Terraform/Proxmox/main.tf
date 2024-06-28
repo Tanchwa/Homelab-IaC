@@ -30,7 +30,7 @@ module "talos_worker" {
   }
 }
 
-/*module "ubuntu_worker" {
+module "ubuntu_worker" {
   source = "./Modules/Ubuntu"
 
   proxmox_node_name = "proxmox"
@@ -40,4 +40,4 @@ module "talos_worker" {
     ssh_public_key_path = "~/.ssh/id_rsa.pub"
   }
   vm_password = var.ubuntu_password
-}*/
+}
