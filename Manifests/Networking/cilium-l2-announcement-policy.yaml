@@ -8,6 +8,6 @@ spec:
     - key: node-role.kubernetes.io/control-plane
       operator: Exists
   interfaces:
-  - (^enp+|^eth[0-9]+)
+  - ^enp+|^eth+
   externalIPs: true
   loadBalancerIPs: true
