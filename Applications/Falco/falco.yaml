@@ -1,0 +1,47 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: falco
+  namespace: argocd
+spec:
+  destination:
+    name: ''
+    namespace: falco
+    server: 'https://kubernetes.default.svc'
+  source:
+    path: ''
+    repoURL: 'https://falcosecurity.github.io/charts'
+    targetRevision: 4.6.0
+    chart: falco
+    helm:
+      valueFiles: []
+      values: |
+        falco:
+          rules_file:
+          load_plugins: []
+          plugins: []
+        driver:
+          enabled: true
+          kind: modern_ebpf
+          modernEbpf:
+            leastPrivileged: false
+            bufSizePreset: 4
+            dropFailedExit: false
+            cpusForEachBuffer: 2
+        collectors:
+          enabled: true
+          docker:
+            enabled: false
+          containerd:
+            enabled: true
+            socket: /var/run/containerd/containerd.sock
+  sources: []
+  project: default
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
+      - ServerSideApply=true
+
