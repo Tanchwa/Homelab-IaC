@@ -68,7 +68,7 @@
     kube_user: "asutliff"
     kube_config_path: "/home/{{ kube_user }}/.kube/config"
     certificate_path: "/tmp/k8s-controlplane/ansible.crt"
-    ca_certificates_path: "/tmp/k8s-controlplane/etc/kubernetes/pki/ca.crt"
+    ca_certificate_path: "/tmp/k8s-controlplane/etc/kubernetes/pki/ca.crt"
     key_path: "/home/{{ kube_user }}/ansible.key"
     cluster_name: "kubernetes"
     cluster_address: "https://k8s-controlplane:6443"

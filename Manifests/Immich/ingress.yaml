@@ -1,0 +1,25 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: immich
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /
+    cert-manager.io/cluster-issuer: "cloudflare-issuer"
+    nginx.ingress.kubernetes.io/proxy-body-size: "4096m"
+spec:
+  ingressClassName: private-nginx
+  tls:
+    - hosts:
+        - immich.andrewsutliff.com
+      secretName: immich-http-tls
+  rules:
+    - host: immich.andrewsutliff.com
+      http:
+        paths:
+        - path: /
+          pathType: Prefix
+          backend:
+            service:
+              name: immich-server
+              port:
+                name: "http"

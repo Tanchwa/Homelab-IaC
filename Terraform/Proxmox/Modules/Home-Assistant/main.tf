@@ -90,6 +90,6 @@ output "ha_vm_private_key" {
   sensitive = true
 }
 
-output "ubuntu_vm_public_key" {
+output "ha_vm_public_key" {
   value = tls_private_key.ha_vm_key.public_key_openssh
 }

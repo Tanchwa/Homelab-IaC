@@ -1,0 +1,53 @@
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: vikunja
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /
+    cert-manager.io/cluster-issuer: "cloudflare-issuer"
+    nginx.ingress.kubernetes.io/proxy-body-size: "0"
+spec:
+  ingressClassName: private-nginx
+  tls:
+    - hosts:
+        - vikunja.andrewsutliff.com
+      secretName: vikunja-http-tls
+  rules:
+    - host: vikunja.andrewsutliff.com
+      http:
+        paths:
+        - path: /
+          pathType: Prefix
+          backend:
+            service:
+              name: vikunja
+              port:
+                name: "http"
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: vikunja-api
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /
+    cert-manager.io/cluster-issuer: "cloudflare-issuer"
+    nginx.ingress.kubernetes.io/proxy-body-size: "0"
+spec:
+  ingressClassName: private-nginx
+  tls:
+    - hosts:
+        - vikunja.andrewsutliff.com
+      secretName: vikunja-http-tls
+  rules:
+    - host: vikunja.andrewsutliff.com
+      http:
+        paths:
+        - path: /api/v1
+          pathType: Prefix
+          backend:
+            service:
+              name: vikunja-api
+              port:
+                name: "http"
+-

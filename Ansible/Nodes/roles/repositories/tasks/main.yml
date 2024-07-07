@@ -11,14 +11,14 @@
 
 - name: Add K8s GPG Signing Keys
   apt_key:
-    url: https://packages.cloud.google.com/apt/doc/apt-key.gpg
+    url: https://pkgs.k8s.io/core:/stable:/v1.28/deb/Release.key
     keyring: /usr/share/keyrings/kubernetes-archive-keyring.gpg
     state: present
   tags: pre-k8s-init
 
 - name: Add Repo to Sources List
   apt_repository:
-    repo: "deb [signed-by=/usr/share/keyrings/kubernetes-archive-keyring.gpg] https://apt.kubernetes.io/ kubernetes-xenial main"
+    repo: "deb [signed-by=/usr/share/keyrings/kubernetes-archive-keyring.gpg] https://pkgs.k8s.io/core:/stable:/{{ repository_version }}/deb/ /"
     state: present
     filename: kubernetes
   tags: pre-k8s-init

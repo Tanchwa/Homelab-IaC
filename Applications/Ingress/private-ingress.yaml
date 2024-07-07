@@ -15,23 +15,19 @@ spec:
     chart: ingress-nginx
     helm:
       valueFiles: []
-      parameters:
-        - name: controller.name
-          value: private-controller
-        - name: controller.ingressClass
-          value: private-nginx
-        - name: controller.ingressClassByName
-          value: "true"
-        - name: controller.reportIngressStatus.enableLeaderElection
-          value: "true"
-        - name: controller.ingressClassResource.name
-          value: private-nginx
-        - name: controller.ingressClassResource.enabled
-          value: "true"
-        - name: controller.ingressClassResource.controllerValue
-          value: k8s.io/private-controller
-        - name: controller.service.type
-          value: LoadBalancer
+      values: |
+        controller:
+          name: private-controller
+          ingressClass: private-nginx
+          ingressClassByName: "true"
+          reportIngressStatus:
+            enableLeaderElection: "true"
+          ingressClassResource:
+            name: private-nginx
+            enabled: "true"
+            controllerValue: k8s.io/private-controller
+          service:
+            type: LoadBalancer
   sources: []
   project: default
   syncPolicy:

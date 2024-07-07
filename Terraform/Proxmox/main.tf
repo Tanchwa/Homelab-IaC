@@ -35,3 +35,15 @@ module "talos_worker" {
     vm_id         = tonumber(format("30%d", count.index))
   }
 }
+
+module "ubuntu_worker" {
+  source = "./Modules/Ubuntu"
+
+  proxmox_node_name = "proxmox"
+  ubuntu = {
+    node_name           = "k8s-node02"
+    vm_id               = 400
+    ssh_public_key_path = "~/.ssh/id_rsa.pub"
+  }
+  vm_password = var.ubuntu_password
+}

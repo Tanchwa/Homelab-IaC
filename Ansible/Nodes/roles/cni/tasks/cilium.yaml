@@ -47,7 +47,7 @@
 
 - name: Install Celium
   shell: |
-    cilium install --version 1.14.2 \
+    cilium install --version 1.15.6 \
     --namespace kube-system \
     --set l2announcements.enabled=true \
     --set l2announcements.leaseDuration=25s \

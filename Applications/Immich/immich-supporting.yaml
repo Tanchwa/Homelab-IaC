@@ -1,0 +1,25 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: immich-supporting
+  namespace: argocd
+spec:
+  destination:
+    name: ''
+    namespace: immich
+    server: 'https://kubernetes.default.svc'
+  source:
+    path: "Manifests/Immich"
+    repoURL: >-
+      https://github.com/Tanchwa/Homelab-IaC
+    targetRevision: HEAD
+  sources: []
+  project: default
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
+      - ServerSideApply=true
+
