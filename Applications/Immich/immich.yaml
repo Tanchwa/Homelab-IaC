@@ -11,11 +11,13 @@ spec:
   source:
     path: 'charts/immich'
     repoURL: 'https://immich-app.github.io/immich-charts'
-    targetRevision: v0.7.0
+    targetRevision: v0.7.1
     chart: immich
     helm:
       valueFiles: []
       values: |
+        image:
+          tag: v1.112.1
         immich:
           metrics:
             enabled: true

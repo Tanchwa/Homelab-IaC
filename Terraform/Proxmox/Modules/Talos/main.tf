@@ -142,21 +142,22 @@ resource "random_password" "talos_vm_password" {
   special          = true
 }
 
-/*resource "tls_private_key" "talos_vm_key" {
+resource "tls_private_key" "talos_vm_key" {
   algorithm = "RSA"
   rsa_bits  = 2048
-} */
+}
 
 output "talos_vm_password" {
   value     = random_password.talos_vm_password.result
   sensitive = true
 }
 
-/* output "talos_vm_private_key" {
+output "talos_vm_private_key" {
   value     = tls_private_key.talos_vm_key.private_key_pem
   sensitive = true
 }
 
 output "talos_vm_public_key" {
   value = tls_private_key.talos_vm_key.public_key_openssh
-} */
+}
+

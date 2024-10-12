@@ -30,9 +30,9 @@ resource "proxmox_virtual_environment_vm" "home_assistant_vm" {
 
   disk {
     datastore_id = "local-lvm"
-    //file_id      = proxmox_virtual_environment_download_file.home_assistant_img.id
-    path_in_datastore = "/var/lib/vz/template/iso/haos_generic-x86-12.2.img"
-    interface         = "scsi0"
+    file_id      = "local:iso/haos_generic-x86-12.2.img"
+    interface    = "scsi0"
+    size         = 32
   }
 
   initialization {
