@@ -7,7 +7,7 @@ terraform {
   required_providers {
     proxmox = {
       source  = "bpg/proxmox"
-      version = "~> 0.54.0"
+      version = "~> 0.57.0"
     }
     random = {
       source  = "hashicorp/random"
@@ -15,6 +15,10 @@ terraform {
     }
     tls = {
       source  = "hashicorp/tls"
+      version = "~> 3.0"
+    }
+    null = {
+      source  = "hashicorp/null"
       version = "~> 3.0"
     }
   }

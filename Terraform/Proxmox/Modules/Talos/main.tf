@@ -160,3 +160,4 @@ output "talos_vm_private_key" {
 output "talos_vm_public_key" {
   value = tls_private_key.talos_vm_key.public_key_openssh
 }
+
