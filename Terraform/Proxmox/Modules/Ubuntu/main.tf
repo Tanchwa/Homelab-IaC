@@ -34,6 +34,7 @@ resource "proxmox_virtual_environment_vm" "ubuntu_vm" {
     datastore_id = "local-lvm"
     file_id      = proxmox_virtual_environment_download_file.latest_ubuntu_22_jammy_qcow2_img.id
     interface    = "scsi0"
+    size         = var.ubuntu.disk_size
   }
 
   initialization {
@@ -66,4 +67,8 @@ resource "proxmox_virtual_environment_vm" "ubuntu_vm" {
   }
 
   serial_device {}
+
+  lifecycle {
+    ignore_changes = [disk[0].file_id]
+  }
 }

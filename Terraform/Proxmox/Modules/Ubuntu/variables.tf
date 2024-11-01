@@ -9,6 +9,7 @@ variable "ubuntu" {
     node_name           = string
     vm_id               = number
     ssh_public_key_path = string
+    disk_size           = number
   })
 }
 

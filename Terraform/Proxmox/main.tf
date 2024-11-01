@@ -42,6 +42,7 @@ module "ubuntu_worker" {
   proxmox_node_name = "proxmox"
   ubuntu = {
     node_name           = "k8s-node02"
+    disk_size           = 100
     vm_id               = 500
     ssh_public_key_path = "~/.ssh/id_rsa.pub"
   }
