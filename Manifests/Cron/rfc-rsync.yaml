@@ -1,0 +1,38 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  creationTimestamp: null
+  name: rfc-sync
+  namespace: default
+spec:
+  jobTemplate:
+    metadata:
+      creationTimestamp: null
+      name: rfc-sync
+    spec:
+      template:
+        metadata:
+          creationTimestamp: null
+        spec:
+          volumes:
+            - nfs:
+                server: 172.31.0.15
+                readOnly: false
+                path: /mnt/Main/kubernetes
+              name: rfc-sync-vol
+          containers:
+          - command:
+            - rsync
+            - -avz
+            - --delete
+            - rsync.rfc-editor.org::rfcs-text-only 
+            - nfs-share/rfc-mirror
+            image: ghcr.io/servercontainers/rsync:a3.20.3-r3.3.0
+            name: rfc-sync
+            resources: {}
+            volumeMounts: 
+            - name: rfc-sync-vol
+              mountPath: /nfs-share
+          restartPolicy: OnFailure
+  schedule: 0 0 1 * *
+status: {}
