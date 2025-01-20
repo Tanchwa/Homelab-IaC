@@ -3,3 +3,5 @@ collections:
     type: git
   - name: https://github.com/ansible-collections/community.docker
     type: git
+  - name: https://github.com/gekmihesg/ansible-openwrt
+    type: git

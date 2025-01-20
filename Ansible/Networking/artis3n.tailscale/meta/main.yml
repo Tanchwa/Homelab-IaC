@@ -44,7 +44,6 @@ galaxy_info:
         - "15.1"
         - "15.2"
         - "15.3"
-
   galaxy_tags:
     - tailscale
     - vpn
