@@ -14,4 +14,8 @@ variable "talos" {
     condition     = startswith(var.talos.image_version, "v")
     error_message = "The image version must start with 'v'"
   }
+  validation {
+    condition     = var.talos.vm_type == lower("worker") || var.talos.vm_type == lower("controlplane")
+    error_message = "The VM type must be either 'worker' or 'controlplane'"
+  }
 }

@@ -16,6 +16,21 @@ spec:
       valueFiles: []
       values: |
         api:
+          ingress:
+            main:
+              enabled: true
+              annotations:
+                nginx.ingress.kubernetes.io/proxy-body-size: "0"
+                cert-manager.io/cluster-issuer: "cloudflare-issuer"
+              ingressClassName: private-nginx
+              hosts:
+                - host: vikunja.andrewsutliff.com
+                  paths:
+                    - path: "/api/v1"
+              tls:
+                - hosts:
+                    - vikunja.andrewsutliff.com
+                  secretName: vikunja-api-http-tls
           persistence:
             data:
               enabled: true
@@ -23,6 +38,33 @@ spec:
               size: 10Gi
               mountPath: /app/vikunja/files
               storageClass: longhorn
+          configMaps:
+            config:
+              enabled: true
+              data:
+                config.yml: |
+                  service:
+                    frontendUrl: vikunja-frontend.productivity.svc.cluster.local
+          env:
+            VIKUNJA_DATABASE_HOST: vikunja-postgresql.productivity.svc.cluster.local
+        frontend:
+          ingress:
+            main:
+              enabled: true
+              annotations:
+                nginx.ingress.kubernetes.io/proxy-body-size: "0"
+                cert-manager.io/cluster-issuer: "cloudflare-issuer"
+              ingressClassName: private-nginx
+              hosts:
+                - host: vikunja.andrewsutliff.com
+                  paths:
+                    - path: "/"
+              tls:
+                - hosts:
+                    - vikunja.andrewsutliff.com
+                  secretName: vikunja-http-tls
+          env:
+            VIKUNJA_API_URL: vikunja-api.productivity.svc.cluster.local/api
   sources: []
   project: default
   syncPolicy:

@@ -1,10 +1,16 @@
-/* module "home_assistant" {
+module "home_assistant" {
   source = "./Modules/Home-Assistant"
 
   proxmox_node_name = "proxmox"
-} */
+  home_assistant = {
+    vm_id = 400
+  }
 
-module "talos_controlplane" {
+  ssh_private_key_path = var.ssh_private_key_path
+  ssh_password         = var.ssh_password
+}
+
+/*module "talos_controlplane" {
   source = "./Modules/Talos"
   count  = 1
 
@@ -23,9 +29,22 @@ module "talos_worker" {
 
   proxmox_node_name = "proxmox"
   talos = {
-    image_version = "v1.7.1"
+    image_version = "v1.7.2"
     vm_type       = "worker"
     node_name     = "talos-worker${count.index}"
     vm_id         = tonumber(format("30%d", count.index))
   }
+} */
+
+module "ubuntu_worker" {
+  source = "./Modules/Ubuntu"
+
+  proxmox_node_name = "proxmox"
+  ubuntu = {
+    node_name           = "k8s-node02"
+    disk_size           = 100
+    vm_id               = 500
+    ssh_public_key_path = "~/.ssh/id_rsa.pub"
+  }
+  vm_password = var.ubuntu_password
 }

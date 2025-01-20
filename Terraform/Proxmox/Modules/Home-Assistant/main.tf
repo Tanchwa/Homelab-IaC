@@ -4,7 +4,7 @@ resource "proxmox_virtual_environment_vm" "home_assistant_vm" {
   tags        = ["terraform", "home-assistant"]
 
   node_name = var.proxmox_node_name
-  vm_id     = 200
+  vm_id     = var.home_assistant.vm_id
 
   agent {
     # read 'Qemu guest agent' section, change to true only when ready
@@ -30,8 +30,9 @@ resource "proxmox_virtual_environment_vm" "home_assistant_vm" {
 
   disk {
     datastore_id = "local-lvm"
-    file_id      = proxmox_virtual_environment_download_file.home_assistant_img.id
+    file_id      = "local:iso/haos_generic-x86-12.2.img"
     interface    = "scsi0"
+    size         = 32
   }
 
   initialization {
@@ -63,6 +64,8 @@ resource "proxmox_virtual_environment_vm" "home_assistant_vm" {
   }
 
   serial_device {}
+
+  depends_on = [null_resource.unpack_home_assistant_img]
 }
 
 
@@ -87,6 +90,6 @@ output "ha_vm_private_key" {
   sensitive = true
 }
 
-output "ubuntu_vm_public_key" {
+output "ha_vm_public_key" {
   value = tls_private_key.ha_vm_key.public_key_openssh
 }

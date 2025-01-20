@@ -13,3 +13,9 @@ variable "ssh_password" {
   description = "Password for SSH User"
   sensitive   = true
 }
+
+variable "ubuntu_password" {
+  type        = string
+  description = "Password for Ubuntu User"
+  sensitive   = true
+}
