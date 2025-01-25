@@ -1,3 +1,3 @@
 [routers]
-remote_router
-main_router
+remote_router 172.31.128.1
+main_router 172.31.0.1
