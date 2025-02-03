@@ -11,23 +11,31 @@ spec:
   source:
     path: ''
     repoURL: 'https://prometheus-community.github.io/helm-charts'
-    targetRevision: 68.x
+    targetRevision: 51.x
     chart: kube-prometheus-stack
     helm:
       valueFiles: []
-      parameters:
-        #- name: grafana.ingress.ingressClassName
-        #  value: "private-nginx"
-        - name: grafana.ingress.enabled
-          value: "true"
-        - name: grafana.ingress.annotations
-          value: |
-            cert-manager.io/cluster-issuer: "cloudflare-issuer"
-            kubernetes.io/ingress.class: "private-nginx"
-        - name: grafana.ingress.hosts
-          value: "grafana.andrewsutliff.com"
-        - name: grafana.ingress.paths
-          value: "/"
+      values: |
+        grafana:
+          ingress:
+            enabled: true
+            annotations:
+              cert-manager.io/cluster-issuer: "cloudflare-issuer"
+              kubernetes.io/ingress.class: "private-nginx"
+            hosts: 
+              - "grafana.andrewsutliff.com"
+            paths: 
+              - "/"
+        alertmanager:
+          ingress:
+            enabled: true
+            annotations:
+              cert-manager.io/cluster-issuer: "cloudflare-issuer"
+              kubernetes.io/ingress.class: "private-nginx"
+            hosts: 
+              - "alertmanager.andrewsutliff.com"
+            paths: 
+              - "/"
   sources: []
   project: default
   syncPolicy:
