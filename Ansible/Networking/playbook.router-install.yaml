@@ -16,10 +16,16 @@
 #
 #IDS to be determined
 
+
 - name: Set Up Remote Router
   hosts: remote_router
+  gather_facts: no
   roles:
-    - gekmihesg.openwrt
+    - ansible-openwrt
+    - role: ansible-openwrt
+      vars:
+        openwrt_scp_if_ssh: yes
+        openwrt_install_recommended_packages: yes
   tasks:
     - name: install serial exposure module
       opkg:
@@ -54,8 +60,7 @@
         state: present
     - name: init tailscale
       shell:
-        cmd: tailscale up --advertise-routes=172.31.128.0/17 --accept-routes --exit-node="{{ main_router_tailscale_ip }}" --exit-node-allow-lan-access=true --netfilter-mode=off --snat-subnet-routes=true
-    - name: create tailscale firewall zone
+        cmd: tailscale up --advertise-routes 172.31.128.0/17 --accept-routes --exit-node "{{ main_router_tailscale_ip }}" --exit-node-allow-lan-access true --netfilter-mode off --snat-subnet-routes true
     - name: setup tailscale firewall zone
       uci:
         command: set
