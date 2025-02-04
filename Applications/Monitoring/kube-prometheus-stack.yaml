@@ -21,9 +21,13 @@ spec:
             enabled: true
             annotations:
               cert-manager.io/cluster-issuer: "cloudflare-issuer"
-              kubernetes.io/ingress.class: "private-nginx"
+              kubernetes.io/ingress.class: "public-nginx"
             hosts: 
               - "grafana.andrewsutliff.com"
+            tls:
+              - hosts:
+                  - "grafana.andrewsutliff.com"
+                secretName: grafana-http-tls
             paths: 
               - "/"
         alertmanager:
