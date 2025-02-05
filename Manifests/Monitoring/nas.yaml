@@ -1,44 +1,13 @@
-apiVersion: v1
-kind: Service
+apiVersion: monitoring.coreos.com/v1alpha1
+kind: ScrapeConfig
 metadata:
-  labels:
-    app: truenas
-  name: truenas
-spec:
-  ports:
-  - name: metrics
-    port: 2003
-    protocol: UDP
-    targetPort: 2003
-  type: ClusterIP
-status:
-  loadBalancer: {}
----
-kind: Endpoints
-apiVersion: v1
-metadata:
-  name: truenas
-subsets:
-  - addresses:
-      - ip: 192.168.1.19 #replace with programatic
-    ports:
-      - name: metrics
-        port: 2003
----
-apiVersion: monitoring.coreos.com/v1
-kind: ServiceMonitor
-metadata:
-  labels:
-    k8s-app: truenas
   name: truenas
   namespace: monitoring
+  labels:
+    prometheus: system-monitoring-prometheus
 spec:
-  endpoints:
-  - interval: 30s
-    port: metrics
-  namespaceSelector:
-    matchNames:
-    - default
-  selector:
-    matchLabels:
-      app: truenas
+  staticConfigs:
+    - labels:
+        job: truenas
+      targets:
+        - 172.31.0.15:9109
