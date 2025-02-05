@@ -19,7 +19,8 @@ spec:
         prometheus:
         prometheusSpec:
             scrapeConfigSelector:
-              prometheus: system-monitoring-prometheus
+              matchLabels:
+                prometheus: system-monitoring-prometheus
         grafana:
           ingress:
             enabled: true
