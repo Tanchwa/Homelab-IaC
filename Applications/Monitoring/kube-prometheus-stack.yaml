@@ -16,6 +16,10 @@ spec:
     helm:
       valueFiles: []
       values: |
+        prometheus:
+        prometheusSpec:
+            scrapeConfigSelector:
+              prometheus: system-monitoring-prometheus
         grafana:
           ingress:
             enabled: true
