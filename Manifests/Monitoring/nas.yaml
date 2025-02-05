@@ -10,4 +10,4 @@ spec:
     - labels:
         job: truenas
       targets:
-        - 172.31.0.15:9109
+        - 172.31.0.15:9108

@@ -18,9 +18,7 @@ spec:
       values: |
         prometheus:
           prometheusSpec:
-            scrapeConfigSelector:
-              matchLabels:
-                prometheus: system-monitoring-prometheus
+            scrapeConfigSelector: {} #match all
         grafana:
           ingress:
             enabled: true
