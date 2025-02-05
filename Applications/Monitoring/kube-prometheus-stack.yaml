@@ -17,7 +17,7 @@ spec:
       valueFiles: []
       values: |
         prometheus:
-        prometheusSpec:
+          prometheusSpec:
             scrapeConfigSelector:
               matchLabels:
                 prometheus: system-monitoring-prometheus
