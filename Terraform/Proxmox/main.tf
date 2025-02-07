@@ -3,7 +3,8 @@ module "home_assistant" {
 
   proxmox_node_name = "proxmox"
   home_assistant = {
-    vm_id = 400
+    vm_id         = 400
+    image_version = "14.2"
   }
 
   ssh_private_key_path = var.ssh_private_key_path
