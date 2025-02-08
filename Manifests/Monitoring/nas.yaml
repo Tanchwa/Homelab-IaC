@@ -8,8 +8,8 @@ metadata:
 spec:
   jobLabel: truenas
   selector:
-    matchExpressions:
-    - {key: external-app, operator: Exists}
+    matchLabels:
+      - external-app: truenas-monitoring
   namespaceSelector:
     matchNames:
     - kube-system
