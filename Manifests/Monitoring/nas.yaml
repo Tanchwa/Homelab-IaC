@@ -39,4 +39,5 @@ spec:
       protocol: UDP
       port: 9109
       targetPort: 9109
-  externalIPs: 172.31.0.15
+  externalIPs:
+    - 172.31.0.15
