@@ -9,7 +9,7 @@ spec:
   jobLabel: truenas
   selector:
     matchLabels:
-      - external-app: truenas-monitoring
+      external-app: truenas-monitoring
   namespaceSelector:
     matchNames:
     - kube-system
