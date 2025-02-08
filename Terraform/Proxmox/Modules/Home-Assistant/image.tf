@@ -29,7 +29,7 @@ resource "proxmox_virtual_environment_download_file" "home_assistant_img" {
 
 resource "null_resource" "unpack_home_assistant_img" {
   triggers = {
-    always_run = timestamp()
+    download_file_id = proxmox_virtual_environment_download_file.home_assistant_img.id
   }
 
   connection {
@@ -46,6 +46,4 @@ resource "null_resource" "unpack_home_assistant_img" {
   }
 
 
-
-  depends_on = [proxmox_virtual_environment_download_file.home_assistant_img]
 }
