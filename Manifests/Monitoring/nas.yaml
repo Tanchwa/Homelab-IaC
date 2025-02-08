@@ -31,11 +31,11 @@ spec:
       protocol: TCP
       port: 9108
       targetPort: 9108
-    - name: 9109-TCP
+    - name: 9109-tcp
       protocol: TCP
       port: 9109
       targetPort: 9109
-    - name: 9109-UDP
+    - name: 9109-udp
       protocol: UDP
       port: 9109
       targetPort: 9109
