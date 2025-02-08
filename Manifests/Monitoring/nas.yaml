@@ -1,13 +1,42 @@
-apiVersion: monitoring.coreos.com/v1alpha1
-kind: ScrapeConfig
+---
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
 metadata:
-  name: truenas
-  namespace: monitoring
+  name: truenas-monitoring
   labels:
     prometheus: system-monitoring-prometheus
 spec:
-  staticConfigs:
-    - labels:
-        job: truenas
-      targets:
-        - 172.31.0.15:9108
+  jobLabel: truenas
+  selector:
+    matchExpressions:
+    - {key: external-app, operator: Exists}
+  namespaceSelector:
+    matchNames:
+    - kube-system
+    - monitoring
+  endpoints:
+  - port: monitoring
+    interval: 15s
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    external-app: truenas-monitoring
+  name: truenas-monitoring
+  namespace: monitoring
+spec:
+  ports:
+    - name: monitoring
+      protocol: TCP
+      port: 9108
+      targetPort: 9108
+    - name: 9109-TCP
+      protocol: TCP
+      port: 9109
+      targetPort: 9109
+    - name: 9109-UDP
+      protocol: UDP
+      port: 9109
+      targetPort: 9109
+  externalIPs: 172.31.0.15
