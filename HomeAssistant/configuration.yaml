@@ -15,11 +15,13 @@ input_boolean:
     initial: off
     icon: mdi:stop-circle-outline
 
-light: !include_dir_merge_named Devices/light/
-mediaplayer: !include_dir_merge_named Devices/mediaplayer/
-automation: !include_dir_merge_list Automations/
+homeassistant:
+  packages:
+    lights: !include Packages/Lights/main.yaml
+    mediaplayers: !include Packages/Media_Players/main.yaml
+
+automation mine: !include_dir_merge_list Automations/
+automation core: !include automations.yaml
 script: !include scripts.yaml
 scene: !include scenes.yaml
-groups: !include_dir_merge_named Rooms/
-sensor: !incude_dir_m
 
