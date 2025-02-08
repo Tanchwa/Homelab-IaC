@@ -1,0 +1,5 @@
+- platform: group
+  name: 'Test Light Group'
+  unique_id: 'test_group'
+  entities:
+    - light.yeelight_<model_name>_<serial_number>

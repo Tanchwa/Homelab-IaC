@@ -1,0 +1,7 @@
+- platform: yeelight
+  devices:
+    192.168.1.1:
+      name: Friendly Name
+      unique_id: 
+    other_IP:
+      name: Friendly Name2
