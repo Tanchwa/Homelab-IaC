@@ -10,10 +10,6 @@ spec:
   selector:
     matchLabels:
       external-app: truenas-monitoring
-  namespaceSelector:
-    matchNames:
-    - kube-system
-    - monitoring
   endpoints:
   - port: monitoring
     interval: 15s
