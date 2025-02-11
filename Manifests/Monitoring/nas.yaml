@@ -4,7 +4,7 @@ kind: ServiceMonitor
 metadata:
   name: truenas-monitoring
   labels:
-    prometheus: system-monitoring-prometheus
+    release: kube-prometheus-stack
 spec:
   jobLabel: truenas
   selector:
