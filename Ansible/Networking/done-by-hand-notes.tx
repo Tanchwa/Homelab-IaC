@@ -40,3 +40,9 @@ did some uqmi commands, check this website. https://openwrt.org/docs/guide-user/
 
 uqmi -d /dev/cdc-wdm0 --start-network internet --autoconnect where "internet" is the APN name
 i believe I had to do --apn internet 
+
+DNS
+had to check override dns in dns settings in tailscale
+on remote router, uncheck use peer dns, and be sure to enter the desired upstream dns server
+configure dns hijacking
+if you plan to use DNS from a second hop upstream server, Authoritatve needs to be set to false in DNS/DHCP general settings
