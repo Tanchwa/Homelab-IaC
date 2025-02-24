@@ -15,10 +15,10 @@
 #    port forwarding to the correct k8s load balancer ingresses
 #
 #IDS to be determined
-
+# use -e or --extra-vars for the tailscale exit node ip, usually 100.64.160.31
 
 - name: Set Up Remote Router
-  hosts: remote_router
+  hosts: openwrt
   gather_facts: no
   roles:
     - ansible-openwrt
@@ -26,6 +26,7 @@
       vars:
         openwrt_scp_if_ssh: yes
         openwrt_install_recommended_packages: yes
+        main_router_tailscale_ip: 
   tasks:
     - name: install serial exposure module
       opkg:
@@ -43,10 +44,10 @@
         command: set
         key: network.wwan
         value:
-          protocol: qmi
+          proto: qmi
           device: /dev/cdc-wdm0
           apn: internet #may want to variablize this one
-          pdptype: ip
+          pdptype: ipv4v6
     - name: start wwan card
       shell:
         cmd: uqmi -d /dev/cdc-wdm0 --start-network internet --autoconnect
@@ -61,10 +62,17 @@
     - name: init tailscale
       shell:
         cmd: tailscale up --advertise-routes 172.31.128.0/17 --accept-routes --exit-node "{{ main_router_tailscale_ip }}" --exit-node-allow-lan-access true --netfilter-mode off --snat-subnet-routes true
-    - name: setup tailscale firewall zone
+    - name: add tailscale interface
       uci:
-        command: set
-        key: firewall.tailscale
+        command: add
+        key: network.interface
+        name: tailscale
+        protocol: none
+    - name: setup tailscale firewall zone #TODO currently this is overriding the last item in the current firewall config (the force DNS config)
+      uci:
+        command: add
+        config: firewall
+        type: zone
         value:
           name: tailscale
           input: ACCEPT
@@ -73,7 +81,7 @@
           masq: 1
           mtu_fix: 1
           enabled: 1
-    - name: list network
+    - name: add list network to tailscale zone
       uci:
         command: add_list
         key: firewall.tailscale.network
@@ -99,6 +107,26 @@
         value:
           src: tailscale
           dest: wan
+    - name: delete old dns forwarding servers
+      uci:
+        command: delete
+        key: network.wan.dns
+    - name: set new dns upstream forwarding
+      uci:
+        command: add_list
+        key: network.wan.dns
+        value: "{{ item }}"
+      loop:
+        - 172.31.0.1
+        - 100.100.100.100
+    - name: turn off peer dns
+      uci:
+        command: set
+        key: network.wan.peerdns
+        value: "0"
+      loop:
+        - network.wan.peerdns
+          #- network.wan6.peerdns don't have DNS set up on ipv6 yet
     - name: Force DNS Through Router
       uci:
         command: set
