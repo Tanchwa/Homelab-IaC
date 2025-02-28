@@ -14,20 +14,36 @@ spec:
     targetRevision: 51.x
     chart: kube-prometheus-stack
     helm:
-      valueFiles: []
-      parameters:
-        - name: ingress.ingressClassName
-          value: "private-nginx"
-        - name: ingress.enabled
-          value: "true"
-        - name: ingress.annotations
-          value: |
-            cert-manager.io/cluster-issuer: "cloudflare-issuer"
-        - name: ingress.hosts
-          value: "grafana.andrewsutliff.com"
-        - name: ingress.paths
-          value: "/"
-  sources: []
+      values: |
+        prometheus:
+          prometheusSpec:
+            serviceMonitorSelector: {}
+            serviceMonitorNamespaceSelector: {}
+        grafana:
+          ingress:
+            enabled: true
+            annotations:
+              cert-manager.io/cluster-issuer: "cloudflare-issuer"
+              kubernetes.io/ingress.class: "public-nginx"
+            hosts: 
+              - "grafana.andrewsutliff.com"
+            tls:
+              - hosts:
+                  - "grafana.andrewsutliff.com"
+                secretName: grafana-http-tls
+            paths: 
+              - "/"
+        alertmanager:
+          ingress:
+            enabled: true
+            annotations:
+              cert-manager.io/cluster-issuer: "cloudflare-issuer"
+              kubernetes.io/ingress.class: "private-nginx"
+            hosts: 
+              - "alertmanager.andrewsutliff.com"
+            paths: 
+              - "/"
+    sources: []
   project: default
   syncPolicy:
     automated:
