@@ -1,0 +1,115 @@
+---
+# tasks file for pxe-server
+
+PXE servers have 2 parts:
+
+TFTP server to serve the bootloader and other files necessary for network booting.
+DHCP configuration to respond to PXE requests with info including where to find the TFTP server and the bootloader file to start the network booting process.
+
+https://github.com/ansibleguy/collection_opnsense/
+this is a collection of pluggins to be used with opnsense
+
+some info on the steps needed from https://www.molnar-peter.hu/en/ubuntu-jammy-netinstall-pxe.html
+This example shows how to configure ISC DHCP server to boot a machine using a TFTP server.
+
+example ansible config here, not using opnsense https://opensource.com/article/19/5/hardware-bootstrapping-ansible
+
+example using opnsense, but not automating it https://gist.github.com/azhang/d8304d8dd4b4c165b67ab57ae7e1ede0
+
+allow booting;
+allow bootp;
+option arch code 93 = unsigned integer 16;
+host ubuntu {
+             hardware ethernet xx:xx:xx:xx:xx:xx;
+             if option arch = 00:07 {
+                     filename "boot/bootx64.efi";
+             } else {
+                     filename "boot/pxelinux.0";
+             }
+             next-server x.x.x.x;
+             fixed-address x.x.x.x;
+     }
+
+# Get installer ISO file and copy the following grub files to the TFTP directory.
+
+Jammy ISO:
+/boot/fonts/unicode.pf2
+/EFI/boot/bootx64.efi
+/EFI/boot/grubx64.efi
+
+# Download pxelinux packages and extract the following files to the TFTP directory.
+
+$ apt download pxelinux syslinux-common
+
+pxelinux:
+/usr/lib/PXELINUX/pxelinux.0
+
+syslinux-common:
+/usr/lib/syslinux/modules/bios/ldlinux.c32
+/usr/lib/syslinux/modules/bios/libutil.c32
+/usr/lib/syslinux/modules/bios/menu.c32
+
+#The following example file layout can be used on the TFTP server.
+
+.
+├── boot
+│   ├── bootx64.efi
+│   ├── grubx64.efi
+│   ├── grub
+│   │   ├── font.pf2
+│   │   ├── grub.cfg
+│   │   └── x86_64-efi
+│   │       ├── command.lst
+│   │       ├── crypto.lst
+│   │       ├── fs.lst
+│   │       └── terminal.lst
+│   ├── jammy
+│   │   ├── initrd
+│   │   └── vmlinuz
+│   ├── ldlinux.c32 -> syslinux/bios/ldlinux.c32
+|   ├── libutil.c32 -> syslinux/bios/libutil.c32
+|   ├── menu.c32 -> syslinux/bios/menu.c32
+│   ├── pxelinux.cfg
+│   │   └── default
+│   ├── pxelinux.0
+|   └── syslinux
+|       └── bios
+│           ├── ldlinux.c32
+│           ├── libutil.c32
+│           └── menu.c32
+└── grub -> boot/grub
+
+#Sample configuration for grub in grub.cfg.
+
+set timeout=30
+
+loadfont unicode
+
+set menu_color_normal=white/black
+set menu_color_highlight=black/light-gray
+
+menuentry "Install Ubuntu Jammy (22.04)" {
+        set gfxpayload=keep
+        linux   /boot/jammy/vmlinuz ip=dhcp cloud-config-url=/dev/null url=http://x.x.x.x/jammy-live-server-amd64.iso autoinstall ds="nocloud-net;s=http://x.x.x.x/jammy/" --- # Don't forget the slash at the end.
+        initrd  /boot/jammy/initrd
+}
+
+#An example configuration in pxelinux.cfg/default.
+
+default menu.c32
+menu title Ubuntu installer
+
+label jammy
+        menu label Install Ubuntu J^ammy (22.04)
+        menu default
+        kernel jammy/vmlinuz
+        initrd jammy/initrd
+        append ip=dhcp cloud-config-url=/dev/null url=http://x.x.x.x/jammy-live-server-amd64.iso autoinstall ds=nocloud-net;s=http://x.x.x.x/jammy/ # Don't forget the slash at the end.
+
+prompt 0
+timeout 300
+
+# At least two files needs to be placed on the webserver.
+
+# http://x.x.x.x/jammy/user-data contains the autoinstaller configuration, see below.
+# http://x.x.x.x/jammy/meta-data can be empty, but must exists.
