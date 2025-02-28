@@ -17,6 +17,8 @@ reboot to eMMC 0110, recreate the overlayfs
 boot to NAND, 1010
 overlayfs - mmcblk0p66, should now be at arround 7GiB
 run resize.f2fs /dev/mmcblk0p66
+helpful redhat link if I want to automate this in the future https://www.redhat.com/en/blog/automating-logical-volume-manager
+
 
 installed usb serial exposure module
 opkg install kmod-usb-serial-option
