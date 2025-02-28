@@ -1,0 +1,148 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mosquitto
+  labels:
+    app.kubernetes.io/name: mosquitto
+spec:
+  revisionHistoryLimit: 3
+  replicas: 1
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: mosquitto
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: mosquitto
+    spec:
+      containers:
+        - name: mosquitto
+          image: "eclipse-mosquitto:2.0.18"
+          imagePullPolicy: IfNotPresent
+          ports:
+            - name: mqtt
+              containerPort: 1883
+              protocol: TCP
+          volumeMounts:
+            - name: mosquitto-data
+              mountPath: /mosquitto/data
+            - name: mosquitto-conf
+              mountPath: /mosquitto/config
+            - name: mosquitto-base-config
+              mountPath: /mosquitto/config/mosquitto.conf
+              subPath: mosquitto.conf
+          livenessProbe:
+            tcpSocket:
+              port: 1883
+            initialDelaySeconds: 0
+            failureThreshold: 3
+            timeoutSeconds: 1
+            periodSeconds: 60
+          readinessProbe:
+            tcpSocket:
+              port: 1883
+            initialDelaySeconds: 0
+            failureThreshold: 3
+            timeoutSeconds: 1
+            periodSeconds: 60
+          startupProbe:
+            tcpSocket:
+              port: 1883
+            initialDelaySeconds: 0
+            failureThreshold: 30
+            timeoutSeconds: 1
+            periodSeconds: 5
+      volumes:
+        - name: mosquitto-data
+          persistentVolumeClaim:
+            claimName: mosquitto-data
+        - name: mosquitto-conf
+          persistentVolumeClaim:
+            claimName: mosquitto-conf
+        - name: mosquitto-base-config
+          configMap:
+            name: mosquitto-base-config
+---
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: mosquitto-data
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 5Gi
+---
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: mosquitto-conf
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 100Mi
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: mosquitto
+  labels:
+    app.kubernetes.io/name: mosquitto
+spec:
+  type: ClusterIP
+  ports:
+  - port: 1883
+    targetPort: mqtt
+    protocol: TCP
+    name: mqtt
+  selector:
+    app.kubernetes.io/name: mosquitto
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: mosquitto-base-config
+data:
+  mosquitto.conf: |
+    # Ip/hostname to listen to.
+    # If not given, will listen on all interfaces
+    #bind_address
+
+    # Port to use for the default listener.
+    port 1883
+
+    # Allow anonymous users to connect?
+    # If not, the password file should be created
+    allow_anonymous true
+
+    # The password file.
+    # Use the `mosquitto_passwd` utility.
+    # If TLS is not compiled, plaintext "username:password" lines bay be used
+    # password_file /mosquitto/config/passwd
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: mosquitto
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /
+spec:
+  ingressClassName: iot-nginx
+  rules:
+    - host: mqqt.andrewsutliff.com
+      http:
+        paths:
+        - path: /
+          pathType: Prefix
+          backend:
+            service:
+              name: mosquitto
+              port:
+                name: "mqqt"
+

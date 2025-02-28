@@ -1,0 +1,16 @@
+routers:
+  children:
+    openwrt:
+      hosts:
+        remote_router:
+          ansible_host: 172.31.128.1
+          ansible_user: root
+    pfsense:
+      hosts:
+        main_router:
+          ansible_user: root
+          ansible_host: 172.31.0.1
+
+network:
+  children:
+    routers:
