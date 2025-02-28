@@ -1,17 +1,158 @@
 
-at the end of this play, the router should
+#at the end of this play, the router should
 
-have opnsense installed with 
-  items for PXE
-    PXE server installed
-    DHCP server installed
-    http server installed
-  items for tailscale
-    tailscale
-    advertise local routes over tailscale with correct CIDRS
-    act as an exit node
-    set default routes for local and remote LANs
-  items for firewall
-    port forwarding to the correct k8s load balancer ingresses
+#have opnsense installed with 
+#  items for PXE
+#    PXE server installed
+#    DHCP server installed
+#    http server installed
+#  items for tailscale
+#    tailscale
+#    advertise local routes over tailscale with correct CIDRS
+#    act as an exit node
+#    set default routes for local and remote LANs
+#  items for firewall
+#    port forwarding to the correct k8s load balancer ingresses
+#
+#IDS to be determined
+# use -e or --extra-vars for the tailscale exit node ip, usually 100.64.160.31
 
-IDS to be determined
+- name: Set Up Remote Router
+  hosts: openwrt
+  gather_facts: no
+  roles:
+    - ansible-openwrt
+    - role: ansible-openwrt
+      vars:
+        openwrt_scp_if_ssh: yes
+        openwrt_install_recommended_packages: yes
+        main_router_tailscale_ip: 100.64.160.31
+  tasks:
+    - name: install serial exposure module
+      opkg:
+        name: kmod-usb-serial-option
+    - name: install uqmi requirements
+      opkg:
+        name: "{{ item }}"
+        state: present
+      loop:
+        - kmod-usb-net-qmi-wwan
+        - uqmi
+        - luci-proto-qmi
+    - name: set wwan interface
+      uci:
+        command: section
+        config: network
+        name: wwan
+        type: interface
+        find_by:
+          ifname: wwan
+        value:
+          proto: qmi
+          device: /dev/cdc-wdm0
+          apn: internet
+          pdptype: ipv4v6
+    - name: check if wwan is running
+      shell:
+        cmd: uqmi -d /dev/cdc-wdm0 --get-data-status
+      register: connection_status
+    - name: start wwan card
+      shell:
+        cmd: uqmi -d /dev/cdc-wdm0 --start-network internet --autoconnect
+      when: connection_status.stdout != "\"connected\""
+    - name: commit changes
+      uci:
+        command: commit
+      notify: restart network
+    - name: install tailscale
+      opkg:
+        name: tailscale
+        state: present
+    - name: init tailscale
+      shell:
+        cmd: tailscale up --advertise-routes=172.31.128.0/17 --accept-routes --exit-node="{{ main_router_tailscale_ip }}" --exit-node-allow-lan-access=true --netfilter-mode=off --snat-subnet-routes=true --auth-key="{{ tailscale_auth_key }}"
+    - name: add tailscalei interface
+      uci:
+        command: section
+        config: network
+        name: tailscale
+        type: interface
+        find_by:
+          device: tailscale0
+        value:
+          proto: none
+          device: tailscale0
+    - name: setup tailscale firewall zone 
+      uci:
+        #command: add
+        command: set
+        key: firewall.@zone[-1]
+        #config: firewall
+        #type: zone
+        value:
+          name: tailscale
+          input: ACCEPT
+          output: ACCEPT
+          forward: ACCEPT
+          masq: 1
+          mtu_fix: 1
+          enabled: 1
+    - name: add list network to tailscale zone
+      uci:
+        command: add_list
+        key: firewall.@zone[-1].network
+        value: tailscale
+    - name: forward tailscale to lan
+      uci:
+        command: set
+        key: firewall.@forwarding[0]
+        value:
+          src: tailscale
+          dest: lan
+    - name: forward lan to tailscale
+      uci:
+        command: set
+        key: firewall.@forwarding[1]
+        value:
+          src: lan
+          dest: tailscale
+    - name: forward tailscale to wan
+      uci:
+        command: set
+        key: firewall.@forwarding[2]
+        value:
+          src: tailscale
+          dest: wan
+    - name: delete old dns forwarding servers
+      uci:
+        command: delete
+        key: network.wan.dns
+    - name: set new dns upstream forwarding
+      uci:
+        command: add_list
+        key: network.wan.dns
+        value: "{{ item }}"
+      loop:
+        - 172.31.0.1
+        - 100.100.100.100
+    - name: turn off peer dns
+      uci:
+        command: set
+        key: "{{ item }}"
+        value: "0"
+      loop:
+        - network.wan.peerdns
+          #- network.wan6.peerdns don't have DNS set up on ipv6 yet
+    - name: Force DNS Through Router
+      uci:
+        command: set
+        key: firewall.@redirect[-1]
+        value:
+          target: DNAT
+          name: 'Force DNS'
+          src: lan
+          src_dport: 53
+    - name: commit changes
+      uci:
+        command: commit
+      notify: restart network

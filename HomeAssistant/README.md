@@ -1,3 +1,0 @@
-## Planned Folder Structure
-```
-

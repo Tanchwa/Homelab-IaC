@@ -2,9 +2,50 @@ notes of steps done by hand at first set up to configure with ansible later
 
 
 remote router setup:
-$ uci set network.lan.ipaddr="192.168.128.1/17"
+$ uci set network.lan.ipaddr="172.31.128.1/17"
 $ uci commit network
 $ service network restart
 
 opkg update
 opkg install lsblk parted
+
+boot to NAND, 1010
+parted /dev/mmcblk0p5 
+make it end at arround 7.2GiB
+* this will delete the overlayfs sub-partitions on the eMMC boot
+reboot to eMMC 0110, recreate the overlayfs
+boot to NAND, 1010
+overlayfs - mmcblk0p66, should not be at arround 7GiB
+run resize.f2fs /dev/mmcblk0p66
+
+installed usb serial exposure module
+opkg install kmod-usb-serial-option
+
+install qmi wwan driver amd uqmi control utility and luci-proto-qmi for GUI config of modem
+opkg install kmod-usb-net-qmi-wwan uqmi luci-proto-qmi
+
+the device gets exposed on /dev/cdc-wdm0, you can ls this and check
+
+opkg install minicom
+
+added the following config to /etc/config/network
+
+config interface 'wwan'
+        option proto 'qmi'
+        option device '/dev/cdc-wdm0'
+        option apn 'internet'
+        option pdptype 'ip'
+
+did some uqmi commands, check this website. https://openwrt.org/docs/guide-user/network/wan/wwan/ltedongle 
+
+uqmi -d /dev/cdc-wdm0 --start-network internet --autoconnect where "internet" is the APN name
+i believe I had to do --apn internet 
+
+DNS
+had to check override dns in dns settings in tailscale
+on remote router, uncheck use peer dns, and be sure to enter the desired upstream dns server
+configure dns hijacking
+if you plan to use DNS from a second hop upstream server, Authoritatve needs to be set to false in DNS/DHCP general settings
+
+after setting up everything, opkg stopped working because it uses wget and wget uses ipv6 by default
+I have no DNS set up for ipv6 right now, so I had to make an alias to wget to use the -4 option all the time

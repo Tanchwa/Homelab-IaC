@@ -1,39 +1,44 @@
----
-apiVersion: monitoring.coreos.com/v1
-kind: ServiceMonitor
-metadata:
-  name: truenas-monitoring
-  labels:
-    release: kube-prometheus-stack
-spec:
-  jobLabel: truenas
-  selector:
-    matchLabels:
-      external-app: truenas-monitoring
-  endpoints:
-  - port: monitoring
-    interval: 15s
----
 apiVersion: v1
 kind: Service
 metadata:
   labels:
-    external-app: truenas-monitoring
-  name: truenas-monitoring
-  namespace: monitoring
+    app: truenas
+  name: truenas
 spec:
   ports:
-    - name: monitoring
-      protocol: TCP
-      port: 9108
-      targetPort: 9108
-    - name: 9109-tcp
-      protocol: TCP
-      port: 9109
-      targetPort: 9109
-    - name: 9109-udp
-      protocol: UDP
-      port: 9109
-      targetPort: 9109
-  externalIPs:
-    - 172.31.0.15
+  - name: metrics
+    port: 2003
+    protocol: UDP
+    targetPort: 2003
+  type: ClusterIP
+status:
+  loadBalancer: {}
+---
+kind: Endpoints
+apiVersion: v1
+metadata:
+  name: truenas
+subsets:
+  - addresses:
+      - ip: 192.168.1.19 #replace with programatic
+    ports:
+      - name: metrics
+        port: 2003
+---
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  labels:
+    k8s-app: truenas
+  name: truenas
+  namespace: monitoring
+spec:
+  endpoints:
+  - interval: 30s
+    port: metrics
+  namespaceSelector:
+    matchNames:
+    - default
+  selector:
+    matchLabels:
+      app: truenas

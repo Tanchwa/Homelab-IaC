@@ -28,16 +28,9 @@ resource "proxmox_virtual_environment_vm" "home_assistant_vm" {
     dedicated = 4295
   }
 
-  bios = "ovmf"
-
-  efi_disk {
-    datastore_id = "local-lvm"
-    type         = "2m"
-  }
-
   disk {
     datastore_id = "local-lvm"
-    file_id      = "local:iso/haos_generic-x86-${var.home_assistant.image_version}.qcow2.img"
+    file_id      = "local:iso/haos_generic-x86-12.2.img"
     interface    = "scsi0"
     size         = 32
   }
@@ -58,7 +51,6 @@ resource "proxmox_virtual_environment_vm" "home_assistant_vm" {
     #user_data_file_id = proxmox_virtual_environment_file.cloud_config.id
   }
 
-
   network_device {
     bridge = "vmbr0"
   }
@@ -72,6 +64,8 @@ resource "proxmox_virtual_environment_vm" "home_assistant_vm" {
   }
 
   serial_device {}
+
+  depends_on = [null_resource.unpack_home_assistant_img]
 }
 
 
@@ -86,11 +80,16 @@ resource "tls_private_key" "ha_vm_key" {
   rsa_bits  = 2048
 }
 
-output "ha_vm" {
-  value = {
-    password    = random_password.ha_vm_password.result
-    private_key = tls_private_key.ha_vm_key.private_key_pem
-    public_key  = tls_private_key.ha_vm_key.public_key_openssh
-  }
+output "ha_vm_password" {
+  value     = random_password.ha_vm_password.result
   sensitive = true
+}
+
+output "ha_vm_private_key" {
+  value     = tls_private_key.ha_vm_key.private_key_pem
+  sensitive = true
+}
+
+output "ha_vm_public_key" {
+  value = tls_private_key.ha_vm_key.public_key_openssh
 }

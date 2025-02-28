@@ -6,8 +6,7 @@ variable "proxmox_node_name" {
 variable "home_assistant" {
   description = "Home Assistant VM Configuration"
   type = object({
-    vm_id         = number
-    image_version = string
+    vm_id = number
   })
 }
 
@@ -20,4 +19,4 @@ variable "ssh_password" {
   description = "The Password for the SSH Private Key for Proxmox"
   type        = string
   sensitive   = true
-} //only used for remote exec task that is now commented out
+}

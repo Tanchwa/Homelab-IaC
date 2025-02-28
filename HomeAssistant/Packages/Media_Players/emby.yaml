@@ -1,6 +1,0 @@
-media_player:
-  - platform: emby
-    host: emby.mediaserver.svc.cluster.local
-    api_key: !secret emby_api_key
-    port: 8096
-    ssl: false

@@ -17,7 +17,7 @@ spec:
       valueFiles: []
       values: |
         image:
-          tag: v1.125.7
+          tag: v1.112.1
         immich:
           metrics:
             enabled: true
