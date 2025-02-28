@@ -23,3 +23,6 @@ scene: !include scenes.yaml
 groups: !include_dir_merge_named Rooms/
 sensor: !incude_dir_m
 
+## NEW STUFF 
+packages:
+  lights: !incude Packages/Lights/main.yaml
