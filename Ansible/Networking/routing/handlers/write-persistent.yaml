@@ -1,6 +1,0 @@
-- name: Save Current '{{ table }}' State to System File
-  community.general.iptables_state:
-    ip_version: ipv4
-    table: '{{ table }}'
-    state: saved
-    path: /etc/iptabes/rules.v4

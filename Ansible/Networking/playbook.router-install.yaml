@@ -19,8 +19,6 @@
 - name: Setup Local Router
   hosts: pfsense
   gather_facts: no
-  roles:
-    - pfsensible
   vars:
     k8s_private_ingress_lb_ip: 172.31.0.110
     k8s_public_ingress_lb_ip: 172.31.0.109
@@ -63,7 +61,7 @@
         ipaddr: 172.31.0.200
   tasks:
     - name: set wan interface
-      pfsense_interface:
+      pfsensible.core.pfsense_interface:
         interface: ixl1
         descr: WAN
         enable: true
@@ -72,7 +70,7 @@
         blockpriv: true
         blockbogons: true
     - name: set lan interface
-      pfsense_interface:
+      pfsensible.core.pfsense_interface:
         interface: ixl0
         descr: LAN
         enable: true
@@ -80,7 +78,7 @@
         ipv4_address: 172.31.0.1
         ipv4_prefixlen: 17
     - name: set general settings
-      pfsense_setup:
+      pfsensible.core.pfsense_setup:
         dns_addresses:
           - 1.1.1.1
           - 8.8.8.8
@@ -89,7 +87,7 @@
         language: en
     #-name: configure DHCP Server #Unavailable currently
     - name: configure static DHCP leases
-      pfsense_dhcp_static:
+      pfsensible.core.pfsense_dhcp_static:
         name: "{{ item.key }}"
         macaddr: "{{ item.value.macaddr }}"
         hostname: "{{ item.key }}"
@@ -106,45 +104,45 @@
         - tftpd
     #- name: setup tailscale
     - name: dns resolver settings
-      pfsense_dns_resolver:
+      pfsensible.core.pfsense_dns_resolver:
         dnssec: true
         forwarding: true
     - name: set dns host overrides for static leases
-      pfsense_dns_resolver:
+      pfsensible.core.pfsense_dns_resolver:
         hosts:
           - domain: andrewsutliff.com
             host: "{{ item.key }}"
             ip: "{{ item.value.ipaddr }}"
       loop: "{{ lookup('dict', static_addresses) }}"
     - name: set dns host overrides for external facing applications
-      pfsense_dns_resolver:
+      pfsensible.core.pfsense_dns_resolver:
         hosts:
           - domain: andrewsutliff.com
             host: "{{ item }}"
             ip: "{{ k8s_public_ingress_lb_ip }}"
       loop: "{{ public_application_hosts }}"
     - name: set dns host overrides for internal facing applications
-      pfsense_dns_resolver:
+      pfsensible.core.pfsense_dns_resolver:
         hosts:
           - domain: andrewsutliff.com
             host: "{{ item }}"
             ip: "{{ k8s_private_ingress_lb_ip }}"
       loop: "{{ private_application_hosts }}"
     - name: set dns domain overrides for azure resources
-      pfsense_dns_resolver:
+      pfsensible.core.pfsense_dns_resolver:
         domainoverrides:
           - domain: "{{ item }}"
             ip: "{{ azure_dns_forwarder_ip }}"
       loop: "{{ azure_dns_domain_overrides }}"
     #- name: add ddns
     - name: add DNAT to public facing applications
-      pfsense_nat_port_forward:
+      pfsensible.core.pfsense_nat_port_forward:
         descr: External to Public Ingress
         interface: WAN
         protocol: tcp/udp
         source: any
         destination: WAN:443
-        target: "{{ k8s_public_ingress_lb_ip }}":443
+        target: '"{{ k8s_public_ingress_lb_ip }}":443'
         state: present
 
 - name: Setup Remote Router
