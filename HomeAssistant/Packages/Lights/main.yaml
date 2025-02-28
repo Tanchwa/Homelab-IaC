@@ -1,0 +1,4 @@
+light yeelight: !include yeelight.yaml
+automation lights: !include
+switches: !include switches.yaml
+group lights: !include group.yaml
