@@ -16,8 +16,134 @@
 #
 #IDS to be determined
 # use -e or --extra-vars for the tailscale exit node ip, usually 100.64.160.31
+- name: Setup Local Router
+  hosts: pfsense
+  gather_facts: no
+  vars:
+    k8s_private_ingress_lb_ip: 172.31.0.110
+    k8s_public_ingress_lb_ip: 172.31.0.109
+    azure_dns_forwarder_ip: 10.0.1.132
+    private_application_hosts:
+      - alertmanager
+      - grafana
+      - immich
+      - longhorn
+      - prowlarr
+      - qbittorrent
+      - radarr
+      - sonarr
+      - vikunja
+    public_application_hosts: 
+      - emby
+    azure_dns_domain_overrides:
+      - privatelink.vaultcore.azure.net 
+      - cloudapp.net
+      - vault.azure.net
+      - sutliffaro.com
+    static_addresses:
+      k8s-controlplane:
+        macaddr: f4:8e:38:82:a9:dc
+        ipaddr: 172.31.0.4
+      k8s-node01:
+        macaddr: 78:2b:cb:8c:aa:dc
+        ipaddr: 172.31.0.10
+      k8s-node02:
+        macaddr: 0e:54:53:7c:a2:1f
+        ipaddr: 172.31.0.40
+      truenas:
+        macaddr: 74:56:3c:35:37:cc
+        ipaddr: 172.31.0.15
+      deco-xe75:
+        macaddr: f0:a7:31:69:7b:4d
+        ipaddr: 172.31.0.75
+      proxmox:
+        macaddr: ac:1f:6b:00:5d:10
+        ipaddr: 172.31.0.200
+  tasks:
+    - name: set wan interface
+      pfsensible.core.pfsense_interface:
+        interface: ixl1
+        descr: WAN
+        enable: true
+        ipv4_type: dhcp
+        #ipv6_type: dhcp6
+        blockpriv: true
+        blockbogons: true
+    - name: set lan interface
+      pfsensible.core.pfsense_interface:
+        interface: ixl0
+        descr: LAN
+        enable: true
+        ipv4_type: static
+        ipv4_address: 172.31.0.1
+        ipv4_prefixlen: 17
+    - name: set general settings
+      pfsensible.core.pfsense_setup:
+        dns_addresses: 1.1.1.1 8.8.8.8 #why is this not a list? dunno
+        dnsallowoverride: true
+        timezone: US/Eastern
+        language: en_US
+    #-name: configure DHCP Server #Unavailable currently
+    - name: configure static DHCP leases
+      pfsensible.core.pfsense_dhcp_static:
+        name: "{{ item.key }}"
+        macaddr: "{{ item.value.macaddr }}"
+        hostname: "{{ item.key }}"
+        ipaddr: "{{ item.value.ipaddr }}"
+      loop: "{{ lookup('dict', static_addresses) }}"
+    - name: install packages
+      package:
+        name: "{{ item }}"
+        state: present
+      loop:
+        - pfSense-pkg-sudo #needed for modules to run as root
+        - tailscale
+        - pfblockerng
+        - tftpd
+    #- name: setup tailscale
+    - name: dns resolver settings
+      pfsensible.core.pfsense_dns_resolver:
+        dnssec: true
+        forwarding: true
+    - name: set dns host overrides for static leases
+      pfsensible.core.pfsense_dns_resolver:
+        hosts:
+          - domain: andrewsutliff.com
+            host: "{{ item.key }}"
+            ip: "{{ item.value.ipaddr }}"
+      loop: "{{ lookup('dict', static_addresses) }}"
+    - name: set dns host overrides for external facing applications
+      pfsensible.core.pfsense_dns_resolver:
+        hosts:
+          - domain: andrewsutliff.com
+            host: "{{ item }}"
+            ip: "{{ k8s_public_ingress_lb_ip }}"
+      loop: "{{ public_application_hosts }}"
+    - name: set dns host overrides for internal facing applications
+      pfsensible.core.pfsense_dns_resolver:
+        hosts:
+          - domain: andrewsutliff.com
+            host: "{{ item }}"
+            ip: "{{ k8s_private_ingress_lb_ip }}"
+      loop: "{{ private_application_hosts }}"
+    - name: set dns domain overrides for azure resources
+      pfsensible.core.pfsense_dns_resolver:
+        domainoverrides:
+          - domain: "{{ item }}"
+            ip: "{{ azure_dns_forwarder_ip }}"
+      loop: "{{ azure_dns_domain_overrides }}"
+    #- name: add ddns
+    - name: add DNAT to public facing applications
+      pfsensible.core.pfsense_nat_port_forward:
+        descr: External to Public Ingress
+        interface: WAN
+        protocol: tcp/udp
+        source: any
+        destination: WAN:443
+        target: '"{{ k8s_public_ingress_lb_ip }}":443'
+        state: present
 
-- name: Set Up Remote Router
+- name: Setup Remote Router
   hosts: openwrt
   gather_facts: no
   roles:
@@ -26,8 +152,23 @@
       vars:
         openwrt_scp_if_ssh: yes
         openwrt_install_recommended_packages: yes
-        main_router_tailscale_ip: 100.64.160.31
+  vars:
+    main_router_tailscale_ip: 100.64.160.31
   tasks:
+    - name: change default lan interface ip
+      uci:
+        command: section
+        config: network
+        name: lan
+        type: interface
+        find_by:
+          device: br-lan
+        value:
+          proto: static
+          device: br-lan
+          ipaddr: 172.31.128.1/17
+          netmask: 225.225.128.0
+          ip6assign: 60
     - name: install serial exposure module
       opkg:
         name: kmod-usb-serial-option
@@ -46,7 +187,7 @@
         name: wwan
         type: interface
         find_by:
-          ifname: wwan
+          device: /dev/cdc-wdm0
         value:
           proto: qmi
           device: /dev/cdc-wdm0
