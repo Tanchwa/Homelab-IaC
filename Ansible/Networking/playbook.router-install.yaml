@@ -66,7 +66,7 @@
         descr: WAN
         enable: true
         ipv4_type: dhcp
-        ipv6_type: dhcp6
+        #ipv6_type: dhcp6
         blockpriv: true
         blockbogons: true
     - name: set lan interface
@@ -79,12 +79,10 @@
         ipv4_prefixlen: 17
     - name: set general settings
       pfsensible.core.pfsense_setup:
-        dns_addresses:
-          - 1.1.1.1
-          - 8.8.8.8
+        dns_addresses: 1.1.1.1 8.8.8.8 #why is this not a list? dunno
         dnsallowoverride: true
         timezone: US/Eastern
-        language: en
+        language: en_US
     #-name: configure DHCP Server #Unavailable currently
     - name: configure static DHCP leases
       pfsensible.core.pfsense_dhcp_static:
@@ -92,7 +90,7 @@
         macaddr: "{{ item.value.macaddr }}"
         hostname: "{{ item.key }}"
         ipaddr: "{{ item.value.ipaddr }}"
-      loop: "{{ lookup('dict', static_addresses }}"
+      loop: "{{ lookup('dict', static_addresses) }}"
     - name: install packages
       package:
         name: "{{ item }}"

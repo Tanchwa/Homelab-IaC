@@ -10,6 +10,7 @@ routers:
         main_router:
           ansible_user: admin
           ansible_host: 172.31.0.1
+          ansible_python_interpreter: /usr/local/bin/python3.11
 
 network:
   children:
