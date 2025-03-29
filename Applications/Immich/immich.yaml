@@ -11,13 +11,16 @@ spec:
   source:
     path: 'charts/immich'
     repoURL: 'https://immich-app.github.io/immich-charts'
-    targetRevision: v0.7.1
+    targetRevision: v0.9.2 #DO NOT UPGRADE TO VERSION 0.10.0 until you migrate postgresql!
+    # possible upgrade paths https://github.com/camrossi/home-cluster/blob/main/apps/immich/DB_Migration.md
+    # https://gist.github.com/kabakaev/1d8fa31d4e7fa8134c968101fa88d200
     chart: immich
     helm:
       valueFiles: []
       values: |
+        useDeprecatedPostgresChart: true
         image:
-          tag: v1.112.1
+          tag: v1.130.3
         immich:
           metrics:
             enabled: true
