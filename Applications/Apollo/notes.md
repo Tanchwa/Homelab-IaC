@@ -19,9 +19,6 @@ rover subgraph publish ${APOLLO_GRAPH_ID}@${VARIANT} \
   --name ${SUBGRAPH_NAME} \
   --routing-url http://${SUBGRAPH_NAME}.apollo.svc.cluster.local:4001/graphql \
   --schema ./subgraphs/${{SUBGRAPH_NAME}}/schema.graphql \
-  --variant current \
-  --key ${APOLLO_KEY} \
-  --debug
 ```
 
 #### Deploy Client persisted queries manifest
@@ -33,3 +30,5 @@ Don't know what this is yet, but it happens on the PR merge (subgraph build) as 
 
 ## Router and Coprocessor
 had to change a few urls in this from changing the 
+
+had to also add some custom fields to the helm chart to get it to play nicely with my ingress classes and cert manager
