@@ -1,0 +1,46 @@
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+  name: apollo-subgraphs
+  namespace: argocd
+spec:
+  goTemplate: true
+  goTemplateOptions: ["missingkey=error"]
+  generators:
+  - list:
+      elements:
+      - subgraph: orders
+      - subgraph: users
+      - subgraph: reviews
+      - subgraph: shipping
+      - subgraph: inventory
+      - subgraph: products
+      - subgraph: checkout
+      - subgraph: discovery
+  template:
+    metadata:
+      name: apollo-{{.subgraph}}-subgraph
+    spec:
+      destination:
+        name: ''
+        namespace: apollo
+        server: 'https://kubernetes.default.svc'
+      source:
+        repoURL: 'https://github.com/Tanchwa/apollo-k8s-reference-arch.git'
+        targetRevision: HEAD
+        path: deploy/subgraph
+        helm:
+          valueFiles: []
+          values: |
+            image:
+              repository: ghcr.io/tanchwa/apollo-k8s-reference-arch/{{.subgraph}}
+      sources: []
+      project: default
+      syncPolicy:
+        automated:
+          prune: true
+          selfHeal: true
+        syncOptions:
+          - CreateNamespace=true
+          - ServerSideApply=true
+

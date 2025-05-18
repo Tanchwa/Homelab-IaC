@@ -1,0 +1,50 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: router
+  namespace: argocd
+spec:
+  destination:
+    name: ''
+    namespace: apollo
+    server: 'https://kubernetes.default.svc'
+  source:
+    path: 'deploy/router'
+    repoURL: 'https://github.com/Tanchwa/apollo-k8s-reference-arch.git'
+    targetRevision: HEAD
+    helm:
+      valueFiles: []
+      values: |
+        router:
+          router:
+            configuration:
+              coprocessor:
+                url: http://coprocessor.apollo.svc.cluster.local:8081
+              authentication:
+                router:
+                  jwt:
+                    jwks:
+                      - url: http://users.apollo.svc.cluster.local:4001/.well-known/jwks.json # for some reason, this is hardcoded to the value of the users subgraph in the values, so I set it to my custom url
+        ingress:
+          enabled: true
+          gcp: false
+          name: router
+          annotations:
+              cert-manager.io/cluster-issuer: "cloudflare-issuer"
+              kubernetes.io/ingress.class: "private-nginx"
+          hosts: 
+            - "apollo-router.andrewsutliff.com"
+          tls:
+            - hosts:
+                - "apollo-router.andrewsutliff.com"
+              secretName: apollo-router-http-tls
+  sources: []
+  project: default
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
+      - ServerSideApply=true
+
