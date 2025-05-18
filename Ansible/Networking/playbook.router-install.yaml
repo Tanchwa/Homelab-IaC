@@ -146,6 +146,7 @@
 - name: Setup Remote Router
   hosts: openwrt
   gather_facts: no
+  tags: openwrt
   roles:
     - ansible-openwrt
     - role: ansible-openwrt
@@ -154,7 +155,7 @@
         openwrt_install_recommended_packages: yes
         scp_if_ssh: yes
   vars:
-    main_router_tailscale_ip: 100.64.160.31
+    main_router_tailscale_ip: 100.113.163.106
   tasks:
     - name: change default lan interface ip
       uci:
