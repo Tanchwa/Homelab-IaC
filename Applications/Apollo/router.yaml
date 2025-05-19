@@ -9,35 +9,43 @@ spec:
     namespace: apollo
     server: 'https://kubernetes.default.svc'
   source:
-    path: 'deploy/router'
-    repoURL: 'https://github.com/Tanchwa/apollo-k8s-reference-arch.git'
+    path: 'helm/chart/router'
+    repoURL: 'https://github.com/apollographql/router'
     targetRevision: HEAD
     helm:
       valueFiles: []
       values: |
-        router:
-          router:
-            configuration:
-              coprocessor:
-                url: http://coprocessor.apollo.svc.cluster.local:8081
-              authentication:
-                router:
-                  jwt:
-                    jwks:
-                      - url: http://users.apollo.svc.cluster.local:4001/.well-known/jwks.json # for some reason, this is hardcoded to the value of the users subgraph in the values, so I set it to my custom url
+        managedFederation:
+          existingSecret: apollo-api-key
+          existingSecretKeyRefKey: apollo-api-key
+          graphRef: apollo-supergraph-k8s-5c5ffa@current
+        extraContainers:
+          - name: coprocessor
+            image: ghcr.io/tanchwa/apollo-k8s-reference-arch/coprocessor
+            ports:
+              - containerPort: 8081
         ingress:
           enabled: true
-          gcp: false
-          name: router
+          className: private-nginx
           annotations:
               cert-manager.io/cluster-issuer: "cloudflare-issuer"
-              kubernetes.io/ingress.class: "private-nginx"
           hosts: 
-            - "apollo-router.andrewsutliff.com"
+            - host: "apollo.andrewsutliff.com"
+              paths: 
+                - path: /
+                  pathType: Prefix
           tls:
             - hosts:
-                - "apollo-router.andrewsutliff.com"
+                - "apollo.andrewsutliff.com"
               secretName: apollo-router-http-tls
+        #extraVolumeMounts:
+        # - name: rhai-volume
+        #    mountPath: /dist/rhai
+        #    readOnly: true
+        #extraVolumes:
+        #  - name: rhai-volume
+        #    configMap:
+        #      name: rhai-config
   sources: []
   project: default
   syncPolicy:

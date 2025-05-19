@@ -29,6 +29,10 @@ Don't know what this is yet, but it happens on the PR merge (subgraph build) as 
 - what are persisted queries https://www.apollographql.com/docs/kotlin/advanced/persisted-queries
 
 ## Router and Coprocessor
-had to change a few urls in this from changing the 
+~had to also add some custom fields to the helm chart to get it to play nicely with my ingress classes and cert manager~
 
-had to also add some custom fields to the helm chart to get it to play nicely with my ingress classes and cert manager
+I actually ended up using the official helm chart for the Router, because the one in the example arch was a little bit lacking and made a lot of assumptions about you using cloud providerrs. 
+I also used the "extraContainers" values option to deploy the coprocessor as a sidecar. 
+
+
+
