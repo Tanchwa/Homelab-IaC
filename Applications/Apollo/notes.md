@@ -50,3 +50,8 @@ This also doesn't configure the Rhai scripts config map for you, but you can sti
 ## Client
 had to edit the ingress template to support TLS and ingress className fields but other than that it looks fine
 
+
+## Issues 
+Router is not returning any data to the client. Originally it looked like a CORS issue but even after allowing all origins, it still wouldn't return the info.
+I bet it's an issue with the Rhai template that didn't get deployed as part of the new chart, in fact it has some info about "process_request" and "let valid_client_names
+

@@ -15,6 +15,14 @@ spec:
     helm:
       valueFiles: []
       values: |
+        router:
+            configuration:
+              supergraph:
+                listen: 0.0.0.0:4000
+              health_check:
+                listen: 0.0.0.0:8088
+              cors: 
+                origins: []
         managedFederation:
           existingSecret: apollo-api-key
           existingSecretKeyRefKey: apollo-api-key
