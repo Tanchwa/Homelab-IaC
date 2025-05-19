@@ -24,7 +24,7 @@ spec:
             enabled: true
             annotations:
               cert-manager.io/cluster-issuer: "cloudflare-issuer"
-              kubernetes.io/ingress.class: "public-nginx"
+              kubernetes.io/ingress.class: "private-nginx"
             hosts: 
               - "grafana.andrewsutliff.com"
             tls:
@@ -43,7 +43,7 @@ spec:
               - "alertmanager.andrewsutliff.com"
             paths: 
               - "/"
-    sources: []
+  sources: []
   project: default
   syncPolicy:
     automated:

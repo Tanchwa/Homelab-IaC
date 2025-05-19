@@ -1,0 +1,29 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: apollo-coprocessor
+  namespace: argocd
+spec:
+  destination:
+    name: ''
+    namespace: apollo
+    server: 'https://kubernetes.default.svc'
+  source:
+    path: 'deploy/coprocessor'
+    repoURL: 'https://github.com/Tanchwa/apollo-k8s-reference-arch.git'
+    targetRevision: HEAD
+    helm:
+      valueFiles: []
+      values: |
+        image:
+          repository: ghcr.io/tanchwa/apollo-k8s-reference-arch/coprocessor
+  sources: []
+  project: default
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
+      - ServerSideApply=true
+

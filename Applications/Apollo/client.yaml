@@ -1,0 +1,44 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: apollo-test-app
+  namespace: argocd
+spec:
+  destination:
+    name: ''
+    namespace: apollo
+    server: 'https://kubernetes.default.svc'
+  source:
+    path: 'deploy/client'
+    repoURL: 'https://github.com/Tanchwa/apollo-k8s-reference-arch.git'
+    targetRevision: HEAD
+    helm:
+      valueFiles: []
+      values: |
+        image:
+          repository: ghcr.io/tanchwa/apollo-k8s-reference-arch/client
+        ingress:
+          enabled: true
+          className: private-nginx
+          annotations:
+              cert-manager.io/cluster-issuer: "cloudflare-issuer"
+          hosts: 
+            - host: "apollo-app.andrewsutliff.com"
+              paths: 
+                - path: /
+                  pathType: Prefix
+          tls:
+            - hosts:
+                - "apollo-app.andrewsutliff.com"
+              secretName: apollo-app-http-tls
+
+  sources: []
+  project: default
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
+      - ServerSideApply=true
+
