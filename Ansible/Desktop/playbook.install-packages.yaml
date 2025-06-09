@@ -1,0 +1,40 @@
+---
+- name: Install Packages
+  hosts: localhost
+  vars: 
+    dnf_packages:
+      - zsh
+      - neovim
+    coprs:
+      - solopasha/hyprland
+  tasks:
+    - name: Install Dnf Packages
+      dnf:
+        name: "{{ item }}"
+        state: present
+      loop: "{{ dnf_packages }}"
+
+- name: Load Dot Configs
+  hosts: localhost
+  vars:
+    dots_repo: https://github.com/tanchwa/dotfiles.git
+    file_patterns:
+      - .local
+      - .config
+      - .zshrc
+  tasks:
+    - name: Checkout Dotfiles
+      git:
+        repo: "{{ dots_repo }}"
+        dest: /tmp/checkout
+
+  tasks:
+    - name: Copy Dotfiles
+      copy:
+        src: /tmp/checkout/{{ item }}
+        dest: /home/tanchwa
+        owner: tanchwa
+        group: tanchwa
+        mode: '0644'
+      with_items: "{{ file_patterns }}" 
+      delegate_to: localhost
