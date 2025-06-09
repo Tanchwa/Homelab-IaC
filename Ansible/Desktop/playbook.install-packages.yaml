@@ -68,6 +68,11 @@
         group: "{{ user }}"
         recurse: true
         mode: '0755'
+    - name: Install Powerlevel9k Theme
+      git:
+        repo: https://github.com/bhilburn/powerlevel9k.git
+        dest: /home/{{ user }}/.oh-my-zsh/custom/themes/powerlevel9k
+
 
 - name: Load Fonts
   hosts: localhost
