@@ -8,12 +8,13 @@
       - qt5-*
       - git-credential-libsecret
       #- hack-fonts
-      - jetbrains-mono-fonts
+      - jetbrains-mono-nerd-fonts
+      - jetbrains-mononl-nerd-fonts
     coprs:
       - solopasha/hyprland
       - matthickford/git-credential-manager 
       #- zawertun/hack-fonts
-      - elxreno/jetbrains-mono-fonts
+      - maveonair/jetbrains-mono-nerd-fonts
     wget_packages:
       zsh: https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh
   tasks:
