@@ -2,17 +2,55 @@
 - name: Install Packages
   hosts: localhost
   vars: 
+    user: tanchwa
     dnf_packages:
-      - zsh
       - neovim
+      - qt5-*
+      - git-credential-libsecret
+      - hack-fonts
     coprs:
       - solopasha/hyprland
+      - matthickford/git-credential-manager 
+      - zawertun/hack-fonts
+    wget_packages:
+      zsh: https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh
   tasks:
+    - name: Install Copr Packages
+      community.general.copr:
+        state: enabled
+        name: "{{ item }}"
+      loop: "{{ coprs }}"
     - name: Install Dnf Packages
       dnf:
         name: "{{ item }}"
         state: present
       loop: "{{ dnf_packages }}"
+    - name: Install Apps from Wget
+      get_url:
+        dest: /tmp/{{ item.key }}.sh
+        url: "{{ item.value }}"
+        mode: '0744'
+      loop: "{{ lookup('dict', wget_packages, wantlist=true) }}"
+    - name: Install Oh-My-Zsh
+      shell:
+        cmd: /tmp/zsh.sh --unattended
+      environment:
+        KEEP_ZSHRC: yes
+        ZSH: /home/{{ user }}/.oh-my-zsh
+    - name: Change Oh-My-Zsh Dir Owner
+      file: 
+        path: /home/{{ user }}/.oh-my-zsh
+        owner: "{{ user }}"
+        group: "{{ user }}"
+        recurse: true
+        mode: '0755'
+
+- name: Load Fonts
+  hosts: localhost
+  tasks:
+    - name: Refresh Fonts
+      shell:
+        cmd: fc-cache -f -v
 
 - name: Load Dot Configs
   hosts: localhost
@@ -27,14 +65,22 @@
       git:
         repo: "{{ dots_repo }}"
         dest: /tmp/checkout
+        force: true
 
-  tasks:
     - name: Copy Dotfiles
       copy:
         src: /tmp/checkout/{{ item }}
         dest: /home/tanchwa
         owner: tanchwa
         group: tanchwa
-        mode: '0644'
+        mode: '0755'
       with_items: "{{ file_patterns }}" 
       delegate_to: localhost
+
+
+## INSTALL NON DEFAULT REPO PACKAGES ## 
+#sudo dnf install dnf-plugins-core
+
+#sudo dnf config-manager addrepo --from-repofile=https://brave-browser-rpm-release.s3.brave.com/brave-browser.repo
+
+#sudo dnf install brave-browser
