@@ -2,17 +2,19 @@
 - name: Install Packages
   hosts: localhost
   vars: 
-    user: tanchwa
     dnf_packages:
       - neovim
       - qt5-*
       - hack-fonts
       - jetbrains-mono-fonts
+      - flatpak
     coprs:
       - solopasha/hyprland
       - matthickford/git-credential-manager 
       - zawertun/hack-fonts
       - elxreno/jetbrains-mono-fonts
+    flatpacks:
+      - com.logseq.Logseq
     wget_packages:
       zsh: https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh
   tasks:
@@ -32,12 +34,26 @@
         url: "{{ item.value }}"
         mode: '0744'
       loop: "{{ lookup('dict', wget_packages, wantlist=true) }}"
+    - name: Add Flathub remote
+      community.general.flatpak_remote:
+        name: flathub
+        state: present
+        flatpakrepo_url: https://dl.flathub.org/repo/flathub.flatpakrepo
+    - name: Install Flatpacks
+      community.general.flatpak:
+        name: "{{ item }}"
+        state: present
+      with_items: "{{ flatpacks }}"
 
+- name: Configure Zsh
+  hosts: localhost
+  vars:
+    user: tanchwa
+  tasks:
     - name: Remove .Oh-My-Zsh File if it Exists
       file:
         path:  /home/{{ user }}/.oh-my-zsh
         state: absent
-
     - name: Install Oh-My-Zsh
       shell:
         cmd: /tmp/zsh.sh --unattended
