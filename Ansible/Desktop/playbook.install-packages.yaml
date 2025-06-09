@@ -15,6 +15,7 @@
       - elxreno/jetbrains-mono-fonts
     flatpacks:
       - com.logseq.Logseq
+      - com.discordapp.Discord
     wget_packages:
       zsh: https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh
   tasks:
