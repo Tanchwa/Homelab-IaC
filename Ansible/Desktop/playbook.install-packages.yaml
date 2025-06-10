@@ -90,6 +90,7 @@
       - .config
       - .zshrc
       - .gitconfig
+      - bin
   tasks:
     - name: Checkout Dotfiles
       git:
