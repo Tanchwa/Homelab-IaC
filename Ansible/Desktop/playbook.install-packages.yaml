@@ -8,6 +8,7 @@
       - hack-fonts
       - jetbrains-mono-fonts
       - flatpak
+      - fastfetch
     coprs:
       - solopasha/hyprland
       - matthickford/git-credential-manager 
