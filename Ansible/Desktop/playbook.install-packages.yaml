@@ -2,6 +2,7 @@
 - name: Install Packages
   hosts: localhost
   vars: 
+    fedora_number: 42
     dnf_packages:
       - neovim
       - qt5-*
@@ -9,6 +10,14 @@
       - jetbrains-mono-fonts
       - flatpak
       - fastfetch
+      - hyprland
+      - hyprland-qtutils
+      - aylurs-gtk-shell
+      - swww
+      - uwsm
+      - dnf-plugins-core
+      - akmod-nvidia
+      - xorg-x11-drv-nvidia-cuda
     coprs:
       - solopasha/hyprland
       - matthickford/git-credential-manager 
@@ -109,10 +118,24 @@
       with_items: "{{ file_patterns }}" 
       delegate_to: localhost
 
+- name: Configure Nvidia Drivers
+  hosts: localhost
+  tasks:
+    - name: Blacklist Nouveau Driver
+      community.general.kernel_blacklist:
+        name: nouveau
+        state: present
 
-## INSTALL NON DEFAULT REPO PACKAGES ## 
+
+
+## DONE BY HAND NOTES ##
 #sudo dnf install dnf-plugins-core
 
 #sudo dnf config-manager addrepo --from-repofile=https://brave-browser-rpm-release.s3.brave.com/brave-browser.repo
 
 #sudo dnf install brave-browser
+#
+#
+#enable non free repos
+#sudo dnf install \   https://download1.rpmfusion.org/nonfree/fedora/rpmfusion-nonfree-release-$(rpm -E %fedora).noarch.rpm 
+
