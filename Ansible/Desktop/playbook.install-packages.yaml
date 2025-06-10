@@ -56,6 +56,17 @@
         state: present
       with_items: "{{ flatpacks }}"
 
+    - name: Set Browser Repo
+      yum_repository:
+        name: brave-browser-rpm-release
+        baseurl: https://brave-browser-rpm-release.s3.brave.com/brave-browser.repo
+        description: Rpm repo for Brave
+        state: present
+    - name: Install Browser
+      dnf:
+        name: brave-browser
+        state: present
+
 - name: Configure Zsh
   hosts: localhost
   vars:
@@ -129,13 +140,6 @@
 
 
 ## DONE BY HAND NOTES ##
-#sudo dnf install dnf-plugins-core
-
-#sudo dnf config-manager addrepo --from-repofile=https://brave-browser-rpm-release.s3.brave.com/brave-browser.repo
-
-#sudo dnf install brave-browser
-#
-#
 #enable non free repos
 #sudo dnf install \   https://download1.rpmfusion.org/nonfree/fedora/rpmfusion-nonfree-release-$(rpm -E %fedora).noarch.rpm 
 
