@@ -8,6 +8,8 @@
       - qt5-*
       - hack-fonts
       - jetbrains-mono-fonts
+      - asusctl
+      - asusctl-rog-gui
       - flatpak
       - fastfetch
       - hyprland
@@ -18,7 +20,9 @@
       - dnf-plugins-core
       - akmod-nvidia
       - xorg-x11-drv-nvidia-cuda
+      - kernel-devel
     coprs:
+      - lukenukem/asus-linux
       - solopasha/hyprland
       - matthickford/git-credential-manager 
       - zawertun/hack-fonts
@@ -26,6 +30,7 @@
     flatpacks:
       - com.logseq.Logseq
       - com.discordapp.Discord
+      - com.valvesoftware.Steam
     wget_packages:
       zsh: https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh
   tasks:
@@ -142,4 +147,4 @@
 ## DONE BY HAND NOTES ##
 #enable non free repos
 #sudo dnf install \   https://download1.rpmfusion.org/nonfree/fedora/rpmfusion-nonfree-release-$(rpm -E %fedora).noarch.rpm 
-
+#had to install a kernel specific version of kernel devel for akmods kernel module builder for nvidia drivers
