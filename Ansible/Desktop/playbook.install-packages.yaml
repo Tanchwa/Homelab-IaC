@@ -6,6 +6,8 @@
     dnf_packages:
       - neovim
       - qt5-*
+      - qt
+      - qt-common
       - hack-fonts
       - jetbrains-mono-fonts
       - asusctl
