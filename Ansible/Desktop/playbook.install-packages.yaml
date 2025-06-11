@@ -26,6 +26,7 @@
       - xorg-x11-drv-nvidia-cuda
       - kernel-devel
       - wine.x86_64
+      - winetricks
     coprs:
       - lukenukem/asus-linux
       - solopasha/hyprland
@@ -153,3 +154,7 @@
 #enable non free repos
 #sudo dnf install \   https://download1.rpmfusion.org/nonfree/fedora/rpmfusion-nonfree-release-$(rpm -E %fedora).noarch.rpm 
 #had to install a kernel specific version of kernel devel for akmods kernel module builder for nvidia drivers
+#
+#installed ableton through wine
+#ran winetricks corefonts vcrun2010 vcrun2013 vcrun2015
+#for ableton dependancies
