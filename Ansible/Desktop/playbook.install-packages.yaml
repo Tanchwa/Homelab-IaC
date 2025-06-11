@@ -8,6 +8,8 @@
       - qt5-*
       - qt
       - qt-common
+      - qt6-qt5compat
+      - qt6-qtdeclarative
       - hack-fonts
       - jetbrains-mono-fonts
       - asusctl
@@ -23,6 +25,7 @@
       - akmod-nvidia
       - xorg-x11-drv-nvidia-cuda
       - kernel-devel
+      - wine.x86_64
     coprs:
       - lukenukem/asus-linux
       - solopasha/hyprland
