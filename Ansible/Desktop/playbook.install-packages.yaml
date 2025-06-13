@@ -27,6 +27,10 @@
       - kernel-devel
       - wine.x86_64
       - winetricks
+      - glibc-langpack-zh.x86_64
+      - ibus-libpinyin
+      - sassc
+      - nwg-look
     coprs:
       - lukenukem/asus-linux
       - solopasha/hyprland
@@ -123,6 +127,7 @@
       - .zshrc
       - .gitconfig
       - bin
+      - .themes
   tasks:
     - name: Checkout Dotfiles
       git:
