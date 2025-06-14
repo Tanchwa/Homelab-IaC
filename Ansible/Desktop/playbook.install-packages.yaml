@@ -57,7 +57,7 @@
       loop: "{{ dnf_packages }}"
     - name: Install Apps from Wget
       get_url:
-        dest: /tmp/{{ item.key }}.sh
+        dest: /tmp/{{ item.key }}
         url: "{{ item.value }}"
         mode: '0744'
       loop: "{{ lookup('dict', wget_packages, wantlist=true) }}"
@@ -94,7 +94,7 @@
         state: absent
     - name: Install Oh-My-Zsh
       shell:
-        cmd: /tmp/zsh.sh --unattended
+        cmd: /tmp/zsh --unattended
       environment:
         KEEP_ZSHRC: yes
         ZSH: /home/{{ user }}/.oh-my-zsh
@@ -109,7 +109,6 @@
       git:
         repo: https://github.com/bhilburn/powerlevel9k.git
         dest: /home/{{ user }}/.oh-my-zsh/custom/themes/powerlevel9k
-
 
 - name: Load Fonts
   hosts: localhost
