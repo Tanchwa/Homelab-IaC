@@ -5,6 +5,7 @@
     fedora_number: 42
     dnf_packages:
       - neovim
+      - btop
       - qt5-*
       - qt
       - qt-common
@@ -161,5 +162,6 @@
 #had to install a kernel specific version of kernel devel for akmods kernel module builder for nvidia drivers
 #
 #installed ableton through wine
-#ran winetricks corefonts vcrun2010 vcrun2013 vcrun2015
+#ran winetricks quicktime72
 #for ableton dependancies
+winetricks gdiplus msxml3 msxml4 msxml6 vcrun2005 quicktime72 fontsmooth=rgb msls31 d3dcompiler_43 corefonts atmlib
