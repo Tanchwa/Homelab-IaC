@@ -33,6 +33,7 @@
       - sassc
       - nwg-look
       - hyprshot
+      - cava
     coprs:
       - lukenukem/asus-linux
       - solopasha/hyprland
