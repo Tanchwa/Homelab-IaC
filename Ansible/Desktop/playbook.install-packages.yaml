@@ -32,6 +32,7 @@
       - ibus-libpinyin
       - sassc
       - nwg-look
+      - hyprshot
     coprs:
       - lukenukem/asus-linux
       - solopasha/hyprland
