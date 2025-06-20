@@ -25,6 +25,7 @@
       - dnf-plugins-core
       - akmod-nvidia
       - xorg-x11-drv-nvidia-cuda
+      - inxi
       - kernel-devel
       - wine.x86_64
       - winetricks
