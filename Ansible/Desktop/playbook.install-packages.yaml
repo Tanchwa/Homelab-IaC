@@ -29,6 +29,7 @@
       - kernel-devel
       - wine.x86_64
       - winetricks
+      - lutris
       - glibc-langpack-zh.x86_64
       - ibus-libpinyin
       - sassc
