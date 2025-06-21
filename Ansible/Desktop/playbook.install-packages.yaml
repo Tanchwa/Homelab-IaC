@@ -131,6 +131,7 @@
       - .gitconfig
       - bin
       - .themes
+      - .icons
   tasks:
     - name: Checkout Dotfiles
       git:
