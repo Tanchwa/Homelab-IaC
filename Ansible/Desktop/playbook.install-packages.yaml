@@ -29,13 +29,13 @@
       - kernel-devel
       - wine.x86_64
       - winetricks
-      - lutris
       - glibc-langpack-zh.x86_64
       - ibus-libpinyin
       - sassc
       - nwg-look
       - hyprshot
       - cava
+      - tailscale
     coprs:
       - lukenukem/asus-linux
       - solopasha/hyprland
@@ -48,6 +48,7 @@
       - com.valvesoftware.Steam
     wget_packages:
       zsh: https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh
+      etcher: https://github.com/balena-io/etcher/releases/download/v2.1.2/balenaEtcher-linux-x64-2.1.2.zip
   tasks:
     - name: Install Copr Packages
       community.general.copr:
@@ -114,6 +115,27 @@
         repo: https://github.com/bhilburn/powerlevel9k.git
         dest: /home/{{ user }}/.oh-my-zsh/custom/themes/powerlevel9k
 
+- name: Setup Balena Etcher
+  hosts: localhost
+  tasks:
+    - name: Unzip Balena Etcher
+      unarchive:
+        creates: /opt/balenaEtcher-linux-x64
+        src: /tmp/etcher
+        dest: /tmp
+    - name: Move Balena Etcher
+      copy:
+        remote_src: true
+        src: /tmp/balenaEtcher-linux-x64
+        dest: /opt
+        mode: '0755'
+    - name: Create a Symlink for Binary
+      file:
+        src: /opt/balenaEtcher-linux-x64/balena-etcher
+        dest: /usr/bin/balena-etcher
+        mode: '0755'
+        state: link
+
 - name: Load Fonts
   hosts: localhost
   tasks:
@@ -169,3 +191,10 @@
 #ran winetricks quicktime72
 #for ableton dependancies
 #winetricks gdiplus msxml3 msxml4 msxml6 vcrun2005 quicktime72 fontsmooth=rgb msls31 d3dcompiler_43 corefonts atmlib
+#
+#troubleshooting for getting nvidia glxinfo working
+# finally got it to work with 
+# GBM_BACKEND=nvidia-drm
+#__GLX_VENDOR_LIBRARY_NAME=nvidia
+#and it appeared in glxinfo
+
