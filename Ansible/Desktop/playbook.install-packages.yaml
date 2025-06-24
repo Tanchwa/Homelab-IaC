@@ -36,7 +36,6 @@
       - hyprshot
       - cava
       - tailscale
-      - kubectl
     coprs:
       - lukenukem/asus-linux
       - solopasha/hyprland
@@ -79,16 +78,30 @@
         state: present
       with_items: "{{ flatpacks }}"
 
-    #- name: Set Browser Repo
-    #  yum_repository:
-    #    name: brave-browser-rpm-release
-    #    baseurl: https://brave-browser-rpm-release.s3.brave.com/brave-browser.repo
-    #    description: Rpm repo for Brave
-    #    state: present
+    - name: Set Browser Repo
+      yum_repository:
+        name: Brave Browser
+        state: present
+        gpgcheck: true
+        gpgkey: https://brave-browser-rpm-release.s3.brave.com/brave-core.asc
+        baseurl: https://brave-browser-rpm-release.s3.brave.com/$basearch
     - name: Install Browser
       dnf:
         name: brave-browser
         state: present
+
+    - name: Set up Kubectl Yum Repo
+      yum_repository:
+        name: Kubernetes
+        baseurl: https://pkgs.k8s.io/core:/stable:/v1.28/rpm/
+        gpgkey: https://pkgs.k8s.io/core:/stable:/v1.28/rpm/repodata/repomd.xml.key
+        gpgcheck: true
+        state: present
+    - name: Install Kubectl
+      dnf:
+        name: kubectl
+        state: present
+
 
 - name: Configure Zsh
   hosts: localhost
