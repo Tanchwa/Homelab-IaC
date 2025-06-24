@@ -36,6 +36,7 @@
       - hyprshot
       - cava
       - tailscale
+      - kubectl
     coprs:
       - lukenukem/asus-linux
       - solopasha/hyprland
@@ -46,6 +47,7 @@
       - com.logseq.Logseq
       - com.discordapp.Discord
       - com.valvesoftware.Steam
+      - com.bitwig.BitwigStudio
     wget_packages:
       zsh: https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh
       etcher: https://github.com/balena-io/etcher/releases/download/v2.1.2/balenaEtcher-linux-x64-2.1.2.zip
@@ -77,12 +79,12 @@
         state: present
       with_items: "{{ flatpacks }}"
 
-    - name: Set Browser Repo
-      yum_repository:
-        name: brave-browser-rpm-release
-        baseurl: https://brave-browser-rpm-release.s3.brave.com/brave-browser.repo
-        description: Rpm repo for Brave
-        state: present
+    #- name: Set Browser Repo
+    #  yum_repository:
+    #    name: brave-browser-rpm-release
+    #    baseurl: https://brave-browser-rpm-release.s3.brave.com/brave-browser.repo
+    #    description: Rpm repo for Brave
+    #    state: present
     - name: Install Browser
       dnf:
         name: brave-browser
@@ -197,4 +199,15 @@
 # GBM_BACKEND=nvidia-drm
 #__GLX_VENDOR_LIBRARY_NAME=nvidia
 #and it appeared in glxinfo
-
+#after that, games needed to install the new nvidia based shaders, but worked after a couple days
+#
+#added k8s repos cat <<EOF | sudo tee /etc/yum.repos.d/kubernetes.repo
+#[kubernetes]
+#name=Kubernetes
+#baseurl=https://pkgs.k8s.io/core:/stable:/v1.28/rpm/
+#enabled=1
+#gpgcheck=1
+#gpgkey=https://pkgs.k8s.io/core:/stable:/v1.28/rpm/repodata/repomd.xml.key
+#exclude=kubelet kubeadm kubectl cri-tools kubernetes-cni
+#EOF
+#

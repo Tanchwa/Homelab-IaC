@@ -1,6 +1,6 @@
 - hosts: ansible_controller
   become: yes
-  become_user: asutliff
+  become_user: tanchwa
   tasks:
   - name: Generate an OpenSSL private key with the default values (4096 bits, RSA)
     community.crypto.openssl_privatekey:
@@ -9,13 +9,13 @@
     community.crypto.openssl_csr:
       path: ~/ansible.csr
       privatekey_path: ~/ansible.key
-      common_name: asutliff
+      common_name: tanchwa
       organization_name: system:authenticated
   tags: keygen
 
 
 - hosts: controlplane_nodes #figure out how to limit this to only a single host
-  become_user: asutliff
+  become_user: tanchwa
   tasks:
   - name: Copy CSR to Controleplane
     copy:
@@ -31,7 +31,7 @@
       apiVersion: certificates.k8s.io/v1
       kind: CertificateSigningRequest
       metadata:
-        name: asutliff
+        name: tanchwa
       spec:
         signerName: kubernetes.io/kube-apiserver-client
         usages:
@@ -42,10 +42,10 @@
           "{{ ansible_csr.stdout }}"
       EOF
   - name: Sign CSR
-    command: kubectl certificate approve asutliff
+    command: kubectl certificate approve tanchwa
   - name: Output Signed CSR Certificate
     shell: |
-      kubectl get csr asutliff -o yaml | grep -e '^  certificate:' | sed 's/certificate://' | tr -d [:space:] | base64 --decode
+      kubectl get csr tanchwa -o yaml | grep -e '^  certificate:' | sed 's/certificate://' | tr -d [:space:] | base64 --decode
     register: signed_cert
   - name: Copy Signed CSR Certificate to master
     copy:
@@ -63,9 +63,9 @@
 
 - hosts: ansible_controller
   become: yes
-  become_user: asutliff
+  become_user: tanchwa
   vars:
-    kube_user: "asutliff"
+    kube_user: "tanchwa"
     kube_config_path: "/home/{{ kube_user }}/.kube/config"
     certificate_path: "/tmp/k8s-controlplane/ansible.crt"
     ca_certificate_path: "/tmp/k8s-controlplane/etc/kubernetes/pki/ca.crt"
