@@ -19,7 +19,7 @@ spec:
       containers:
       - image: tanchwa/todoist-reclaim-webhook:latest
         ports:
-          containerPort: 5000
+        - containerPort: 5000
           protocol: TCP
         env:
         - name: TODOIST_KEY

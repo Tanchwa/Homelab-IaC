@@ -13,7 +13,7 @@ spec:
       - schedule.andrewsutliff.com
     secretName: todoist-http-tls
   rules:
-  - host: "emby.andrewsutliff.com"
+  - host: "schedule.andrewsutliff.com"
     http:
       paths:
       - backend:
