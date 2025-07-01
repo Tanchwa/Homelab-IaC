@@ -5,7 +5,6 @@ metadata:
     nginx.ingress.kubernetes.io/rewrite-target: /
     cert-manager.io/cluster-issuer: "cloudflare-issuer"
   name: todoist-webhook-ingress-public
-  namespace: todoist-webhook
 spec:
   ingressClassName: public-nginx
   tls:
