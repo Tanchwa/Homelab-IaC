@@ -22,7 +22,7 @@ spec:
           protocol: TCP
         env:
         - name: FLASK_DEBUG
-          value: 1
+          value: "1"
         - name: TODOIST_KEY
           valueFrom:
             secretKeyRef:
