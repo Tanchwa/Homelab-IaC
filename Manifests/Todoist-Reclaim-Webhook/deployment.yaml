@@ -1,0 +1,30 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: todoist-webhook
+  name: todoist-webhook
+  namespace: todoist-webook
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: todoist-webhook
+  strategy: {}
+  template:
+    metadata:
+      labels:
+        app: todoist-webhook
+    spec:
+      containers:
+      - image: tanchwa/todoist-reclaim-webhook:latest
+        ports:
+          containerPort: 5000
+          protocol: TCP
+        env:
+        - name: TODOIST_KEY
+          valueFrom:
+            secretKeyRef:
+              name: todoist-secret
+              key: key
+        name: todoist-reclaim-webhook

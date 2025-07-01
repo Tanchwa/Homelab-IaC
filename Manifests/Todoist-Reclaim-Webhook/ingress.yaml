@@ -1,0 +1,25 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /
+    cert-manager.io/cluster-issuer: "cloudflare-issuer"
+  name: todoist-webhook-ingress-public
+  namespace: todoist-webhook
+spec:
+  ingressClassName: public-nginx
+  tls:
+  - hosts:
+      - schedule.andrewsutliff.com
+    secretName: todoist-http-tls
+  rules:
+  - host: "emby.andrewsutliff.com"
+    http:
+      paths:
+      - backend:
+          service:
+            name: todoist-webhook
+            port:
+              number: 5000
+        path: /
+        pathType: Prefix
