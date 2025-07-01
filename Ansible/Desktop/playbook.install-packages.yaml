@@ -34,7 +34,7 @@
       - sassc
       - nwg-look
       - hyprshot
-      - obs
+      - obs-studio
       - cava
       - tailscale
     security_packages:
