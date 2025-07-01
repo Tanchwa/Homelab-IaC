@@ -21,6 +21,8 @@ spec:
         - containerPort: 5000
           protocol: TCP
         env:
+        - name: FLASK_DEBUG
+          value: 1
         - name: TODOIST_KEY
           valueFrom:
             secretKeyRef:
