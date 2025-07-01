@@ -34,8 +34,14 @@
       - sassc
       - nwg-look
       - hyprshot
+      - obs
       - cava
       - tailscale
+    security_packages:
+      - nmap
+      - gobuster
+    pip:
+      - python-lsp-server
     coprs:
       - lukenukem/asus-linux
       - solopasha/hyprland
