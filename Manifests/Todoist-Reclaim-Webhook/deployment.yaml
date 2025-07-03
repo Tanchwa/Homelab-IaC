@@ -21,6 +21,11 @@ spec:
         - containerPort: 5000
           protocol: TCP
         env:
+        - name: RECLAIM_KEY
+          valueFrom:
+            secretKeyRef:
+              name: reclaim-secret
+              key: key
         - name: TODOIST_KEY
           valueFrom:
             secretKeyRef:
