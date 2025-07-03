@@ -155,7 +155,7 @@
         openwrt_install_recommended_packages: yes
         scp_if_ssh: yes
   vars:
-    main_router_tailscale_ip: 100.104.148.125
+    main_router_tailscale_ip: 100.107.68.105
   tasks:
     - name: change default lan interface ip
       uci:
