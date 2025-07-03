@@ -53,6 +53,7 @@
       - com.discordapp.Discord
       - com.valvesoftware.Steam
       - com.bitwig.BitwigStudio
+      - io.github.electronstudio.WeylusCommunityEdition
     wget_packages:
       zsh: https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh
       etcher: https://github.com/balena-io/etcher/releases/download/v2.1.2/balenaEtcher-linux-x64-2.1.2.zip
@@ -86,8 +87,9 @@
 
     - name: Set Browser Repo
       yum_repository:
-        name: Brave Browser
+        name: brave-browser
         state: present
+        description: "Brave Browser"
         gpgcheck: true
         gpgkey: https://brave-browser-rpm-release.s3.brave.com/brave-core.asc
         baseurl: https://brave-browser-rpm-release.s3.brave.com/$basearch
@@ -98,15 +100,17 @@
 
     - name: Set up Kubectl Yum Repo
       yum_repository:
-        name: Kubernetes
+        name: kubernetes
+        description: Kubernetes
         baseurl: https://pkgs.k8s.io/core:/stable:/v1.28/rpm/
         gpgkey: https://pkgs.k8s.io/core:/stable:/v1.28/rpm/repodata/repomd.xml.key
         gpgcheck: true
         state: present
     - name: Install Kubectl
       dnf:
-        name: kubectl
+        name: kubectl-0:1.28.15-150500.1.1.x86_64
         state: present
+
 
 
 - name: Configure Zsh
@@ -141,7 +145,6 @@
   tasks:
     - name: Unzip Balena Etcher
       unarchive:
-        creates: /opt/balenaEtcher-linux-x64
         src: /tmp/etcher
         dest: /tmp
     - name: Move Balena Etcher
