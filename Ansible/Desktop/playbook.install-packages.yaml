@@ -37,6 +37,8 @@
       - obs-studio
       - cava
       - tailscale
+      - fzf
+      - '@virtualization'
     security_packages:
       - nmap
       - gobuster
