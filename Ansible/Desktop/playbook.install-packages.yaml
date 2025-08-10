@@ -39,6 +39,8 @@
       - tailscale
       - fzf
       - '@virtualization'
+      - yamllint
+      - nodejs
     security_packages:
       - nmap
       - gobuster
@@ -113,6 +115,20 @@
         name: kubectl-0:1.28.15-150500.1.1.x86_64
         state: present
 
+    - name: Set up Terraform Repo
+      yum_repository:
+        name: hashicorp
+        description: Hashicorp Stable - $basearch
+        file: hashicorp.repo
+        baseurl: https://rpm.releases.hashicorp.com/fedora/$releasever/$basearch/stable
+        gpgkey: https://rpm.releases.hashicorp.com/gpg
+    - name: Install Terraform and Utils
+      dnf:
+        name: "{{ item }}"
+        state: present
+      with_items:
+        - terraform
+        - terraform-ls
 
 
 - name: Configure Zsh
