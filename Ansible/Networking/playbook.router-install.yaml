@@ -18,7 +18,7 @@
 # use -e or --extra-vars for the tailscale exit node ip, usually 100.64.160.31
 - name: Setup Local Router
   hosts: pfsense
-  gather_facts: no
+  gather_facts: false
   vars:
     k8s_private_ingress_lb_ip: 172.31.0.110
     k8s_public_ingress_lb_ip: 172.31.0.109
@@ -35,6 +35,7 @@
       - vikunja
     public_application_hosts: 
       - emby
+      - schedule
     azure_dns_domain_overrides:
       - privatelink.vaultcore.azure.net 
       - cloudapp.net
@@ -145,7 +146,7 @@
 
 - name: Setup Remote Router
   hosts: openwrt
-  gather_facts: no
+  gather_facts: false
   tags: openwrt
   roles:
     - ansible-openwrt
