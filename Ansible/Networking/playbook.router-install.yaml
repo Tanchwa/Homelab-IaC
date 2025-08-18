@@ -136,11 +136,11 @@
     - name: add DNAT to public facing applications
       pfsensible.core.pfsense_nat_port_forward:
         descr: External to Public Ingress
-        interface: WAN
+        interface: wan
         protocol: tcp/udp
         source: any
-        destination: WAN:443
-        target: '"{{ k8s_public_ingress_lb_ip }}":443'
+        destination: IP:wan:443
+        target: "{{ k8s_public_ingress_lb_ip }}:443"
         state: present
 
 - name: Setup Remote Router
@@ -214,6 +214,7 @@
     - name: init tailscale
       shell:
         cmd: tailscale up --advertise-routes=172.31.128.0/17 --accept-routes --exit-node="{{ main_router_tailscale_ip }}" --exit-node-allow-lan-access=true --netfilter-mode=off --snat-subnet-routes=true --auth-key="{{ tailscale_auth_key }}"
+      tags: tailscale_init
     - name: add tailscale interface
       uci:
         command: section
