@@ -214,7 +214,7 @@
         state: present
     - name: init tailscale
       shell:
-        cmd: tailscale up --advertise-routes=172.31.128.0/17 --accept-routes --exit-node="{{ main_router_tailscale_ip }}" --exit-node-allow-lan-access=true --netfilter-mode=off --snat-subnet-routes=true --auth-key="{{ tailscale_auth_key }}"
+        cmd: "tailscale up --advertise-routes=172.31.128.0/17 --accept-routes --exit-node={{ main_router_tailscale_ip }} --exit-node-allow-lan-access=true --netfilter-mode=off --snat-subnet-routes=true --auth-key={{ tailscale_auth_key }}"
       tags: tailscale_init
     - name: add tailscale interface
       uci:

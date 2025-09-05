@@ -46,13 +46,15 @@
       - gobuster
     pip:
       - python-lsp-server
+      - pylint
     coprs:
       - lukenukem/asus-linux
       - solopasha/hyprland
-      - matthickford/git-credential-manager 
+      - matthickford/git-credential-manager
       - zawertun/hack-fonts
       - elxreno/jetbrains-mono-fonts
     flatpacks:
+      - com.spotify.Client
       - com.logseq.Logseq
       - com.discordapp.Discord
       - com.valvesoftware.Steam
@@ -138,7 +140,7 @@
   tasks:
     - name: Remove .Oh-My-Zsh File if it Exists
       file:
-        path:  /home/{{ user }}/.oh-my-zsh
+        path: /home/{{ user }}/.oh-my-zsh
         state: absent
     - name: Install Oh-My-Zsh
       shell:
@@ -147,7 +149,7 @@
         KEEP_ZSHRC: yes
         ZSH: /home/{{ user }}/.oh-my-zsh
     - name: Change Oh-My-Zsh Dir Owner
-      file: 
+      file:
         path: /home/{{ user }}/.oh-my-zsh
         owner: "{{ user }}"
         group: "{{ user }}"
@@ -211,7 +213,7 @@
         owner: tanchwa
         group: tanchwa
         mode: '0755'
-      with_items: "{{ file_patterns }}" 
+      with_items: "{{ file_patterns }}"
       delegate_to: localhost
 
 - name: Configure Nvidia Drivers
