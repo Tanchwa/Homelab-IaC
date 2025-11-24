@@ -63,7 +63,6 @@
     wget_packages:
       zsh: https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh
       etcher: https://github.com/balena-io/etcher/releases/download/v2.1.2/balenaEtcher-linux-x64-2.1.2.zip
-      arduino: https://raw.githubusercontent.com/arduino/arduino-cli/master/install.sh
   tasks:
     - name: Install Copr Packages
       community.general.copr:
