@@ -63,6 +63,7 @@
     wget_packages:
       zsh: https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh
       etcher: https://github.com/balena-io/etcher/releases/download/v2.1.2/balenaEtcher-linux-x64-2.1.2.zip
+      arduino: https://raw.githubusercontent.com/arduino/arduino-cli/master/install.sh
   tasks:
     - name: Install Copr Packages
       community.general.copr:
@@ -121,7 +122,6 @@
       yum_repository:
         name: hashicorp
         description: Hashicorp Stable - $basearch
-        file: hashicorp.repo
         baseurl: https://rpm.releases.hashicorp.com/fedora/$releasever/$basearch/stable
         gpgkey: https://rpm.releases.hashicorp.com/gpg
     - name: Install Terraform and Utils
@@ -224,8 +224,6 @@
         name: nouveau
         state: present
 
-
-
 ## DONE BY HAND NOTES ##
 #enable non free repos
 #sudo dnf install \   https://download1.rpmfusion.org/nonfree/fedora/rpmfusion-nonfree-release-$(rpm -E %fedora).noarch.rpm 
@@ -242,14 +240,3 @@
 #__GLX_VENDOR_LIBRARY_NAME=nvidia
 #and it appeared in glxinfo
 #after that, games needed to install the new nvidia based shaders, but worked after a couple days
-#
-#added k8s repos cat <<EOF | sudo tee /etc/yum.repos.d/kubernetes.repo
-#[kubernetes]
-#name=Kubernetes
-#baseurl=https://pkgs.k8s.io/core:/stable:/v1.28/rpm/
-#enabled=1
-#gpgcheck=1
-#gpgkey=https://pkgs.k8s.io/core:/stable:/v1.28/rpm/repodata/repomd.xml.key
-#exclude=kubelet kubeadm kubectl cri-tools kubernetes-cni
-#EOF
-#
