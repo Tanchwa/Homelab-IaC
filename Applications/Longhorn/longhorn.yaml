@@ -15,17 +15,19 @@ spec:
     chart: longhorn
     helm:
       valueFiles: []
-      parameters:
-        - name: preUpgradeChecker.jobEnabled
-          value: "false"
-        - name: ingress.enabled
-          value: "true"
-        - name: ingress.ingressClassName
-          value: "private-nginx"
-        - name: ingress.host
-          value: "longhorn.andrewsutliff.com"
-        - name: defaultSettings.backupTarget
-          value: "nfs://172.31.0.15://mnt/Main/kubernetes/backup"
+      values: |
+        ingress:
+          host: longhorn.andrewsutliff.com
+          enabled: true
+          ingressClassName: private-nginx
+        preUpgradeChecker:
+          jobEnabled: false
+        defaultSettings:
+          backupTarget: "nfs://172.31.0.15//mnt/Main/kubernetes/backup"
+          orphanAutoDeletion: "false"
+          autoDeletePodWhenVolumeDetachedUnexpectedly: true
+          nodeDownPodDeletionPolicy: delete-both-statefulset-and-deployment-pod
+          nodeDrainPolicy: allways-allow
   sources: []
   project: default
   syncPolicy:
