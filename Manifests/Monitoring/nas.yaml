@@ -13,6 +13,7 @@ spec:
   endpoints:
   - port: monitoring
     interval: 15s
+    path: /metrics
 ---
 apiVersion: v1
 kind: Service
