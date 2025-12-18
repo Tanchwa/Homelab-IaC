@@ -36,5 +36,15 @@ spec:
       protocol: UDP
       port: 9109
       targetPort: 9109
-  externalIPs:
-    - 172.31.0.15
+---
+apiVersion: v1
+kind: Endpoints
+metadata:
+  name: truenas-monitoring
+subsets:
+  - addresses:
+      - ip: 172.31.0.15
+    ports:
+      - name: monitoring
+        port: 9108
+        protocol: TCP
