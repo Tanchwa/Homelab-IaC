@@ -7,11 +7,10 @@ metadata:
 provisioner: driver.longhorn.io
 allowVolumeExpansion: true
 volumeBindingMode: WaitForFirstConsumer
-reclaimPolicy: Delete
+reclaimPolicy: Retain
 parameters:
   numberOfReplicas: "1"
   staleReplicaTimeout: "1440" # 1 day
-  fsType: "ext4"
   diskSelector: "ssd"
   dataLocality: "strict-local"
   recurringJobSelector: '[

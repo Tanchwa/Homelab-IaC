@@ -10,6 +10,7 @@ variable "ubuntu" {
     vm_id               = number
     ssh_public_key_path = string
     disk_size           = number
+    memory_size         = optional(number, 16384)
   })
 }
 

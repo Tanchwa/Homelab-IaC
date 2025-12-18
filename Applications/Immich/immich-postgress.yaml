@@ -1,22 +1,61 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: immich-postgress
+  name: immich-postgres-cluster
   namespace: argocd
 spec:
   destination:
     name: ''
-    namespace: immich
+    namespace: cnpg-database
     server: 'https://kubernetes.default.svc'
   source:
     path: ''
-    repoURL: ''
-    targetRevision: 
-    chart: 
+    repoURL: 'https://cloudnative-pg.github.io/charts'
+    targetRevision: v0.4.0
+    chart: cluster
     helm:
       valueFiles: []
       values: |
-sources: []
+        mode: "standalone"
+
+        cluster:
+          imageName: "ghcr.io/tensorchord/cloudnative-pgvecto.rs:16.5-v0.3.0@sha256:be3f025d79aa1b747817f478e07e71be43236e14d00d8a9eb3914146245035ba"
+
+          postgresql:
+            shared_preload_libraries: 
+              - "vectors.so"
+
+          storage:
+            storageClass: longhorn-postgres
+            size: 8Gi
+          instances: 3
+
+          initdb:
+            database: immich
+            owner: immich
+            secret:
+              name: immich-postgress-user-password
+            postInitSQL:
+              - CREATE EXTENSION IF NOT EXISTS "vectors";
+              - CREATE EXTENSION IF NOT EXISTS "cube" CASCADE;
+              - CREATE EXTENSION IF NOT EXISTS "earthdistance" CASCADE;
+
+
+          roles:
+            - name: immich
+              ensure: present
+              login: true
+              superuser: true
+              passwordSecret:
+                name: immich-postgress-user-password
+
+          monitoring:
+            enabled: true
+            podMonitor:
+              enabled: true
+
+
+  sources: []
   project: default
   syncPolicy:
     automated:
@@ -25,4 +64,3 @@ sources: []
     syncOptions:
       - CreateNamespace=true
       - ServerSideApply=true
-

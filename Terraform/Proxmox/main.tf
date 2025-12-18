@@ -45,6 +45,7 @@ module "ubuntu_worker" {
     disk_size           = 100
     vm_id               = 500
     ssh_public_key_path = "~/.ssh/id_rsa.pub"
+    memory_size         = 18432
   }
   vm_password = var.ubuntu_password
 }

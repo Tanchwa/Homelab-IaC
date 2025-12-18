@@ -6,6 +6,7 @@ variable "proxmox_api_token" {
 variable "ssh_private_key_path" {
   type        = string
   description = "Path to the SSH private key"
+  default     = "~/.ssh/id_rsa"
 }
 
 variable "ssh_password" {
