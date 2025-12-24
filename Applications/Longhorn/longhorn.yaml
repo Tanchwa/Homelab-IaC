@@ -23,8 +23,9 @@ spec:
         preUpgradeChecker:
           jobEnabled: false
         defaultSettings:
+          replicaAutoBalance: least-effort
           backupTarget: "nfs://172.31.0.15//mnt/Main/kubernetes/backup"
-          orphanAutoDeletion: "false"
+          orphanAutoDeletion: "true"
           autoDeletePodWhenVolumeDetachedUnexpectedly: true
           nodeDownPodDeletionPolicy: delete-both-statefulset-and-deployment-pod
           nodeDrainPolicy: allways-allow
