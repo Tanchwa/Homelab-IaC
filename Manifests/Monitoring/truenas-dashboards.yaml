@@ -81,7 +81,7 @@ data:
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "${DS_MIMIR}"
+            "uid": "prometheus"
           },
           "fieldConfig": {
             "defaults": {
@@ -163,7 +163,7 @@ data:
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "${DS_MIMIR}"
+                "uid": "prometheus"
               },
               "editorMode": "code",
               "expr": "system_load{instance=~\"$instance\"}",
@@ -179,7 +179,7 @@ data:
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "${DS_MIMIR}"
+            "uid": "prometheus"
           },
           "fieldConfig": {
             "defaults": {
@@ -261,7 +261,7 @@ data:
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "${DS_MIMIR}"
+                "uid": "prometheus"
               },
               "editorMode": "code",
               "expr": "cpu_frequency{instance=~\"$instance\", cpu=~\"$cpu\"}",
@@ -277,7 +277,7 @@ data:
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "${DS_MIMIR}"
+            "uid": "prometheus"
           },
           "fieldConfig": {
             "defaults": {
@@ -359,7 +359,7 @@ data:
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "${DS_MIMIR}"
+                "uid": "prometheus"
               },
               "editorMode": "code",
               "expr": "cpu_temperature{instance=~\"$instance\", cpu=~\"$cpu\"}",
@@ -375,7 +375,7 @@ data:
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "${DS_MIMIR}"
+            "uid": "prometheus"
           },
           "fieldConfig": {
             "defaults": {
@@ -430,7 +430,7 @@ data:
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "${DS_MIMIR}"
+                "uid": "prometheus"
               },
               "editorMode": "code",
               "expr": "physical_memory{instance=~\"$instance\"}",
@@ -446,7 +446,7 @@ data:
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "${DS_MIMIR}"
+            "uid": "prometheus"
           },
           "fieldConfig": {
             "defaults": {
@@ -529,7 +529,7 @@ data:
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "${DS_MIMIR}"
+                "uid": "prometheus"
               },
               "editorMode": "code",
               "expr": "interface_io{instance=~\"$instance\", interface=~\"$interface\"}",
@@ -545,7 +545,7 @@ data:
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "${DS_MIMIR}"
+            "uid": "prometheus"
           },
           "fieldConfig": {
             "defaults": {
@@ -628,7 +628,7 @@ data:
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "${DS_MIMIR}"
+                "uid": "prometheus"
               },
               "editorMode": "code",
               "expr": "processes{instance=~\"$instance\"}",
@@ -644,7 +644,7 @@ data:
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "${DS_MIMIR}"
+            "uid": "prometheus"
           },
           "fieldConfig": {
             "defaults": {
@@ -730,7 +730,7 @@ data:
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "${DS_MIMIR}"
+                "uid": "prometheus"
               },
               "editorMode": "code",
               "expr": "zfs_pool{instance=~\"$instance\"} > 0",
@@ -769,7 +769,7 @@ data:
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "${DS_MIMIR}"
+            "uid": "prometheus"
           },
           "fieldConfig": {
             "defaults": {
@@ -824,7 +824,7 @@ data:
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "${DS_MIMIR}"
+                "uid": "prometheus"
               },
               "editorMode": "code",
               "expr": "uptime{instance=~\"$instance\"}",
@@ -850,7 +850,7 @@ data:
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "${DS_MIMIR}"
+                "uid": "prometheus"
               },
               "fieldConfig": {
                 "defaults": {
@@ -929,7 +929,7 @@ data:
                 {
                   "datasource": {
                     "type": "prometheus",
-                    "uid": "${DS_MIMIR}"
+                    "uid": "prometheus"
                   },
                   "editorMode": "code",
                   "expr": "cpu_total{instance=~\"$instance\"}",
@@ -945,7 +945,7 @@ data:
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "${DS_MIMIR}"
+                "uid": "prometheus"
               },
               "fieldConfig": {
                 "defaults": {
@@ -1024,7 +1024,7 @@ data:
                 {
                   "datasource": {
                     "type": "prometheus",
-                    "uid": "${DS_MIMIR}"
+                    "uid": "prometheus"
                   },
                   "editorMode": "code",
                   "expr": "cpu_frequency{instance=~\"$instance\", cpu=~\"$cpu\"}",
@@ -1040,7 +1040,7 @@ data:
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "${DS_MIMIR}"
+                "uid": "prometheus"
               },
               "fieldConfig": {
                 "defaults": {
@@ -1119,7 +1119,7 @@ data:
                 {
                   "datasource": {
                     "type": "prometheus",
-                    "uid": "${DS_MIMIR}"
+                    "uid": "prometheus"
                   },
                   "editorMode": "code",
                   "expr": "cpu_temperature{instance=~\"$instance\", cpu=~\"$cpu\"}",
@@ -1135,7 +1135,7 @@ data:
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "${DS_MIMIR}"
+                "uid": "prometheus"
               },
               "fieldConfig": {
                 "defaults": {
@@ -1214,7 +1214,7 @@ data:
                 {
                   "datasource": {
                     "type": "prometheus",
-                    "uid": "${DS_MIMIR}"
+                    "uid": "prometheus"
                   },
                   "editorMode": "code",
                   "expr": "avg by (state) (cpu_idlestate{instance=~\"$instance\", cpu=~\"$cpu\"})",
@@ -1230,7 +1230,7 @@ data:
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "${DS_MIMIR}"
+                "uid": "prometheus"
               },
               "fieldConfig": {
                 "defaults": {
@@ -1309,7 +1309,7 @@ data:
                 {
                   "datasource": {
                     "type": "prometheus",
-                    "uid": "${DS_MIMIR}"
+                    "uid": "prometheus"
                   },
                   "editorMode": "code",
                   "expr": "cpu_throttling{instance=~\"$instance\", cpu=~\"$cpu\"}",
@@ -1325,7 +1325,7 @@ data:
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "${DS_MIMIR}"
+                "uid": "prometheus"
               },
               "fieldConfig": {
                 "defaults": {
@@ -1404,7 +1404,7 @@ data:
                 {
                   "datasource": {
                     "type": "prometheus",
-                    "uid": "${DS_MIMIR}"
+                    "uid": "prometheus"
                   },
                   "editorMode": "code",
                   "expr": "interrupts{instance=~\"$instance\"}",
@@ -1416,7 +1416,7 @@ data:
                 {
                   "datasource": {
                     "type": "prometheus",
-                    "uid": "${DS_MIMIR}"
+                    "uid": "prometheus"
                   },
                   "editorMode": "code",
                   "expr": "context_switches{instance=~\"$instance\"}",
@@ -1447,7 +1447,7 @@ data:
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "${DS_MIMIR}"
+                "uid": "prometheus"
               },
               "fieldConfig": {
                 "defaults": {
@@ -1501,7 +1501,7 @@ data:
                 {
                   "datasource": {
                     "type": "prometheus",
-                    "uid": "${DS_MIMIR}"
+                    "uid": "prometheus"
                   },
                   "editorMode": "code",
                   "expr": "physical_memory{instance=~\"$instance\"}",
@@ -1517,7 +1517,7 @@ data:
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "${DS_MIMIR}"
+                "uid": "prometheus"
               },
               "fieldConfig": {
                 "defaults": {
@@ -1571,7 +1571,7 @@ data:
                 {
                   "datasource": {
                     "type": "prometheus",
-                    "uid": "${DS_MIMIR}"
+                    "uid": "prometheus"
                   },
                   "editorMode": "code",
                   "expr": "swap{instance=~\"$instance\"}",
@@ -1587,7 +1587,7 @@ data:
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "${DS_MIMIR}"
+                "uid": "prometheus"
               },
               "fieldConfig": {
                 "defaults": {
@@ -1666,7 +1666,7 @@ data:
                 {
                   "datasource": {
                     "type": "prometheus",
-                    "uid": "${DS_MIMIR}"
+                    "uid": "prometheus"
                   },
                   "editorMode": "code",
                   "expr": "memory_available{instance=~\"$instance\"}",
@@ -1678,7 +1678,7 @@ data:
                 {
                   "datasource": {
                     "type": "prometheus",
-                    "uid": "${DS_MIMIR}"
+                    "uid": "prometheus"
                   },
                   "editorMode": "code",
                   "expr": "memory_committed{instance=~\"$instance\"}",
@@ -1691,7 +1691,7 @@ data:
                 {
                   "datasource": {
                     "type": "prometheus",
-                    "uid": "${DS_MIMIR}"
+                    "uid": "prometheus"
                   },
                   "editorMode": "code",
                   "expr": "memory_transparent_hugepages{instance=~\"$instance\"}",
@@ -1704,7 +1704,7 @@ data:
                 {
                   "datasource": {
                     "type": "prometheus",
-                    "uid": "${DS_MIMIR}"
+                    "uid": "prometheus"
                   },
                   "editorMode": "code",
                   "expr": "memory_writeback{instance=~\"$instance\"}",
@@ -1721,7 +1721,7 @@ data:
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "${DS_MIMIR}"
+                "uid": "prometheus"
               },
               "fieldConfig": {
                 "defaults": {
@@ -1800,7 +1800,7 @@ data:
                 {
                   "datasource": {
                     "type": "prometheus",
-                    "uid": "${DS_MIMIR}"
+                    "uid": "prometheus"
                   },
                   "editorMode": "code",
                   "expr": "memory_kernel{instance=~\"$instance\"}",
@@ -1816,7 +1816,7 @@ data:
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "${DS_MIMIR}"
+                "uid": "prometheus"
               },
               "fieldConfig": {
                 "defaults": {
@@ -1895,7 +1895,7 @@ data:
                 {
                   "datasource": {
                     "type": "prometheus",
-                    "uid": "${DS_MIMIR}"
+                    "uid": "prometheus"
                   },
                   "editorMode": "code",
                   "expr": "memory_slab{instance=~\"$instance\"}",
@@ -1925,7 +1925,7 @@ data:
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "${DS_MIMIR}"
+                "uid": "prometheus"
               },
               "fieldConfig": {
                 "defaults": {
@@ -2005,7 +2005,7 @@ data:
                 {
                   "datasource": {
                     "type": "prometheus",
-                    "uid": "${DS_MIMIR}"
+                    "uid": "prometheus"
                   },
                   "editorMode": "code",
                   "expr": "interface_io{instance=~\"$instance\", interface=~\"$interface\"}",
@@ -2021,7 +2021,7 @@ data:
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "${DS_MIMIR}"
+                "uid": "prometheus"
               },
               "fieldConfig": {
                 "defaults": {
@@ -2073,7 +2073,7 @@ data:
                 {
                   "datasource": {
                     "type": "prometheus",
-                    "uid": "${DS_MIMIR}"
+                    "uid": "prometheus"
                   },
                   "editorMode": "code",
                   "exemplar": false,
@@ -2091,7 +2091,7 @@ data:
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "${DS_MIMIR}"
+                "uid": "prometheus"
               },
               "fieldConfig": {
                 "defaults": {
@@ -2172,7 +2172,7 @@ data:
                 {
                   "datasource": {
                     "type": "prometheus",
-                    "uid": "${DS_MIMIR}"
+                    "uid": "prometheus"
                   },
                   "editorMode": "code",
                   "exemplar": false,
@@ -2190,7 +2190,7 @@ data:
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "${DS_MIMIR}"
+                "uid": "prometheus"
               },
               "fieldConfig": {
                 "defaults": {
@@ -2271,7 +2271,7 @@ data:
                 {
                   "datasource": {
                     "type": "prometheus",
-                    "uid": "${DS_MIMIR}"
+                    "uid": "prometheus"
                   },
                   "editorMode": "code",
                   "exemplar": false,
@@ -2289,7 +2289,7 @@ data:
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "${DS_MIMIR}"
+                "uid": "prometheus"
               },
               "fieldConfig": {
                 "defaults": {
@@ -2370,7 +2370,7 @@ data:
                 {
                   "datasource": {
                     "type": "prometheus",
-                    "uid": "${DS_MIMIR}"
+                    "uid": "prometheus"
                   },
                   "editorMode": "code",
                   "exemplar": false,
@@ -2388,7 +2388,7 @@ data:
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "${DS_MIMIR}"
+                "uid": "prometheus"
               },
               "fieldConfig": {
                 "defaults": {
@@ -2469,7 +2469,7 @@ data:
                 {
                   "datasource": {
                     "type": "prometheus",
-                    "uid": "${DS_MIMIR}"
+                    "uid": "prometheus"
                   },
                   "editorMode": "code",
                   "exemplar": false,
@@ -2487,7 +2487,7 @@ data:
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "${DS_MIMIR}"
+                "uid": "prometheus"
               },
               "fieldConfig": {
                 "defaults": {
@@ -2567,7 +2567,7 @@ data:
                 {
                   "datasource": {
                     "type": "prometheus",
-                    "uid": "${DS_MIMIR}"
+                    "uid": "prometheus"
                   },
                   "editorMode": "code",
                   "expr": "interface_packets{instance=~\"$instance\", interface=~\"$interface\"}",
@@ -2583,7 +2583,7 @@ data:
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "${DS_MIMIR}"
+                "uid": "prometheus"
               },
               "fieldConfig": {
                 "defaults": {
@@ -2663,7 +2663,7 @@ data:
                 {
                   "datasource": {
                     "type": "prometheus",
-                    "uid": "${DS_MIMIR}"
+                    "uid": "prometheus"
                   },
                   "editorMode": "code",
                   "expr": "interface_errors{instance=~\"$instance\", interface=~\"$interface\"}",
@@ -2675,7 +2675,7 @@ data:
                 {
                   "datasource": {
                     "type": "prometheus",
-                    "uid": "${DS_MIMIR}"
+                    "uid": "prometheus"
                   },
                   "editorMode": "code",
                   "expr": "interface_drops{instance=~\"$instance\", interface=~\"$interface\"}",
@@ -2706,7 +2706,7 @@ data:
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "${DS_MIMIR}"
+                "uid": "prometheus"
               },
               "fieldConfig": {
                 "defaults": {
@@ -2793,7 +2793,7 @@ data:
                   "refId": "A",
                   "datasource": {
                     "type": "prometheus",
-                    "uid": "${DS_MIMIR}"
+                    "uid": "prometheus"
                   }
                 }
               ],
@@ -2803,7 +2803,7 @@ data:
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "${DS_MIMIR}"
+                "uid": "prometheus"
               },
               "fieldConfig": {
                 "defaults": {
@@ -2890,7 +2890,7 @@ data:
                   "refId": "A",
                   "datasource": {
                     "type": "prometheus",
-                    "uid": "${DS_MIMIR}"
+                    "uid": "prometheus"
                   }
                 }
               ],
@@ -2900,7 +2900,7 @@ data:
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "${DS_MIMIR}"
+                "uid": "prometheus"
               },
               "fieldConfig": {
                 "defaults": {
@@ -2987,13 +2987,13 @@ data:
                   "refId": "A",
                   "datasource": {
                     "type": "prometheus",
-                    "uid": "${DS_MIMIR}"
+                    "uid": "prometheus"
                   }
                 },
                 {
                   "datasource": {
                     "type": "prometheus",
-                    "uid": "${DS_MIMIR}"
+                    "uid": "prometheus"
                   },
                   "editorMode": "code",
                   "expr": "services_io{instance=\"$instance\", service=~\"$services\", op=\"write\"}",
@@ -3010,7 +3010,7 @@ data:
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "${DS_MIMIR}"
+                "uid": "prometheus"
               },
               "fieldConfig": {
                 "defaults": {
@@ -3097,7 +3097,7 @@ data:
                   "refId": "A",
                   "datasource": {
                     "type": "prometheus",
-                    "uid": "${DS_MIMIR}"
+                    "uid": "prometheus"
                   }
                 }
               ],
@@ -3121,7 +3121,7 @@ data:
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "${DS_MIMIR}"
+                "uid": "prometheus"
               },
               "fieldConfig": {
                 "defaults": {
@@ -3201,7 +3201,7 @@ data:
                 {
                   "datasource": {
                     "type": "prometheus",
-                    "uid": "${DS_MIMIR}"
+                    "uid": "prometheus"
                   },
                   "editorMode": "code",
                   "expr": "processes{instance=~\"$instance\"}",
@@ -3217,7 +3217,7 @@ data:
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "${DS_MIMIR}"
+                "uid": "prometheus"
               },
               "fieldConfig": {
                 "defaults": {
@@ -3296,7 +3296,7 @@ data:
                 {
                   "datasource": {
                     "type": "prometheus",
-                    "uid": "${DS_MIMIR}"
+                    "uid": "prometheus"
                   },
                   "editorMode": "code",
                   "expr": "processes_forks{instance=~\"$instance\"}",
@@ -3326,7 +3326,7 @@ data:
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "${DS_MIMIR}"
+                "uid": "prometheus"
               },
               "fieldConfig": {
                 "defaults": {
@@ -3378,7 +3378,7 @@ data:
                 {
                   "datasource": {
                     "type": "prometheus",
-                    "uid": "${DS_MIMIR}"
+                    "uid": "prometheus"
                   },
                   "editorMode": "code",
                   "expr": "uptime{instance=~\"$instance\"}",
@@ -3394,7 +3394,7 @@ data:
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "${DS_MIMIR}"
+                "uid": "prometheus"
               },
               "fieldConfig": {
                 "defaults": {
@@ -3474,7 +3474,7 @@ data:
                 {
                   "datasource": {
                     "type": "prometheus",
-                    "uid": "${DS_MIMIR}"
+                    "uid": "prometheus"
                   },
                   "editorMode": "code",
                   "expr": "clock_synced{instance=~\"$instance\"}",
@@ -3490,7 +3490,7 @@ data:
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "${DS_MIMIR}"
+                "uid": "prometheus"
               },
               "fieldConfig": {
                 "defaults": {
@@ -3569,7 +3569,7 @@ data:
                 {
                   "datasource": {
                     "type": "prometheus",
-                    "uid": "${DS_MIMIR}"
+                    "uid": "prometheus"
                   },
                   "editorMode": "code",
                   "expr": "clock_offset{instance=~\"$instance\"}",
@@ -3585,7 +3585,7 @@ data:
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "${DS_MIMIR}"
+                "uid": "prometheus"
               },
               "fieldConfig": {
                 "defaults": {
@@ -3665,7 +3665,7 @@ data:
                 {
                   "datasource": {
                     "type": "prometheus",
-                    "uid": "${DS_MIMIR}"
+                    "uid": "prometheus"
                   },
                   "editorMode": "code",
                   "expr": "clock_status{instance=~\"$instance\"}",
@@ -3695,7 +3695,7 @@ data:
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "${DS_MIMIR}"
+                "uid": "prometheus"
               },
               "fieldConfig": {
                 "defaults": {
@@ -3774,7 +3774,7 @@ data:
                 {
                   "datasource": {
                     "type": "prometheus",
-                    "uid": "${DS_MIMIR}"
+                    "uid": "prometheus"
                   },
                   "editorMode": "code",
                   "expr": "nfs_io{instance=~\"$instance\"}",
@@ -3790,7 +3790,7 @@ data:
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "${DS_MIMIR}"
+                "uid": "prometheus"
               },
               "fieldConfig": {
                 "defaults": {
@@ -3869,7 +3869,7 @@ data:
                 {
                   "datasource": {
                     "type": "prometheus",
-                    "uid": "${DS_MIMIR}"
+                    "uid": "prometheus"
                   },
                   "editorMode": "code",
                   "expr": "nfs_net{instance=~\"$instance\"}",
@@ -3885,7 +3885,7 @@ data:
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "${DS_MIMIR}"
+                "uid": "prometheus"
               },
               "fieldConfig": {
                 "defaults": {
@@ -3964,7 +3964,7 @@ data:
                 {
                   "datasource": {
                     "type": "prometheus",
-                    "uid": "${DS_MIMIR}"
+                    "uid": "prometheus"
                   },
                   "editorMode": "code",
                   "expr": "nfs_threads{instance=~\"$instance\"}",
@@ -3980,7 +3980,7 @@ data:
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "${DS_MIMIR}"
+                "uid": "prometheus"
               },
               "fieldConfig": {
                 "defaults": {
@@ -4059,7 +4059,7 @@ data:
                 {
                   "datasource": {
                     "type": "prometheus",
-                    "uid": "${DS_MIMIR}"
+                    "uid": "prometheus"
                   },
                   "editorMode": "code",
                   "expr": "nfs_readcache{instance=~\"$instance\"}",
@@ -4075,7 +4075,7 @@ data:
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "${DS_MIMIR}"
+                "uid": "prometheus"
               },
               "fieldConfig": {
                 "defaults": {
@@ -4154,7 +4154,7 @@ data:
                 {
                   "datasource": {
                     "type": "prometheus",
-                    "uid": "${DS_MIMIR}"
+                    "uid": "prometheus"
                   },
                   "editorMode": "code",
                   "expr": "nfs_rpc{instance=~\"$instance\"}",
@@ -4170,7 +4170,7 @@ data:
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "${DS_MIMIR}"
+                "uid": "prometheus"
               },
               "fieldConfig": {
                 "defaults": {
@@ -4249,7 +4249,7 @@ data:
                 {
                   "datasource": {
                     "type": "prometheus",
-                    "uid": "${DS_MIMIR}"
+                    "uid": "prometheus"
                   },
                   "editorMode": "code",
                   "expr": "nfs_proc4{instance=~\"$instance\"}",
@@ -4265,7 +4265,7 @@ data:
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "${DS_MIMIR}"
+                "uid": "prometheus"
               },
               "fieldConfig": {
                 "defaults": {
@@ -4344,7 +4344,7 @@ data:
                 {
                   "datasource": {
                     "type": "prometheus",
-                    "uid": "${DS_MIMIR}"
+                    "uid": "prometheus"
                   },
                   "editorMode": "code",
                   "expr": "nfs_proc4ops{instance=~\"$instance\"}",
@@ -4374,7 +4374,7 @@ data:
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "${DS_MIMIR}"
+                "uid": "prometheus"
               },
               "fieldConfig": {
                 "defaults": {
@@ -4455,7 +4455,7 @@ data:
                 {
                   "datasource": {
                     "type": "prometheus",
-                    "uid": "${DS_MIMIR}"
+                    "uid": "prometheus"
                   },
                   "editorMode": "code",
                   "expr": "zfs_arc_size{instance=~\"$instance\", op=~\"arcsz|target\"}",
@@ -4471,7 +4471,7 @@ data:
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "${DS_MIMIR}"
+                "uid": "prometheus"
               },
               "fieldConfig": {
                 "defaults": {
@@ -4552,7 +4552,7 @@ data:
                 {
                   "datasource": {
                     "type": "prometheus",
-                    "uid": "${DS_MIMIR}"
+                    "uid": "prometheus"
                   },
                   "editorMode": "code",
                   "expr": "zfs_l2_size{instance=~\"$instance\"}",
@@ -4568,7 +4568,7 @@ data:
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "${DS_MIMIR}"
+                "uid": "prometheus"
               },
               "fieldConfig": {
                 "defaults": {
@@ -4649,7 +4649,7 @@ data:
                 {
                   "datasource": {
                     "type": "prometheus",
-                    "uid": "${DS_MIMIR}"
+                    "uid": "prometheus"
                   },
                   "editorMode": "code",
                   "expr": "zfs_reads{instance=~\"$instance\"}",
@@ -4665,7 +4665,7 @@ data:
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "${DS_MIMIR}"
+                "uid": "prometheus"
               },
               "fieldConfig": {
                 "defaults": {
@@ -4746,7 +4746,7 @@ data:
                 {
                   "datasource": {
                     "type": "prometheus",
-                    "uid": "${DS_MIMIR}"
+                    "uid": "prometheus"
                   },
                   "editorMode": "code",
                   "expr": "zfs_hits{instance=~\"$instance\"}",
@@ -4762,7 +4762,7 @@ data:
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "${DS_MIMIR}"
+                "uid": "prometheus"
               },
               "fieldConfig": {
                 "defaults": {
@@ -4841,7 +4841,7 @@ data:
                 {
                   "datasource": {
                     "type": "prometheus",
-                    "uid": "${DS_MIMIR}"
+                    "uid": "prometheus"
                   },
                   "editorMode": "code",
                   "expr": "zfs_arc_size_breakdown{instance=~\"$instance\"}",
@@ -4857,7 +4857,7 @@ data:
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "${DS_MIMIR}"
+                "uid": "prometheus"
               },
               "fieldConfig": {
                 "defaults": {
@@ -4936,7 +4936,7 @@ data:
                 {
                   "datasource": {
                     "type": "prometheus",
-                    "uid": "${DS_MIMIR}"
+                    "uid": "prometheus"
                   },
                   "editorMode": "code",
                   "expr": "zfs_hash_elements{instance=~\"$instance\"}",
@@ -4952,7 +4952,7 @@ data:
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "${DS_MIMIR}"
+                "uid": "prometheus"
               },
               "fieldConfig": {
                 "defaults": {
@@ -5031,7 +5031,7 @@ data:
                 {
                   "datasource": {
                     "type": "prometheus",
-                    "uid": "${DS_MIMIR}"
+                    "uid": "prometheus"
                   },
                   "editorMode": "code",
                   "expr": "zfs_important_ops{instance=~\"$instance\"}",
@@ -5047,7 +5047,7 @@ data:
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "${DS_MIMIR}"
+                "uid": "prometheus"
               },
               "fieldConfig": {
                 "defaults": {
@@ -5126,7 +5126,7 @@ data:
                 {
                   "datasource": {
                     "type": "prometheus",
-                    "uid": "${DS_MIMIR}"
+                    "uid": "prometheus"
                   },
                   "editorMode": "code",
                   "expr": "zfs_hits_rate{instance=~\"$instance\"}",
@@ -5156,7 +5156,7 @@ data:
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "${DS_MIMIR}"
+                "uid": "prometheus"
               },
               "fieldConfig": {
                 "defaults": {
@@ -5236,7 +5236,7 @@ data:
                 {
                   "datasource": {
                     "type": "prometheus",
-                    "uid": "${DS_MIMIR}"
+                    "uid": "prometheus"
                   },
                   "editorMode": "code",
                   "expr": "disk_io{instance=~\"$instance\", disk=~\"$disk\"}",
@@ -5252,7 +5252,7 @@ data:
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "${DS_MIMIR}"
+                "uid": "prometheus"
               },
               "fieldConfig": {
                 "defaults": {
@@ -5332,7 +5332,7 @@ data:
                 {
                   "datasource": {
                     "type": "prometheus",
-                    "uid": "${DS_MIMIR}"
+                    "uid": "prometheus"
                   },
                   "editorMode": "code",
                   "expr": "abs(disk_io_ops{instance=~\"$instance\", disk=~\"$disk\"})",
@@ -5348,7 +5348,7 @@ data:
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "${DS_MIMIR}"
+                "uid": "prometheus"
               },
               "fieldConfig": {
                 "defaults": {
@@ -5428,7 +5428,7 @@ data:
                 {
                   "datasource": {
                     "type": "prometheus",
-                    "uid": "${DS_MIMIR}"
+                    "uid": "prometheus"
                   },
                   "editorMode": "code",
                   "expr": "disk_io_backlog{instance=~\"$instance\", disk=~\"$disk\"}",
@@ -5440,7 +5440,7 @@ data:
                 {
                   "datasource": {
                     "type": "prometheus",
-                    "uid": "${DS_MIMIR}"
+                    "uid": "prometheus"
                   },
                   "editorMode": "code",
                   "expr": "disk_busy{instance=~\"$instance\", disk=~\"$disk\"}",
@@ -5457,7 +5457,7 @@ data:
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "${DS_MIMIR}"
+                "uid": "prometheus"
               },
               "fieldConfig": {
                 "defaults": {
@@ -5537,7 +5537,7 @@ data:
                 {
                   "datasource": {
                     "type": "prometheus",
-                    "uid": "${DS_MIMIR}"
+                    "uid": "prometheus"
                   },
                   "editorMode": "code",
                   "expr": "disk_utilization{instance=~\"$instance\", disk=~\"$disk\"}",
@@ -5553,7 +5553,7 @@ data:
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "${DS_MIMIR}"
+                "uid": "prometheus"
               },
               "fieldConfig": {
                 "defaults": {
@@ -5633,7 +5633,7 @@ data:
                 {
                   "datasource": {
                     "type": "prometheus",
-                    "uid": "${DS_MIMIR}"
+                    "uid": "prometheus"
                   },
                   "editorMode": "code",
                   "expr": "abs(disk_iotime{instance=~\"$instance\", disk=~\"$disk\"})",
@@ -5649,7 +5649,7 @@ data:
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "${DS_MIMIR}"
+                "uid": "prometheus"
               },
               "fieldConfig": {
                 "defaults": {
@@ -5729,7 +5729,7 @@ data:
                 {
                   "datasource": {
                     "type": "prometheus",
-                    "uid": "${DS_MIMIR}"
+                    "uid": "prometheus"
                   },
                   "editorMode": "code",
                   "expr": "disk_await{instance=~\"$instance\", disk=~\"$disk\"}",
@@ -5745,7 +5745,7 @@ data:
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "${DS_MIMIR}"
+                "uid": "prometheus"
               },
               "fieldConfig": {
                 "defaults": {
@@ -5825,7 +5825,7 @@ data:
                 {
                   "datasource": {
                     "type": "prometheus",
-                    "uid": "${DS_MIMIR}"
+                    "uid": "prometheus"
                   },
                   "editorMode": "code",
                   "expr": "abs(disk_io_size{instance=~\"$instance\", disk=~\"$disk\"})",
@@ -5841,7 +5841,7 @@ data:
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "${DS_MIMIR}"
+                "uid": "prometheus"
               },
               "fieldConfig": {
                 "defaults": {
@@ -5921,7 +5921,7 @@ data:
                 {
                   "datasource": {
                     "type": "prometheus",
-                    "uid": "${DS_MIMIR}"
+                    "uid": "prometheus"
                   },
                   "editorMode": "code",
                   "expr": "disk_qops{instance=~\"$instance\", disk=~\"$disk\"}",
@@ -5960,7 +5960,7 @@ data:
             "current": {},
             "datasource": {
               "type": "prometheus",
-              "uid": "${DS_MIMIR}"
+              "uid": "prometheus"
             },
             "definition": "label_values(uptime,job)",
             "includeAll": false,
@@ -5979,7 +5979,7 @@ data:
             "current": {},
             "datasource": {
               "type": "prometheus",
-              "uid": "${DS_MIMIR}"
+              "uid": "prometheus"
             },
             "definition": "label_values(uptime{job=\"$job\"},instance)",
             "includeAll": false,
@@ -5999,7 +5999,7 @@ data:
             "current": {},
             "datasource": {
               "type": "prometheus",
-              "uid": "${DS_MIMIR}"
+              "uid": "prometheus"
             },
             "definition": "label_values(cpu_usage{instance=\"$instance\", job=\"$job\"},cpu)",
             "includeAll": true,
@@ -6020,7 +6020,7 @@ data:
             "current": {},
             "datasource": {
               "type": "prometheus",
-              "uid": "${DS_MIMIR}"
+              "uid": "prometheus"
             },
             "definition": "label_values(disk_io{instance=\"$instance\", job=\"$job\"},disk)",
             "includeAll": true,
@@ -6041,7 +6041,7 @@ data:
             "current": {},
             "datasource": {
               "type": "prometheus",
-              "uid": "${DS_MIMIR}"
+              "uid": "prometheus"
             },
             "definition": "label_values(interface_io{instance=\"$instance\", job=\"$job\"},interface)",
             "includeAll": true,
@@ -7209,7 +7209,7 @@ data:
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "${DS_MIMIR}"
+            "uid": "prometheus"
           },
           "fieldConfig": {
             "defaults": {
@@ -7263,7 +7263,7 @@ data:
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "${DS_MIMIR}"
+                "uid": "prometheus"
               },
               "editorMode": "code",
               "expr": "uptime{instance=~\"$instance\"}",
@@ -7279,7 +7279,7 @@ data:
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "${DS_MIMIR}"
+            "uid": "prometheus"
           },
           "fieldConfig": {
             "defaults": {
@@ -7333,7 +7333,7 @@ data:
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "${DS_MIMIR}"
+                "uid": "prometheus"
               },
               "editorMode": "code",
               "expr": "uptime{instance=~\"$instance\"}",
@@ -7362,7 +7362,7 @@ data:
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "${DS_MIMIR}"
+            "uid": "prometheus"
           },
           "fieldConfig": {
             "defaults": {
@@ -7419,7 +7419,7 @@ data:
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "${DS_MIMIR}"
+                "uid": "prometheus"
               },
               "editorMode": "code",
               "expr": "disk_utilization{instance=~\"$instance\"}",
@@ -7435,7 +7435,7 @@ data:
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "${DS_MIMIR}"
+            "uid": "prometheus"
           },
           "fieldConfig": {
             "defaults": {
@@ -7521,7 +7521,7 @@ data:
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "${DS_MIMIR}"
+                "uid": "prometheus"
               },
               "editorMode": "code",
               "expr": "disk_utilization{instance=~\"$instance\"}",
@@ -7550,7 +7550,7 @@ data:
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "${DS_MIMIR}"
+            "uid": "prometheus"
           },
           "fieldConfig": {
             "defaults": {
@@ -7638,7 +7638,7 @@ data:
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "${DS_MIMIR}"
+                "uid": "prometheus"
               },
               "editorMode": "code",
               "expr": "disk_io{instance=~\"$instance\", disk=~\"$disk\"}",
@@ -7654,7 +7654,7 @@ data:
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "${DS_MIMIR}"
+            "uid": "prometheus"
           },
           "fieldConfig": {
             "defaults": {
@@ -7741,7 +7741,7 @@ data:
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "${DS_MIMIR}"
+                "uid": "prometheus"
               },
               "editorMode": "code",
               "expr": "abs(disk_iotime{instance=~\"$instance\", disk=~\"$disk\"})",
@@ -7757,7 +7757,7 @@ data:
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "${DS_MIMIR}"
+            "uid": "prometheus"
           },
           "fieldConfig": {
             "defaults": {
@@ -7844,7 +7844,7 @@ data:
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "${DS_MIMIR}"
+                "uid": "prometheus"
               },
               "editorMode": "code",
               "expr": "abs(disk_io_ops{instance=~\"$instance\", disk=~\"$disk\"})",
@@ -7873,7 +7873,7 @@ data:
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "${DS_MIMIR}"
+            "uid": "prometheus"
           },
           "fieldConfig": {
             "defaults": {
@@ -7960,7 +7960,7 @@ data:
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "${DS_MIMIR}"
+                "uid": "prometheus"
               },
               "editorMode": "code",
               "expr": "abs(disk_await{instance=~\"$instance\", disk=~\"$disk\"})",
@@ -7976,7 +7976,7 @@ data:
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "${DS_MIMIR}"
+            "uid": "prometheus"
           },
           "fieldConfig": {
             "defaults": {
@@ -8063,7 +8063,7 @@ data:
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "${DS_MIMIR}"
+                "uid": "prometheus"
               },
               "editorMode": "code",
               "expr": "disk_io_backlog{instance=~\"$instance\", disk=~\"$disk\"}",
@@ -8075,7 +8075,7 @@ data:
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "${DS_MIMIR}"
+                "uid": "prometheus"
               },
               "editorMode": "code",
               "expr": "disk_busy{instance=~\"$instance\", disk=~\"$disk\"}",
@@ -8092,7 +8092,7 @@ data:
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "${DS_MIMIR}"
+            "uid": "prometheus"
           },
           "fieldConfig": {
             "defaults": {
@@ -8179,7 +8179,7 @@ data:
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "${DS_MIMIR}"
+                "uid": "prometheus"
               },
               "editorMode": "code",
               "expr": "disk_qops{instance=~\"$instance\", disk=~\"$disk\"}",
@@ -8195,7 +8195,7 @@ data:
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "${DS_MIMIR}"
+            "uid": "prometheus"
           },
           "fieldConfig": {
             "defaults": {
@@ -8282,7 +8282,7 @@ data:
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "${DS_MIMIR}"
+                "uid": "prometheus"
               },
               "editorMode": "code",
               "expr": "abs(disk_io_size{instance=~\"$instance\", disk=~\"$disk\"})",
@@ -8307,7 +8307,7 @@ data:
             "current": {},
             "datasource": {
               "type": "prometheus",
-              "uid": "${DS_MIMIR}"
+              "uid": "prometheus"
             },
             "definition": "label_values(uptime,job)",
             "hide": 0,
@@ -8330,7 +8330,7 @@ data:
             "current": {},
             "datasource": {
               "type": "prometheus",
-              "uid": "${DS_MIMIR}"
+              "uid": "prometheus"
             },
             "definition": "label_values(uptime{job=\"$job\"},instance)",
             "hide": 0,
@@ -8354,7 +8354,7 @@ data:
             "current": {},
             "datasource": {
               "type": "prometheus",
-              "uid": "${DS_MIMIR}"
+              "uid": "prometheus"
             },
             "definition": "label_values(disk_io{instance=\"$instance\", job=\"$job\"},disk)",
             "hide": 0,
