@@ -10,7 +10,6 @@ spec:
     size: 10Gi
 
   postgresql:
-    version: "16"
     parameters:
       shared_preload_libraries: "vectors"
   image:
