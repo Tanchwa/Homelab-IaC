@@ -11,7 +11,7 @@ reclaimPolicy: Retain
 parameters:
   numberOfReplicas: "1"
   staleReplicaTimeout: "1440" # 1 day
-  diskSelector: "ssd"
+  #diskSelector: "ssd"
   dataLocality: "strict-local"
   recurringJobSelector: '[
       {

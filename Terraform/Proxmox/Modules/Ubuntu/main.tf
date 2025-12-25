@@ -21,7 +21,7 @@ resource "proxmox_virtual_environment_vm" "ubuntu_vm" {
 
   cpu {
     cores   = 6
-    sockets = 1
+    sockets = 2
     type    = "host"
     flags   = ["+aes"]
   }
