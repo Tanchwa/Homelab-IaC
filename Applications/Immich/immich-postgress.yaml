@@ -27,7 +27,7 @@ spec:
 
           storage:
             storageClass: longhorn-postgres
-            size: 8Gi
+            size: 10Gi
           instances: 3
 
           initdb:
