@@ -6,7 +6,7 @@ spec:
   instances: 1
   
   storage:
-    storageClassName: longhorn-postgres
+    storageClass: longhorn-postgres
     size: 10Gi
 
   postgresql:
