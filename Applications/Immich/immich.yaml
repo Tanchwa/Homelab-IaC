@@ -42,7 +42,7 @@ spec:
             containers:
               main:
                 image:
-                  tag: v1.137.0
+                  tag: v1.140.1
                 env:
                   DB_HOSTNAME: "immich-postgres-cluster-rw.cnpg-database"
                   DB_USERNAME: "immich"
