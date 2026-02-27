@@ -1,0 +1,10 @@
+#cloud-config
+write_files:
+  - path: /etc/multipath.conf 
+    content: |
+      blacklist {
+        devnode "^sd[a-z0-9]+"
+      }
+runcmd:
+  - systemctl restart multipathd
+  - multipath -r
