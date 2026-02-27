@@ -23,6 +23,8 @@ spec:
         preUpgradeChecker:
           jobEnabled: false
         defaultSettings:
+          concurrentReplicaRebuildPerNodeLimit: 3
+          concurrentVolumeBackupRestorePerNodeLimit: 2
           defaultDataLocality: best-effort
           replicaAutoBalance: least-effort
           backupTarget: "nfs://172.31.0.15//mnt/Main/kubernetes/backup"

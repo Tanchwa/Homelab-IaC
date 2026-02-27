@@ -1,6 +1,6 @@
-resource "proxmox_virtual_environment_download_file" "latest_ubuntu_22_jammy_qcow2_img" {
+resource "proxmox_virtual_environment_download_file" "latest_ubuntu_24_jammy_qcow2_img" {
   content_type = "iso"
   datastore_id = "local"
   node_name    = var.proxmox_node_name
-  url          = "https://cloud-images.ubuntu.com/jammy/current/jammy-server-cloudimg-amd64.img"
+  url          = "https://releases.ubuntu.com/24.04/ubuntu-24.04.4-live-server-amd64.iso"
 }
