@@ -1,0 +1,15 @@
+{
+  "Rules": [
+    {
+      "ID": "TransitionToGlacier",
+      "Status": "Enabled",
+      "Prefix": "immich/",
+      "Transitions": [
+        {
+          "Days": 1,
+          "StorageClass": "GLACIER"
+        }
+      ]
+    }
+  ]
+}
