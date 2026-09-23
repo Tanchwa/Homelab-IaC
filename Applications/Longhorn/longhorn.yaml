@@ -23,6 +23,7 @@ spec:
         preUpgradeChecker:
           jobEnabled: false
         defaultSettings:
+          v2DataEngine: true
           concurrentReplicaRebuildPerNodeLimit: 3
           concurrentVolumeBackupRestorePerNodeLimit: 2
           defaultDataLocality: best-effort

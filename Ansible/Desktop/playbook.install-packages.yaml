@@ -2,7 +2,7 @@
 - name: Install Packages
   hosts: localhost
   vars: 
-    fedora_number: 42
+    fedora_number: 44
     dnf_packages:
       - neovim
       - btop
@@ -15,13 +15,15 @@
       - jetbrains-mono-fonts
       - asusctl
       - asusctl-rog-gui
+      - supergfxctl
       - flatpak
       - fastfetch
       - hyprland
-      - hyprland-qtutils
+      # - hyprland-qtutils
       - aylurs-gtk-shell
       - swww
       - uwsm
+      - darkman
       - dnf-plugins-core
       - akmod-nvidia
       - xorg-x11-drv-nvidia-cuda
@@ -49,7 +51,7 @@
       - pylint
     coprs:
       - lukenukem/asus-linux
-      - solopasha/hyprland
+      - sdegler/hyprland
       - matthickford/git-credential-manager
       - zawertun/hack-fonts
       - elxreno/jetbrains-mono-fonts
@@ -131,6 +133,17 @@
         - terraform
         - terraform-ls
 
+
+    - name: Set Up Claude Repo
+      yum_repository:
+        name: claude-code
+        description: Claud Code
+        baseurl: https://downloads.claude.ai/claude-code/rpm/stable
+        gpgkey: https://downloads.claude.ai/keys/claude-code.asc
+    - name: Install Claude
+      dnf:
+        name: claude-code
+        state: present
 
 - name: Configure Zsh
   hosts: localhost
