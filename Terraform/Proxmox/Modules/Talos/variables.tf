@@ -3,12 +3,23 @@ variable "proxmox_node_name" {
   type        = string
 }
 
+variable "iso_file_id" {
+  description = "File ID of the (shared, built once at the root) Talos boot ISO - see ../../image.tf."
+  type        = string
+}
+
 variable "talos" {
   type = object({
     vm_type       = string
     image_version = string
     node_name     = string
     vm_id         = number
+    cpu_cores     = optional(number, 2)
+    memory_mb     = optional(number, 4000)
+    disk_size_gb  = optional(number, 20)
+    # Size of the thin-provisioned virtual disk carved out of the Longhorn
+    # LVM-thin datastore for the v2 (block) data engine - see main.tf.
+    longhorn_disk_size_gb = optional(number, 150)
   })
   validation {
     condition     = startswith(var.talos.image_version, "v")

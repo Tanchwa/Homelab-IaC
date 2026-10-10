@@ -15,10 +15,15 @@ spec:
           creationTimestamp: null
         spec:
           volumes:
-            - nfs:
-                server: 172.31.0.15
-                readOnly: false
-                path: /mnt/Main/kubernetes
+            # Inline/ephemeral CSI volume - no PV/PVC needed, same as the old
+            # in-tree nfs: volume this replaces. Requires the csi-driver-nfs
+            # Application (Applications/CSI-NFS/csi-driver-nfs.yaml), whose
+            # CSIDriver object declares the Ephemeral lifecycle mode.
+            - csi:
+                driver: nfs.csi.k8s.io
+                volumeAttributes:
+                  server: "172.31.0.15"
+                  share: "/mnt/Main/kubernetes"
               name: rfc-sync-vol
           containers:
           - command:

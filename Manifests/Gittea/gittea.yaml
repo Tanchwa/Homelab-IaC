@@ -11,9 +11,14 @@ spec:
   accessModes:
     - ReadWriteMany
   persistentVolumeReclaimPolicy: Retain
-  nfs:
-    server: 172.31.0.15
-    path: /mnt/Main/kubernetes/Gittea
+  # See Manifests/Immich/library-pvc.yaml for why this is csi: instead of
+  # nfs: - same csi-driver-nfs migration, same reasoning.
+  csi:
+    driver: nfs.csi.k8s.io
+    volumeHandle: "172.31.0.15/mnt/Main/kubernetes/Gittea##"
+    volumeAttributes:
+      server: "172.31.0.15"
+      share: "/mnt/Main/kubernetes/Gittea"
 ---
 apiVersion: v1
 kind: PersistentVolumeClaim

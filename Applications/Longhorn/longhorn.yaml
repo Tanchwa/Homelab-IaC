@@ -23,6 +23,12 @@ spec:
         preUpgradeChecker:
           jobEnabled: false
         defaultSettings:
+          # TODO: v2DataEngineHugepageLimit is unset here, so Longhorn is using
+          # the chart default. Talos nodes only reserve 1024 x 2Mi = 2Gi of
+          # hugepages for this (Terraform/Proxmox/node-config/{controlplane,worker}.yaml,
+          # machine.sysctls.vm.nr_hugepages) - whatever this gets set to must
+          # not exceed that reservation, or instance-manager-v2 pods will fail
+          # to get hugepage memory.
           v2DataEngine: true
           concurrentReplicaRebuildPerNodeLimit: 3
           concurrentVolumeBackupRestorePerNodeLimit: 2

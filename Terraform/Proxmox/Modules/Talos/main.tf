@@ -1,16 +1,23 @@
+# Talos has no SSH/cloud-init login of its own - all configuration happens via
+# the Talos API (talos_machine_configuration_apply in the root module), so
+# unlike the Ubuntu module there is no `initialization`/user_account block here.
+
 resource "proxmox_virtual_environment_vm" "talos_controlplane_vm" {
   count = var.talos.vm_type == lower("controlplane") ? 1 : 0
 
-  name        = var.talos.node_name
-  description = "Managed by Terraform"
-  tags        = ["terraform", "talos"]
+  name          = var.talos.node_name
+  description   = "Managed by Terraform"
+  tags          = ["terraform", "talos", "controlplane"]
+  scsi_hardware = "virtio-scsi-single"
+  bios          = "ovmf"
+  machine       = "q35"
 
   node_name = var.proxmox_node_name
   vm_id     = var.talos.vm_id
 
   agent {
-    # read 'Qemu guest agent' section, change to true only when ready
-    enabled = false
+    enabled = true
+    timeout = "15m"
   }
 
   startup {
@@ -20,37 +27,45 @@ resource "proxmox_virtual_environment_vm" "talos_controlplane_vm" {
   }
 
   cpu {
-    cores   = 4
+    cores   = var.talos.cpu_cores
     sockets = 1
     type    = "host"
     flags   = ["+aes"]
   }
 
   memory {
-    dedicated = 4000
+    dedicated = var.talos.memory_mb
   }
 
+  # Boots the hybrid-bootable Talos ISO directly as this disk's initial content
+  # (cloned via file_id, then resized up to disk_size_gb) - no separate cdrom
+  # device or boot_order override needed. Talos's installer then overwrites
+  # this same disk in place once it has its machine config.
   disk {
     datastore_id = "local-lvm"
-    file_id      = proxmox_virtual_environment_download_file.talos_img.id
     interface    = "scsi0"
+    file_id      = var.iso_file_id
+    size         = var.talos.disk_size_gb
+    file_format  = "raw"
   }
 
-  initialization {
-    ip_config {
-      ipv4 {
-        address = "dhcp"
-      }
-    }
-
-    user_account {
-      keys     = [trimspace(tls_private_key.talos_vm_key.public_key_openssh)]
-      password = random_password.talos_vm_password.result
-      username = "talos"
-    }
-
-    #user_data_file_id = proxmox_virtual_environment_file.cloud_config.id
+  # Longhorn v2 (block) data engine disk - a thin-provisioned virtual disk on
+  # the dedicated "longhorn-thin" LVM-thin datastore (not local-lvm). Left out
+  # of every node-config/*.yaml Talos machine-config patch entirely: Talos
+  # only touches disks it's told to manage, so this stays a clean, unformatted
+  # block device at /dev/sdX - exactly what Longhorn's v2 engine wants to
+  # register as a block disk itself.
+  disk {
+    datastore_id = "longhorn-thin"
+    interface    = "scsi1"
+    size         = var.talos.longhorn_disk_size_gb
+    file_format  = "raw"
+    discard      = "on"
+    ssd          = true
+    iothread     = true
+    backup       = false
   }
+
 
   network_device {
     bridge = "vmbr0"
@@ -62,6 +77,12 @@ resource "proxmox_virtual_environment_vm" "talos_controlplane_vm" {
 
   tpm_state {
     version = "v2.0"
+  }
+
+  efi_disk {
+    datastore_id = "local-lvm"
+    file_format  = "raw"
+    type         = "4m"
   }
 
   serial_device {}
@@ -70,16 +91,19 @@ resource "proxmox_virtual_environment_vm" "talos_controlplane_vm" {
 resource "proxmox_virtual_environment_vm" "talos_worker_vm" {
   count = var.talos.vm_type == lower("worker") ? 1 : 0
 
-  name        = var.talos.node_name
-  description = "Managed by Terraform"
-  tags        = ["terraform", "talos"]
+  name          = var.talos.node_name
+  description   = "Managed by Terraform"
+  tags          = ["terraform", "talos", "worker"]
+  scsi_hardware = "virtio-scsi-single"
+  bios          = "ovmf"
+  machine       = "q35"
 
   node_name = var.proxmox_node_name
   vm_id     = var.talos.vm_id
 
   agent {
-    # read 'Qemu guest agent' section, change to true only when ready
-    enabled = false
+    enabled = true
+    timeout = "15m"
   }
 
   startup {
@@ -89,37 +113,45 @@ resource "proxmox_virtual_environment_vm" "talos_worker_vm" {
   }
 
   cpu {
-    cores   = 2
+    cores   = var.talos.cpu_cores
     sockets = 1
     type    = "host"
     flags   = ["+aes"]
   }
 
   memory {
-    dedicated = 4000
+    dedicated = var.talos.memory_mb
   }
 
+  # Boots the hybrid-bootable Talos ISO directly as this disk's initial content
+  # (cloned via file_id, then resized up to disk_size_gb) - no separate cdrom
+  # device or boot_order override needed. Talos's installer then overwrites
+  # this same disk in place once it has its machine config.
   disk {
     datastore_id = "local-lvm"
-    file_id      = proxmox_virtual_environment_download_file.talos_img.id
     interface    = "scsi0"
+    file_id      = var.iso_file_id
+    size         = var.talos.disk_size_gb
+    file_format  = "raw"
   }
 
-  initialization {
-    ip_config {
-      ipv4 {
-        address = "dhcp"
-      }
-    }
-
-    user_account {
-      keys     = [trimspace(tls_private_key.talos_vm_key.public_key_openssh)]
-      password = random_password.talos_vm_password.result
-      username = "talos"
-    }
-
-    #user_data_file_id = proxmox_virtual_environment_file.cloud_config.id
+  # Longhorn v2 (block) data engine disk - a thin-provisioned virtual disk on
+  # the dedicated "longhorn-thin" LVM-thin datastore (not local-lvm). Left out
+  # of every node-config/*.yaml Talos machine-config patch entirely: Talos
+  # only touches disks it's told to manage, so this stays a clean, unformatted
+  # block device at /dev/sdX - exactly what Longhorn's v2 engine wants to
+  # register as a block disk itself.
+  disk {
+    datastore_id = "longhorn-thin"
+    interface    = "scsi1"
+    size         = var.talos.longhorn_disk_size_gb
+    file_format  = "raw"
+    discard      = "on"
+    ssd          = true
+    iothread     = true
+    backup       = false
   }
+
 
   network_device {
     bridge = "vmbr0"
@@ -133,31 +165,11 @@ resource "proxmox_virtual_environment_vm" "talos_worker_vm" {
     version = "v2.0"
   }
 
+  efi_disk {
+    datastore_id = "local-lvm"
+    file_format  = "raw"
+    type         = "4m"
+  }
+
   serial_device {}
 }
-
-resource "random_password" "talos_vm_password" {
-  length           = 16
-  override_special = "_%@"
-  special          = true
-}
-
-resource "tls_private_key" "talos_vm_key" {
-  algorithm = "RSA"
-  rsa_bits  = 2048
-}
-
-output "talos_vm_password" {
-  value     = random_password.talos_vm_password.result
-  sensitive = true
-}
-
-output "talos_vm_private_key" {
-  value     = tls_private_key.talos_vm_key.private_key_pem
-  sensitive = true
-}
-
-output "talos_vm_public_key" {
-  value = tls_private_key.talos_vm_key.public_key_openssh
-}
-

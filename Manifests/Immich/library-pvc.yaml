@@ -11,9 +11,12 @@ spec:
   accessModes:
     - ReadWriteMany
   persistentVolumeReclaimPolicy: Retain
-  nfs:
-    server: 172.31.0.15
-    path: /mnt/Main/kubernetes/Immich
+  csi:
+    driver: nfs.csi.k8s.io
+    volumeHandle: "172.31.0.15/mnt/Main/kubernetes/Immich##"
+    volumeAttributes:
+      server: "172.31.0.15"
+      share: "/mnt/Main/kubernetes/Immich"
 ---
 apiVersion: v1
 kind: PersistentVolumeClaim
