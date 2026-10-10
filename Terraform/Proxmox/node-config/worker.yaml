@@ -1,0 +1,20 @@
+machine:
+  type: worker
+  # Longhorn's v2 (SPDK) data engine allocates its memory from hugepages,
+  # reserved here at the OS level. 1024 x 2Mi = 2Gi - must be >= whatever
+  # Longhorn's defaultSettings.v2DataEngineHugepageLimit requests, and counts
+  # against var.talos.memory_mb headroom.
+  sysctls:
+    vm.nr_hugepages: "1024"
+  kubelet:
+    # /var sits on the EPHEMERAL partition, which already persists, but
+    # Longhorn still needs this bind mount for correct propagation of the
+    # dynamic iSCSI/NFS mounts it creates under /var/lib/longhorn.
+    extraMounts:
+      - destination: /var/lib/longhorn
+        type: bind
+        source: /var/lib/longhorn
+        options:
+          - bind
+          - rshared
+          - rw

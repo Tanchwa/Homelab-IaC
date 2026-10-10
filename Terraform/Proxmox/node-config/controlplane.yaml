@@ -1,0 +1,13 @@
+machine:
+  type: controlplane
+  controlPlane:
+    controllerManager:
+      disabled: false
+    scheduler:
+      disabled: false
+  # Longhorn's v2 (SPDK) data engine allocates its memory from hugepages,
+  # reserved here at the OS level. 1024 x 2Mi = 2Gi - must be >= whatever
+  # Longhorn's defaultSettings.v2DataEngineHugepageLimit requests, and counts
+  # against var.talos.memory_mb headroom.
+  sysctls:
+    vm.nr_hugepages: "1024"

@@ -1,0 +1,10 @@
+customization:
+  systemExtensions:
+    officialExtensions:
+      # Lets the bpg Proxmox provider read the VM's DHCP IP back out via
+      # ipv4_addresses, even while Talos is still in maintenance mode on first
+      # boot (before any machine config has been applied).
+      - siderolabs/qemu-guest-agent
+      # Longhorn's standard Talos prerequisites (iSCSI + blkid/lsblk/wipefs).
+      - siderolabs/iscsi-tools
+      - siderolabs/util-linux-tools
