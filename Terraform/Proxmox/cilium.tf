@@ -17,7 +17,26 @@ resource "helm_release" "cilium" {
     # kubePrism port
     k8sServicePort = 7445
 
-    devices = "^enp+|^eth+"
+    # Cilium's device matcher is NOT regex - it's a plain name or an
+    # iptables-style trailing "+" wildcard (comma-separated for multiple
+    # patterns). "^enp+|^eth+" was invalid syntax and almost certainly
+    # matched nothing, which is why direct-routing-device auto-detection
+    # kept failing even after routingMode/nodePort.directRoutingDevice were
+    # added below - enp6s18 (confirmed identical across all 3 nodes via
+    # Modules/Talos/outputs.tf's IP-discovery debugging) matches "enp+".
+    devices = "enp+,eth+"
+
+    # Explicit tunnel/vxlan mode, not native routing - pod-to-pod routing
+    # doesn't need to know which physical NIC each node has.
+    routingMode    = "tunnel"
+    tunnelProtocol = "vxlan"
+
+    # Separate from pod-to-pod routing mode: kubeProxyReplacement's eBPF
+    # NodePort/LoadBalancer datapath (and bpf.lbExternalClusterIP below) needs
+    # its own "direct routing device" regardless of tunnel vs native mode.
+    nodePort = {
+      directRoutingDevice = "enp+,eth+"
+    }
 
     l2announcements = {
       enabled              = true
@@ -77,6 +96,16 @@ resource "helm_release" "cilium" {
     # is running on each node so pods can be scheduled.
     operator = {
       removeCiliumNodeTaints = true
+    }
+
+    hubble = {
+      enabled = true
+      relay = {
+        enabled = true
+      }
+      ui = {
+        enabled = true
+      }
     }
 
     # TC-level fallback for ClusterIP access from the host network namespace -
