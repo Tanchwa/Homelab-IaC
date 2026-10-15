@@ -60,6 +60,23 @@
       proxmox:
         macaddr: ac:1f:6b:00:5d:10
         ipaddr: 172.31.0.200
+    # Internal-only bridge (vmbr2, no physical NIC - see Terraform/Proxmox/network.tf)
+    # for a direct Talos <-> pfSense path that bypasses the physical LAN.
+    # MACs are fixed in Terraform (Modules/Talos/main.tf's internal_mac var),
+    # so these reservations can be written ahead of a live apply.
+    internal_bridge_addresses:
+      talos-controlplane0:
+        macaddr: "02:00:00:99:01:00"
+        ipaddr: 10.99.0.10
+      talos-worker0:
+        macaddr: "02:00:00:99:01:01"
+        ipaddr: 10.99.0.11
+      talos-worker1:
+        macaddr: "02:00:00:99:01:02"
+        ipaddr: 10.99.0.12
+      talos-worker2:
+        macaddr: "02:00:00:99:01:03"
+        ipaddr: 10.99.0.13
   tasks:
     - name: set wan interface
       pfsensible.core.pfsense_interface:
@@ -78,6 +95,19 @@
         ipv4_type: static
         ipv4_address: 172.31.0.1
         ipv4_prefixlen: 17
+    # TODO: confirm the actual OS device name pfSense assigns the new NIC
+    # (added via `qm set 100 --net2 virtio,bridge=vmbr2,...` on the Proxmox
+    # host - see Terraform/Proxmox/network.tf) under Interfaces > Assignments
+    # before running this - it's a virtio NIC, not passthrough, so it won't
+    # be ixlN like WAN/LAN; likely vtnet2, but unconfirmed until it's visible.
+    - name: set internal bridge interface
+      pfsensible.core.pfsense_interface:
+        interface: vtnet2 # TODO: confirm actual device name
+        descr: INTERNAL
+        enable: true
+        ipv4_type: static
+        ipv4_address: 10.99.0.1
+        ipv4_prefixlen: 24
     - name: set general settings
       pfsensible.core.pfsense_setup:
         dns_addresses: 1.1.1.1 8.8.8.8 #why is this not a list? dunno
@@ -87,11 +117,23 @@
     #-name: configure DHCP Server #Unavailable currently
     - name: configure static DHCP leases
       pfsensible.core.pfsense_dhcp_static:
+        interface: lan
         name: "{{ item.key }}"
         macaddr: "{{ item.value.macaddr }}"
         hostname: "{{ item.key }}"
         ipaddr: "{{ item.value.ipaddr }}"
       loop: "{{ lookup('dict', static_addresses) }}"
+    # Requires a DHCP scope to already be enabled on the INTERNAL interface
+    # first (the "configure DHCP Server" step above is a manual, UI-only step
+    # today per the note on that task - do that before running this).
+    - name: configure static DHCP leases on the internal bridge
+      pfsensible.core.pfsense_dhcp_static:
+        interface: INTERNAL
+        name: "{{ item.key }}"
+        macaddr: "{{ item.value.macaddr }}"
+        hostname: "{{ item.key }}"
+        ipaddr: "{{ item.value.ipaddr }}"
+      loop: "{{ lookup('dict', internal_bridge_addresses) }}"
     - name: install packages
       package:
         name: "{{ item }}"
@@ -106,33 +148,41 @@
       pfsensible.core.pfsense_dns_resolver:
         dnssec: true
         forwarding: true
-    - name: set dns host overrides for static leases
-      pfsensible.core.pfsense_dns_resolver:
-        hosts:
-          - domain: andrewsutliff.com
-            host: "{{ item.key }}"
-            ip: "{{ item.value.ipaddr }}"
+    # pfsense_dns_resolver's `hosts`/`domainoverrides` are full-replace, not
+    # additive - calling it once per item (the old loop-based tasks below)
+    # meant each call wiped out whatever the previous call had just set,
+    # leaving only the very last item actually live in pfSense. Still an open
+    # upstream bug with no released fix (pfsensible/core#153), so the fix
+    # here is structural: build the complete desired list once and make a
+    # single call.
+    - name: reset accumulated dns host overrides
+      set_fact:
+        all_dns_host_overrides: []
+    - name: accumulate dns host overrides (static leases)
+      set_fact:
+        all_dns_host_overrides: "{{ all_dns_host_overrides + [{'domain': 'andrewsutliff.com', 'host': item.key, 'ip': item.value.ipaddr}] }}"
       loop: "{{ lookup('dict', static_addresses) }}"
-    - name: set dns host overrides for external facing applications
-      pfsensible.core.pfsense_dns_resolver:
-        hosts:
-          - domain: andrewsutliff.com
-            host: "{{ item }}"
-            ip: "{{ k8s_public_ingress_lb_ip }}"
+    - name: accumulate dns host overrides (external facing applications)
+      set_fact:
+        all_dns_host_overrides: "{{ all_dns_host_overrides + [{'domain': 'andrewsutliff.com', 'host': item, 'ip': k8s_public_ingress_lb_ip}] }}"
       loop: "{{ public_application_hosts }}"
-    - name: set dns host overrides for internal facing applications
-      pfsensible.core.pfsense_dns_resolver:
-        hosts:
-          - domain: andrewsutliff.com
-            host: "{{ item }}"
-            ip: "{{ k8s_private_ingress_lb_ip }}"
+    - name: accumulate dns host overrides (internal facing applications)
+      set_fact:
+        all_dns_host_overrides: "{{ all_dns_host_overrides + [{'domain': 'andrewsutliff.com', 'host': item, 'ip': k8s_private_ingress_lb_ip}] }}"
       loop: "{{ private_application_hosts }}"
-    - name: set dns domain overrides for azure resources
+    - name: set all dns host overrides
       pfsensible.core.pfsense_dns_resolver:
-        domainoverrides:
-          - domain: "{{ item }}"
-            ip: "{{ azure_dns_forwarder_ip }}"
+        hosts: "{{ all_dns_host_overrides }}"
+    - name: reset accumulated dns domain overrides
+      set_fact:
+        all_dns_domain_overrides: []
+    - name: accumulate dns domain overrides (azure resources)
+      set_fact:
+        all_dns_domain_overrides: "{{ all_dns_domain_overrides + [{'domain': item, 'ip': azure_dns_forwarder_ip}] }}"
       loop: "{{ azure_dns_domain_overrides }}"
+    - name: set all dns domain overrides
+      pfsensible.core.pfsense_dns_resolver:
+        domainoverrides: "{{ all_dns_domain_overrides }}"
     #- name: add ddns
     - name: add DNAT to public facing applications
       pfsensible.core.pfsense_nat_port_forward:

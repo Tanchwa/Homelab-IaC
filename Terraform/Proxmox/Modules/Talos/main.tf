@@ -71,6 +71,14 @@ resource "proxmox_virtual_environment_vm" "talos_controlplane_vm" {
     bridge = "vmbr0"
   }
 
+  # Direct, physical-LAN-bypassing path to the other Talos nodes and pfSense -
+  # see ../../network.tf. No DHCP reservation config here; that's done
+  # pfSense-side (Ansible) using this same fixed MAC.
+  network_device {
+    bridge      = "vmbr2"
+    mac_address = var.internal_mac
+  }
+
   operating_system {
     type = "l26"
   }
@@ -155,6 +163,14 @@ resource "proxmox_virtual_environment_vm" "talos_worker_vm" {
 
   network_device {
     bridge = "vmbr0"
+  }
+
+  # Direct, physical-LAN-bypassing path to the other Talos nodes and pfSense -
+  # see ../../network.tf. No DHCP reservation config here; that's done
+  # pfSense-side (Ansible) using this same fixed MAC.
+  network_device {
+    bridge      = "vmbr2"
+    mac_address = var.internal_mac
   }
 
   operating_system {

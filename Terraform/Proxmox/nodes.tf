@@ -5,8 +5,11 @@
 module "talos_controlplane" {
   source = "./Modules/Talos"
 
+  depends_on = [proxmox_virtual_environment_network_linux_bridge.internal]
+
   proxmox_node_name = "proxmox"
   iso_file_id       = proxmox_virtual_environment_download_file.talos_img.id
+  internal_mac      = "02:00:00:99:01:00"
   talos = {
     vm_type               = "controlplane"
     image_version         = var.talos_version
@@ -23,8 +26,11 @@ module "talos_worker" {
   source = "./Modules/Talos"
   count  = 3
 
+  depends_on = [proxmox_virtual_environment_network_linux_bridge.internal]
+
   proxmox_node_name = "proxmox"
   iso_file_id       = proxmox_virtual_environment_download_file.talos_img.id
+  internal_mac      = ["02:00:00:99:01:01", "02:00:00:99:01:02", "02:00:00:99:01:03"][count.index]
   talos = {
     vm_type               = "worker"
     image_version         = var.talos_version

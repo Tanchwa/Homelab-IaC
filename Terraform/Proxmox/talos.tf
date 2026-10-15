@@ -24,9 +24,6 @@ data "talos_machine_configuration" "controlplane" {
           image = local.talos_installer_image
         }
       }
-      cluster = {
-        allowSchedulingOnControlPlanes = true
-      }
     }),
     file("${path.module}/node-config/cluster.yaml"),
     file("${path.module}/node-config/controlplane.yaml"),

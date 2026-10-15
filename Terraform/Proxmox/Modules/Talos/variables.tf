@@ -8,6 +8,11 @@ variable "iso_file_id" {
   type        = string
 }
 
+variable "internal_mac" {
+  description = "MAC address for this node's second NIC, on the internal-only vmbr2 bridge (see ../../network.tf). Fixed/deterministic so a DHCP static reservation can be written for it ahead of time."
+  type        = string
+}
+
 variable "talos" {
   type = object({
     vm_type       = string
