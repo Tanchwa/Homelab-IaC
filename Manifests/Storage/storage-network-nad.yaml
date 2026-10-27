@@ -1,0 +1,31 @@
+# Longhorn's "Storage Network" feature (defaultSettings.storageNetwork in
+# Applications/Longhorn/longhorn.yaml) gives instance-manager/backing-image-manager
+# pods a second NIC on this network via Multus, so replica-to-replica sync
+# traffic rides the internal vmbr2 bridge instead of the primary LAN.
+#
+# IMPORTANT: no `routes` key here. A default route (routes: [{dst: "0.0.0.0/0"}])
+# in this config hijacks ALL pod traffic - including the primary gRPC traffic
+# between longhorn-manager and instance-manager - onto this network, breaking
+# Longhorn entirely (see github.com/longhorn/longhorn#9049). Omitting `routes`
+# leaves only the IPAM-assigned subnet route, which is what we want.
+apiVersion: k8s.cni.cncf.io/v1
+kind: NetworkAttachmentDefinition
+metadata:
+  name: storage-network
+  namespace: longhorn-system
+spec:
+  config: |
+    {
+      "cniVersion": "0.3.1",
+      "type": "macvlan",
+      "master": "enp6s19",
+      "mode": "bridge",
+      "ipam": {
+        "type": "whereabouts",
+        "range": "10.99.0.0/24",
+        "exclude": [
+          "10.99.0.0/28",
+          "10.99.0.200/32"
+        ]
+      }
+    }

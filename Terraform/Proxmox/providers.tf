@@ -33,6 +33,10 @@ terraform {
       source  = "hashicorp/helm"
       version = "~> 2.17"
     }
+    kubernetes = {
+      source  = "hashicorp/kubernetes"
+      version = "~> 3.4"
+    }
   }
 }
 
@@ -67,4 +71,12 @@ provider "helm" {
     client_certificate     = base64decode(local._cluster_kube.users[0].user["client-certificate-data"])
     client_key             = base64decode(local._cluster_kube.users[0].user["client-key-data"])
   }
+}
+
+provider "kubernetes" {
+  host                   = local._cluster_kube.clusters[0].cluster.server
+  cluster_ca_certificate = base64decode(local._cluster_kube.clusters[0].cluster["certificate-authority-data"])
+  client_certificate     = base64decode(local._cluster_kube.users[0].user["client-certificate-data"])
+  client_key             = base64decode(local._cluster_kube.users[0].user["client-key-data"])
+
 }

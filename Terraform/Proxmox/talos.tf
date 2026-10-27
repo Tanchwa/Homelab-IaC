@@ -3,8 +3,23 @@
 # Single controlplane node, so the API endpoint is just its IP - no LB/VIP.
 
 locals {
+  # Primary LAN (vmbr0) address, read from whatever the guest agent reports
+  # via DHCP (Modules/Talos/outputs.tf). lan_mac (nodes.tf) pins each node's
+  # vmbr0 MAC, which is what actually keeps this address stable across VM
+  # recreates - pfSense's DHCP server hands the same known MAC back its
+  # existing lease rather than a fresh one. No static reservation or
+  # Talos-side static config needed for that.
   controlplane_ip = module.talos_controlplane.ipv4_address
   worker_ips      = module.talos_worker[*].ipv4_address
+
+  internal_network = {
+    controlplane = { mac = "02:00:00:99:01:00", address = "10.99.0.10/24" }
+    workers = [
+      { mac = "02:00:00:99:01:01", address = "10.99.0.11/24" },
+      { mac = "02:00:00:99:01:02", address = "10.99.0.12/24" },
+      { mac = "02:00:00:99:01:03", address = "10.99.0.13/24" },
+    ]
+  }
 }
 
 resource "talos_machine_secrets" "this" {}
@@ -56,6 +71,28 @@ resource "talos_machine_configuration_apply" "controlplane" {
   machine_configuration_input = data.talos_machine_configuration.controlplane.machine_configuration
   node                        = local.controlplane_ip
   endpoint                    = local.controlplane_ip
+
+  # Per-node patch on top of the shared machine_configuration_input - gives
+  # this specific node a static address on the internal bridge instead of
+  # the DHCP Talos defaults to for any interface with no explicit config
+  # (which was just spamming "DHCP request/renew failed" since nothing on
+  # vmbr2 answers DHCP). The primary LAN (vmbr0) interface is left on DHCP -
+  # it's pinned to the same address via the pfSense reservation instead (see
+  # lan_network comment above).
+  config_patches = [
+    yamlencode({
+      machine = {
+        network = {
+          interfaces = [
+            {
+              deviceSelector = { hardwareAddr = local.internal_network.controlplane.mac }
+              addresses      = [local.internal_network.controlplane.address]
+            }
+          ]
+        }
+      }
+    })
+  ]
 }
 
 resource "talos_machine_configuration_apply" "worker" {
@@ -65,6 +102,24 @@ resource "talos_machine_configuration_apply" "worker" {
   machine_configuration_input = data.talos_machine_configuration.worker.machine_configuration
   node                        = each.value
   endpoint                    = each.value
+
+  # Same per-node static-address patch as controlplane, above - each worker
+  # gets its own entry from internal_network.workers, matched to the same
+  # index (each.key) used for its internal_mac in nodes.tf.
+  config_patches = [
+    yamlencode({
+      machine = {
+        network = {
+          interfaces = [
+            {
+              deviceSelector = { hardwareAddr = local.internal_network.workers[tonumber(each.key)].mac }
+              addresses      = [local.internal_network.workers[tonumber(each.key)].address]
+            }
+          ]
+        }
+      }
+    })
+  ]
 }
 
 # Bootstrap etcd on the single controlplane node.
@@ -110,4 +165,3 @@ output "talosconfig" {
   sensitive   = true
   value       = data.talos_client_configuration.this.talos_config
 }
-

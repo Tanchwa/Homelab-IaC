@@ -1,0 +1,23 @@
+server:
+ #extraArgs:
+ #  - --auth-mode=server
+  service:
+    type: ClusterIP
+  ingress:
+    enabled: true
+    controller: private-controller
+    gke:
+      backendConfig:
+        healthCheck:
+          checkIntervalSec: 30
+          timeoutSec: 5
+          healthyThreshold: 1
+          unhealthyThreshold: 2
+          type: HTTP
+          requestPath: /healthz
+          port: 8080
+      frontendConfig:
+        redirectToHttps:
+          enabled: true 
+      managedCertificate:
+        enabled: true

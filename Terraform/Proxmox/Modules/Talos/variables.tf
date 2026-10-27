@@ -13,6 +13,11 @@ variable "internal_mac" {
   type        = string
 }
 
+variable "lan_mac" {
+  description = "MAC address for this node's primary NIC, on vmbr0 (the physical LAN). Fixed/deterministic - without this Proxmox assigns a random MAC on every VM recreate, which rotates the DHCP-leased address and breaks the Talos/Kubernetes certs and kubeconfig that have the old address baked in."
+  type        = string
+}
+
 variable "talos" {
   type = object({
     vm_type       = string

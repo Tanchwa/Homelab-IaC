@@ -68,7 +68,8 @@ resource "proxmox_virtual_environment_vm" "talos_controlplane_vm" {
 
 
   network_device {
-    bridge = "vmbr0"
+    bridge      = "vmbr0"
+    mac_address = var.lan_mac
   }
 
   # Direct, physical-LAN-bypassing path to the other Talos nodes and pfSense -
@@ -162,7 +163,8 @@ resource "proxmox_virtual_environment_vm" "talos_worker_vm" {
 
 
   network_device {
-    bridge = "vmbr0"
+    bridge      = "vmbr0"
+    mac_address = var.lan_mac
   }
 
   # Direct, physical-LAN-bypassing path to the other Talos nodes and pfSense -

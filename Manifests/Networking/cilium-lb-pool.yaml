@@ -3,7 +3,7 @@ kind: CiliumLoadBalancerIPPool
 metadata:
   name: "ingress-pool"
 spec:
-  cidrs:
+  blocks:
   - cidr: "172.31.0.96/28"
   serviceSelector:
     matchLabels:

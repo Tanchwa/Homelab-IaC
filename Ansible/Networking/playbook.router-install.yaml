@@ -95,14 +95,11 @@
         ipv4_type: static
         ipv4_address: 172.31.0.1
         ipv4_prefixlen: 17
-    # TODO: confirm the actual OS device name pfSense assigns the new NIC
-    # (added via `qm set 100 --net2 virtio,bridge=vmbr2,...` on the Proxmox
-    # host - see Terraform/Proxmox/network.tf) under Interfaces > Assignments
-    # before running this - it's a virtio NIC, not passthrough, so it won't
-    # be ixlN like WAN/LAN; likely vtnet2, but unconfirmed until it's visible.
+    # Device name confirmed as vtnet2 via the pfSense console (Interfaces >
+    # Assign - VirtIO Networking Adapter on virtio_pci5).
     - name: set internal bridge interface
       pfsensible.core.pfsense_interface:
-        interface: vtnet2 # TODO: confirm actual device name
+        interface: vtnet2
         descr: INTERNAL
         enable: true
         ipv4_type: static
@@ -115,46 +112,52 @@
         timezone: US/Eastern
         language: en_US
     #-name: configure DHCP Server #Unavailable currently
+    # IMPORTANT: no `name:` here. pfsense_dhcp_static's idempotency check
+    # (_find_target()) matches existing staticmap entries on cid+mac when
+    # `name` is given (name -> cid, a separate field from hostname - *not*
+    # an alias for it), or on mac alone when name is omitted. Our existing
+    # reservations have hostname set but no cid, so passing `name:` here
+    # made every run fail to recognize them as already existing and add a
+    # fresh duplicate instead - which is exactly what took down Kea DHCP
+    # cluster-wide (it refuses to start with a duplicate MAC reservation).
+    # Matching on macaddr alone is what actually finds the existing entries.
     - name: configure static DHCP leases
       pfsensible.core.pfsense_dhcp_static:
-        interface: lan
-        name: "{{ item.key }}"
+        netif: lan
         macaddr: "{{ item.value.macaddr }}"
         hostname: "{{ item.key }}"
         ipaddr: "{{ item.value.ipaddr }}"
       loop: "{{ lookup('dict', static_addresses) }}"
-    # Requires a DHCP scope to already be enabled on the INTERNAL interface
-    # first (the "configure DHCP Server" step above is a manual, UI-only step
-    # today per the note on that task - do that before running this).
-    - name: configure static DHCP leases on the internal bridge
-      pfsensible.core.pfsense_dhcp_static:
-        interface: INTERNAL
-        name: "{{ item.key }}"
-        macaddr: "{{ item.value.macaddr }}"
-        hostname: "{{ item.key }}"
-        ipaddr: "{{ item.value.ipaddr }}"
-      loop: "{{ lookup('dict', internal_bridge_addresses) }}"
+    # No DHCP scope/reservations needed on INTERNAL - the Talos nodes get
+    # static addresses directly via machine config instead (Terraform/Proxmox/talos.tf's
+    # local.internal_network), so this link doesn't depend on pfSense's DHCP
+    # server at all. internal_bridge_addresses above stays just as a reference
+    # of the hostname/MAC/IP mapping, matching what Terraform assigns.
+    # The generic ansible.builtin.package correctly detects pfSense's package
+    # manager as pkgng (FreeBSD) but has no action plugin registered to
+    # actually dispatch to it - same class of issue as opkg needing an
+    # explicit community.general.opkg reference elsewhere in this playbook.
     - name: install packages
-      package:
+      community.general.pkgng:
         name: "{{ item }}"
         state: present
       loop:
         - pfSense-pkg-sudo #needed for modules to run as root
         - tailscale
-        - pfblockerng
-        - tftpd
+        #- pfblockerng-devel
+        # - tftpd
     #- name: setup tailscale
-    - name: dns resolver settings
-      pfsensible.core.pfsense_dns_resolver:
-        dnssec: true
-        forwarding: true
-    # pfsense_dns_resolver's `hosts`/`domainoverrides` are full-replace, not
-    # additive - calling it once per item (the old loop-based tasks below)
-    # meant each call wiped out whatever the previous call had just set,
-    # leaving only the very last item actually live in pfSense. Still an open
-    # upstream bug with no released fix (pfsensible/core#153), so the fix
-    # here is structural: build the complete desired list once and make a
-    # single call.
+    # pfsense_dns_resolver treats the whole <unbound> config as one object -
+    # every call rebuilds it entirely from that call's own params, with any
+    # field not passed falling back to the module's default (hosts: [],
+    # forwarding: false, etc). Separate calls for general settings, hosts,
+    # and domainoverrides each blindly wiped out what the previous call had
+    # just set (dnssec/forwarding getting reset, then hosts getting reset) -
+    # this is also why the hosts list needs one accumulated call instead of
+    # one call per item (still an open upstream bug with no released fix,
+    # pfsensible/core#153). The fix is structural on both axes: build each
+    # complete desired list once, and make a single call with every field
+    # that matters set together.
     - name: reset accumulated dns host overrides
       set_fact:
         all_dns_host_overrides: []
@@ -170,9 +173,6 @@
       set_fact:
         all_dns_host_overrides: "{{ all_dns_host_overrides + [{'domain': 'andrewsutliff.com', 'host': item, 'ip': k8s_private_ingress_lb_ip}] }}"
       loop: "{{ private_application_hosts }}"
-    - name: set all dns host overrides
-      pfsensible.core.pfsense_dns_resolver:
-        hosts: "{{ all_dns_host_overrides }}"
     - name: reset accumulated dns domain overrides
       set_fact:
         all_dns_domain_overrides: []
@@ -180,8 +180,11 @@
       set_fact:
         all_dns_domain_overrides: "{{ all_dns_domain_overrides + [{'domain': item, 'ip': azure_dns_forwarder_ip}] }}"
       loop: "{{ azure_dns_domain_overrides }}"
-    - name: set all dns domain overrides
+    - name: set dns resolver settings
       pfsensible.core.pfsense_dns_resolver:
+        dnssec: true
+        forwarding: true
+        hosts: "{{ all_dns_host_overrides }}"
         domainoverrides: "{{ all_dns_domain_overrides }}"
     #- name: add ddns
     - name: add DNAT to public facing applications
@@ -193,161 +196,161 @@
         destination: IP:wan:443
         target: "{{ k8s_public_ingress_lb_ip }}:443"
         state: present
-
-- name: Setup Remote Router
-  hosts: openwrt
-  gather_facts: false
-  tags: openwrt
-  roles:
-    - ansible-openwrt
-    - role: ansible-openwrt
-      vars:
-        openwrt_scp_if_ssh: yes
-        openwrt_install_recommended_packages: yes
-        scp_if_ssh: yes
-  vars:
-    main_router_tailscale_ip: 100.107.68.105
-  tasks:
-    - name: change default lan interface ip
-      uci:
-        command: section
-        config: network
-        name: lan
-        type: interface
-        find_by:
-          device: br-lan
-        value:
-          proto: static
-          device: br-lan
-          ipaddr: 172.31.128.1/17
-          netmask: 225.225.128.0
-          ip6assign: 60
-    - name: install serial exposure module
-      opkg:
-        name: kmod-usb-serial-option
-    - name: install uqmi requirements
-      opkg:
-        name: "{{ item }}"
-        state: present
-      loop:
-        - kmod-usb-net-qmi-wwan
-        - uqmi
-        - luci-proto-qmi
-    - name: set wwan interface
-      uci:
-        command: section
-        config: network
-        name: wwan
-        type: interface
-        find_by:
-          device: /dev/cdc-wdm0
-        value:
-          proto: qmi
-          device: /dev/cdc-wdm0
-          apn: internet
-          pdptype: ipv4v6
-    - name: check if wwan is running
-      shell:
-        cmd: uqmi -d /dev/cdc-wdm0 --get-data-status
-      register: connection_status
-    - name: start wwan card
-      shell:
-        cmd: uqmi -d /dev/cdc-wdm0 --start-network internet --autoconnect
-      when: connection_status.stdout != "\"connected\""
-    - name: commit changes
-      uci:
-        command: commit
-      notify: restart network
-    - name: install tailscale
-      opkg:
-        name: tailscale
-        state: present
-    - name: init tailscale
-      shell:
-        cmd: "tailscale up --advertise-routes=172.31.128.0/17 --accept-routes --exit-node={{ main_router_tailscale_ip }} --exit-node-allow-lan-access=true --netfilter-mode=off --snat-subnet-routes=true --auth-key={{ tailscale_auth_key }}"
-      tags: tailscale_init
-    - name: add tailscale interface
-      uci:
-        command: section
-        config: network
-        name: tailscale
-        type: interface
-        find_by:
-          device: tailscale0
-        value:
-          proto: none
-          device: tailscale0
-    - name: setup tailscale firewall zone 
-      uci:
-        #command: add
-        command: set
-        key: firewall.@zone[-1]
-        #config: firewall
-        #type: zone
-        value:
-          name: tailscale
-          input: ACCEPT
-          output: ACCEPT
-          forward: ACCEPT
-          masq: 1
-          mtu_fix: 1
-          enabled: 1
-    - name: add list network to tailscale zone
-      uci:
-        command: add_list
-        key: firewall.@zone[-1].network
-        value: tailscale
-    - name: forward tailscale to lan
-      uci:
-        command: set
-        key: firewall.@forwarding[0]
-        value:
-          src: tailscale
-          dest: lan
-    - name: forward lan to tailscale
-      uci:
-        command: set
-        key: firewall.@forwarding[1]
-        value:
-          src: lan
-          dest: tailscale
-    - name: forward tailscale to wan
-      uci:
-        command: set
-        key: firewall.@forwarding[2]
-        value:
-          src: tailscale
-          dest: wan
-    - name: delete old dns forwarding servers
-      uci:
-        command: delete
-        key: network.wan.dns
-    - name: set new dns upstream forwarding
-      uci:
-        command: add_list
-        key: network.wan.dns
-        value: "{{ item }}"
-      loop:
-        - 172.31.0.1
-        - 100.100.100.100
-    - name: turn off peer dns
-      uci:
-        command: set
-        key: "{{ item }}"
-        value: "0"
-      loop:
-        - network.wan.peerdns
-          #- network.wan6.peerdns don't have DNS set up on ipv6 yet
-    - name: Force DNS Through Router
-      uci:
-        command: set
-        key: firewall.@redirect[-1]
-        value:
-          target: DNAT
-          name: 'Force DNS'
-          src: lan
-          src_dport: 53
-    - name: commit changes
-      uci:
-        command: commit
-      notify: restart network
+#
+#- name: Setup Remote Router
+#  hosts: openwrt
+#  gather_facts: false
+#  tags: openwrt
+#  roles:
+#    - ansible-openwrt
+#    - role: ansible-openwrt
+#      vars:
+#        openwrt_scp_if_ssh: yes
+#        openwrt_install_recommended_packages: yes
+#        scp_if_ssh: yes
+#  vars:
+#    main_router_tailscale_ip: 100.107.68.105
+#  tasks:
+#    - name: change default lan interface ip
+#      uci:
+#        command: section
+#        config: network
+#        name: lan
+#        type: interface
+#        find_by:
+#          device: br-lan
+#        value:
+#          proto: static
+#          device: br-lan
+#          ipaddr: 172.31.128.1/17
+#          netmask: 225.225.128.0
+#          ip6assign: 60
+#    - name: install serial exposure module
+#      opkg:
+#        name: kmod-usb-serial-option
+#    - name: install uqmi requirements
+#      opkg:
+#        name: "{{ item }}"
+#        state: present
+#      loop:
+#        - kmod-usb-net-qmi-wwan
+#        - uqmi
+#        - luci-proto-qmi
+#    - name: set wwan interface
+#      uci:
+#        command: section
+#        config: network
+#        name: wwan
+#        type: interface
+#        find_by:
+#          device: /dev/cdc-wdm0
+#        value:
+#          proto: qmi
+#          device: /dev/cdc-wdm0
+#          apn: internet
+#          pdptype: ipv4v6
+#    - name: check if wwan is running
+#      shell:
+#        cmd: uqmi -d /dev/cdc-wdm0 --get-data-status
+#      register: connection_status
+#    - name: start wwan card
+#      shell:
+#        cmd: uqmi -d /dev/cdc-wdm0 --start-network internet --autoconnect
+#      when: connection_status.stdout != "\"connected\""
+#    - name: commit changes
+#      uci:
+#        command: commit
+#      notify: restart network
+#    - name: install tailscale
+#      opkg:
+#        name: tailscale
+#        state: present
+#    - name: init tailscale
+#      shell:
+#        cmd: "tailscale up --advertise-routes=172.31.128.0/17 --accept-routes --exit-node={{ main_router_tailscale_ip }} --exit-node-allow-lan-access=true --netfilter-mode=off --snat-subnet-routes=true --auth-key={{ tailscale_auth_key }}"
+#      tags: tailscale_init
+#    - name: add tailscale interface
+#      uci:
+#        command: section
+#        config: network
+#        name: tailscale
+#        type: interface
+#        find_by:
+#          device: tailscale0
+#        value:
+#          proto: none
+#          device: tailscale0
+#    - name: setup tailscale firewall zone 
+#      uci:
+#        #command: add
+#        command: set
+#        key: firewall.@zone[-1]
+#        #config: firewall
+#        #type: zone
+#        value:
+#          name: tailscale
+#          input: ACCEPT
+#          output: ACCEPT
+#          forward: ACCEPT
+#          masq: 1
+#          mtu_fix: 1
+#          enabled: 1
+#    - name: add list network to tailscale zone
+#      uci:
+#        command: add_list
+#        key: firewall.@zone[-1].network
+#        value: tailscale
+#    - name: forward tailscale to lan
+#      uci:
+#        command: set
+#        key: firewall.@forwarding[0]
+#        value:
+#          src: tailscale
+#          dest: lan
+#    - name: forward lan to tailscale
+#      uci:
+#        command: set
+#        key: firewall.@forwarding[1]
+#        value:
+#          src: lan
+#          dest: tailscale
+#    - name: forward tailscale to wan
+#      uci:
+#        command: set
+#        key: firewall.@forwarding[2]
+#        value:
+#          src: tailscale
+#          dest: wan
+#    - name: delete old dns forwarding servers
+#      uci:
+#        command: delete
+#        key: network.wan.dns
+#    - name: set new dns upstream forwarding
+#      uci:
+#        command: add_list
+#        key: network.wan.dns
+#        value: "{{ item }}"
+#      loop:
+#        - 172.31.0.1
+#        - 100.100.100.100
+#    - name: turn off peer dns
+#      uci:
+#        command: set
+#        key: "{{ item }}"
+#        value: "0"
+#      loop:
+#        - network.wan.peerdns
+#          #- network.wan6.peerdns don't have DNS set up on ipv6 yet
+#    - name: Force DNS Through Router
+#      uci:
+#        command: set
+#        key: firewall.@redirect[-1]
+#        value:
+#          target: DNAT
+#          name: 'Force DNS'
+#          src: lan
+#          src_dport: 53
+#    - name: commit changes
+#      uci:
+#        command: commit
+#      notify: restart network

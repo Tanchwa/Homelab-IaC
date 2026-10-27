@@ -11,9 +11,7 @@ spec:
   source:
     path: 'charts/immich'
     repoURL: 'https://immich-app.github.io/immich-charts'
-    targetRevision: v0.10.3 #DO NOT UPGRADE TO VERSION 0.10.0 until you migrate postgresql!
-    # possible upgrade paths https://github.com/camrossi/home-cluster/blob/main/apps/immich/DB_Migration.md
-    # https://gist.github.com/kabakaev/1d8fa31d4e7fa8134c968101fa88d200
+    targetRevision: v0.10.3 
     chart: immich
     helm:
       valueFiles: []
@@ -24,6 +22,11 @@ spec:
           persistence:
             library:
               existingClaim: immich-nfs
+
+          configuration:
+            storageTemplate:
+              enabled: true
+              template: "{{y}}/{{y}}-{{MM}}-{{dd}}/{{filename}}"
 
         machine-learning:
           persistence:
