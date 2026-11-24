@@ -8,6 +8,6 @@ replacements:
   - sourceValue: "talos-1lr-9dd"
     targets:
       - select:
-          kind: Application
+          kind: Node
         fieldPaths:
           - metadata.name
