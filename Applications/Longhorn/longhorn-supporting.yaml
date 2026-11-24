@@ -13,6 +13,7 @@ spec:
     repoURL: >-
       https://github.com/Tanchwa/Homelab-IaC
     targetRevision: HEAD
+    kustomize: {}
   sources: []
   project: default
   syncPolicy:

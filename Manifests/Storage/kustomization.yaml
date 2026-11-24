@@ -3,3 +3,11 @@ kind: Kustomization
 resources:
   - postgres-sc.yaml
   - storage-network-nad.yaml
+  - longhorn-v2-nodes.yaml
+replacements:
+  - sourceValue: "talos-1lr-9dd"
+    targets:
+      - select:
+          kind: Application
+        fieldPaths:
+          - metadata.name
