@@ -1,0 +1,15 @@
+# Example snippet to add to spec.disks
+apiVersion: longhorn.io/v1beta2
+kind: Node
+metadata:
+  name: $(NODE_NAME)
+  namespace: longhorn-system
+spec:
+  allowScheduling: true
+  disks:
+    nvme0n1:
+      path: /dev/sdb
+      diskType: block
+      allowScheduling: true
+      tags:
+        - sdd
