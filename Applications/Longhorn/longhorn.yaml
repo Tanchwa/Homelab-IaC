@@ -22,7 +22,7 @@ spec:
           ingressClassName: private-nginx
         preUpgradeChecker:
           jobEnabled: false
-        defaultBackupStoreSettings:
+        defaultBackupStore:
           backupTarget: "nfs://172.31.0.15//mnt/Main/kubernetes/backup"
         defaultSettings:
           # Talos nodes only reserve 1024 x 2Mi = 2Gi of
