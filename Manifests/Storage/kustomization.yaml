@@ -5,7 +5,7 @@ resources:
   - storage-network-nad.yaml
   - longhorn-v2-nodes.yaml
 replacements:
-  - sourceValue: "talos-1lr-9dd"
+  - sourceValue: "talos-rk9-8jv"
     targets:
       - select:
           kind: Node

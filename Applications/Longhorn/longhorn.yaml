@@ -30,6 +30,7 @@ spec:
           # machine.sysctls.vm.nr_hugepages) - whatever this gets set to must
           # not exceed that reservation, or instance-manager-v2 pods will fail
           # to get hugepage memory.
+          v1DataEngine: true
           v2DataEngine: true
           v2DataEngineHugepageLimit: 2Gi
           storageNetwork: "longhorn-system/storage-network"
