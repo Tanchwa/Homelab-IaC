@@ -4,6 +4,7 @@ metadata:
   name: talos-i4q-hyg
   namespace: longhorn-system
 spec:
+  allowScheduling: true
   disks:
     virtio-disk:
       path: /dev/sdb
@@ -19,6 +20,7 @@ metadata:
   name: talos-rk9-8jv
   namespace: longhorn-system
 spec:
+  allowScheduling: true
   disks:
     virtio-disk:
       path: /dev/sdb
@@ -34,6 +36,7 @@ metadata:
   name: talos-y84-ds6
   namespace: longhorn-system
 spec:
+  allowScheduling: true
   disks:
     virtio-disk:
       path: /dev/sdb
