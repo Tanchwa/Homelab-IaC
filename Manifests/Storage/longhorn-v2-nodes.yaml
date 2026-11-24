@@ -5,9 +5,10 @@ metadata:
   namespace: longhorn-system
 spec:
   disks:
-    nvme-disk:
+    virtio-disk:
       path: /dev/sdb
       diskType: block
+      diskDriver: auto
       allowScheduling: true
       tags:
         - ssd
@@ -19,9 +20,10 @@ metadata:
   namespace: longhorn-system
 spec:
   disks:
-    nvme-disk:
+    virtio-disk:
       path: /dev/sdb
       diskType: block
+      diskDriver: auto
       allowScheduling: true
       tags:
         - ssd
@@ -33,9 +35,10 @@ metadata:
   namespace: longhorn-system
 spec:
   disks:
-    nvme-disk:
+    virtio-disk:
       path: /dev/sdb
       diskType: block
+      diskDriver: auto
       allowScheduling: true
       tags:
         - ssd
