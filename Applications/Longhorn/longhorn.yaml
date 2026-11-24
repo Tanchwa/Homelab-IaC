@@ -33,6 +33,8 @@ spec:
           v1DataEngine: true
           v2DataEngine: true
           v2DataEngineHugepageLimit: 2Gi
+          # allows us to create our own disks through our manifests without battling with Longhorn's auto-detection of disks on nodes
+          createDefaultDiskLabeledNodes: true
           storageNetwork: "longhorn-system/storage-network"
           concurrentReplicaRebuildPerNodeLimit: 3
           concurrentVolumeBackupRestorePerNodeLimit: 2

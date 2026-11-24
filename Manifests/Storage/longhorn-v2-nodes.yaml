@@ -6,7 +6,7 @@ metadata:
 spec:
   allowScheduling: true
   disks:
-    virtio-disk:
+    longhorn-lvm-thin:
       path: /dev/sdb
       diskType: block
       diskDriver: auto
@@ -22,7 +22,7 @@ metadata:
 spec:
   allowScheduling: true
   disks:
-    virtio-disk:
+    longhorn-lvm-thin:
       path: /dev/sdb
       diskType: block
       diskDriver: auto
@@ -38,7 +38,7 @@ metadata:
 spec:
   allowScheduling: true
   disks:
-    virtio-disk:
+    longhorn-lvm-thin:
       path: /dev/sdb
       diskType: block
       diskDriver: auto
