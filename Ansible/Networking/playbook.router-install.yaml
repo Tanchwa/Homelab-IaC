@@ -187,15 +187,15 @@
         hosts: "{{ all_dns_host_overrides }}"
         domainoverrides: "{{ all_dns_domain_overrides }}"
     #- name: add ddns
-    - name: add DNAT to public facing applications
-      pfsensible.core.pfsense_nat_port_forward:
-        descr: External to Public Ingress
-        interface: wan
-        protocol: tcp/udp
-        source: any
-        destination: IP:wan:443
-        target: "{{ k8s_public_ingress_lb_ip }}:443"
-        state: present
+    #- name: add DNAT to public facing applications
+    #  pfsensible.core.pfsense_nat_port_forward:
+    #    descr: External to Public Ingress
+    #    interface: wan
+    #    protocol: tcp/udp
+    #    source: any
+    #    destination: IP:wan:443
+    #    target: "{{ k8s_public_ingress_lb_ip }}:443"
+    #    state: present
 #
 #- name: Setup Remote Router
 #  hosts: openwrt
