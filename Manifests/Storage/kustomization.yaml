@@ -4,3 +4,4 @@ resources:
   - postgres-sc.yaml
   - storage-network-nad.yaml
   - longhorn-v2-nodes.yaml
+  - longhorn-v2-sc.yaml
