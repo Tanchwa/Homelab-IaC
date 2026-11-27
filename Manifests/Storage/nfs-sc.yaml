@@ -4,7 +4,7 @@ metadata:
   name: manual
   annotations:
     storageclass.kubernetes.io/is-default-class: "false"
-provisioner: kubernetes.io/manual
+provisioner: nfs.csi.k8s.io
 reclaimPolicy: Retain # default value is Delete
 allowVolumeExpansion: true
 mountOptions:
