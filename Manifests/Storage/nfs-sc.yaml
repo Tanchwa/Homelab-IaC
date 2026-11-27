@@ -6,7 +6,6 @@ metadata:
     storageclass.kubernetes.io/is-default-class: "false"
 provisioner: nfs.csi.k8s.io
 reclaimPolicy: Retain # default value is Delete
-allowVolumeExpansion: true
 volumeBindingMode: Immediate
 parameters:
   server: 172.31.0.15
