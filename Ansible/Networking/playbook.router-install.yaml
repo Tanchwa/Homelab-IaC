@@ -20,10 +20,11 @@
   hosts: pfsense
   gather_facts: false
   vars:
-    k8s_private_ingress_lb_ip: 172.31.0.110
-    k8s_public_ingress_lb_ip: 172.31.0.109
+    k8s_private_ingress_lb_ip: 172.31.0.97
+    k8s_public_ingress_lb_ip: 172.31.0.98
     azure_dns_forwarder_ip: 10.0.1.132
     private_application_hosts:
+      - argo
       - alertmanager
       - grafana
       - immich
